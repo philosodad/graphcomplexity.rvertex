@@ -1,5 +1,8 @@
+require 'set'
+require 'cover'
 class Node
-  attr_reader :x, :y, :id, :edges, :on
+  include VertexCover
+  attr_reader :x, :y, :id, :edges, :on, :covers
   attr_accessor :neighbors
   @@id = 0
   def initialize(x,y)
@@ -17,11 +20,12 @@ class Node
     @neighbors.each{|k| @edges.add(Set[k.id, @id])}
   end
 
-  def build_covers
-    alledges = Set[]
-    @edges.each{|k| alledges.add(k)}
-    @neighbors.each{|k| k.edges.each{|j| alledges.add(j)}}
-    
+  def set_covers
+    @covers = build_covers
+  end
+
+  def zero_out
+    @@id = 0
   end
     
                                  
