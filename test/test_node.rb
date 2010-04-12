@@ -26,6 +26,8 @@ class TestNode < Test::Unit::TestCase
     assert_equal @n4.id, 4
     assert_equal @n3.x, 1
     assert_equal @n3.y, 2
+    assert @n0.weight < 50
+    assert @n0.weight.class == Fixnum
   end
 
   def test_setedges
@@ -52,7 +54,8 @@ class TestNode < Test::Unit::TestCase
     m1.each{|k| g+=1 if k[4] == 1}
     assert_equal g, 5
     puts @n4.covers.inspect
-    @n4.covers.each{|k| assert @n4.edges.each{|j| k-j != nil}}
+    puts @n5.covers.length
+    @n4.covers.each{|k| assert @n4.edges.each{|j| !(k.intersection(j).empty?)}}
   end
 
   def teardown

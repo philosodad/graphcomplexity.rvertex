@@ -1,9 +1,10 @@
 require 'set'
 require 'cover'
+require 'ldgraph'
 class Node
   include VertexCover
-  attr_reader :x, :y, :id, :edges, :on, :covers
-  attr_accessor :neighbors
+  attr_reader :x, :y, :id, :edges, :covers
+  attr_accessor :neighbors, :weight, :on
   @@id = 0
   def initialize(x,y)
     @on = true
@@ -14,6 +15,7 @@ class Node
     @id = @@id
     @@id +=1
     @covers = Set[]
+    @weight = rand(50)
   end
 
   def set_edges

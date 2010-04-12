@@ -4,7 +4,7 @@ module VertexCover
     alledges = Set[]
     @edges.each{|k| alledges.add(k)}
     @neighbors.each{|k| k.edges.each{|j| alledges.add(j)}}
-    nodes = (@neighbors.push(self)).to_set
+    nodes = @neighbors.to_set.add(self)
     @neighbors.each{|k| k.neighbors.each{|j| nodes.add(j)}}
     nodes = nodes.to_a
     nodes = nodes.sort_by{|k| k.id}
@@ -20,6 +20,7 @@ module VertexCover
         end
       end
     end
+    
     def rec_build_covers(x,y,c,covers, nodes) 
       cover = c.dup
       if x == @matrix.length
@@ -40,5 +41,7 @@ module VertexCover
       end
     end
     return rec_build_covers(0,0, Set[], Set[], nodes)
-  end
+  end    
 end
+
+    
