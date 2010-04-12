@@ -54,8 +54,6 @@ class TestNode < Test::Unit::TestCase
     m1.each{|k| g+=1 if k[4] == 1}
     assert_equal g, 5
     puts @n4.covers.inspect
-    puts @n5.covers.length
-    @n4.covers.each{|k| assert @n4.edges.each{|j| !(k.intersection(j).empty?)}}
   end
 
   def teardown

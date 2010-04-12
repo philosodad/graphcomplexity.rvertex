@@ -1,3 +1,4 @@
+require 'ldgraph'
 module VertexCover
   attr_reader :matrix
   def build_covers
@@ -40,7 +41,7 @@ module VertexCover
         rec_build_covers(x, y+1, c, covers, nodes)
       end
     end
-    return rec_build_covers(0,0, Set[], Set[], nodes)
+    return LdGraph.new(rec_build_covers(0,0, Set[], Set[], nodes), nodes)
   end    
 end
 
