@@ -12,6 +12,7 @@ class TestNode < Test::Unit::TestCase
     @n3 = Node.new(1,2)
     @n4 = Node.new(0,1)
     @n5 = Node.new(5,6)
+    @n4.on = false
     @nodes = [@n0, @n1, @n2, @n3, @n4, @n5]
     @n0.neighbors = [@n1, @n3, @n4]
     @n1.neighbors = [@n0, @n2, @n3, @n4]
