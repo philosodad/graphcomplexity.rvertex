@@ -12,6 +12,7 @@ class LdGraph
     @ldnodes.each{|k| @edges.each{|j| k.edges.add(j) unless k.cover.intersection(j[:nodes]).empty?}} 
     @ldnodes.each{|k| k.set_degree}
     @ldnodes.each{|k| k.set_on_lifetime(nodes)}
+#    puts @ldnodes.inspect
     @ldnodes.sort!
   end
 

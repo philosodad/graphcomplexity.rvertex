@@ -58,7 +58,16 @@ class TestNode < Test::Unit::TestCase
     g = 0
     m1.each{|k| g+=1 if k[4] == 1}
     assert_equal g, 5
-    puts @n4.covers.inspect
+    x = @n2.onlist.values.select{|k| k == true}.length
+    @n5.on = false
+    @n2.set_ons
+    y = @n2.onlist.values.select{|k| k == true}.length
+    assert x != y
+    g, h = 0, 0 
+    @n4.covers.ldnodes.each{|k| g+= k.onremain}
+    @n4.update_covers_on 5, false
+    @n4.covers.ldnodes.each{|k| h+= k.onremain}
+    assert h != g
   end
 
   def teardown

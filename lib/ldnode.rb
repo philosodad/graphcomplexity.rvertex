@@ -1,7 +1,7 @@
 class LdNode
   include Comparable
-  attr_reader :cover, :id, :onremain, :lifetime, :degree
-  attr_accessor :edges, :nodes
+  attr_reader :cover, :id, :lifetime, :degree
+  attr_accessor :edges, :nodes, :onremain
   @@id = 0
   def initialize(set)
     @onremain
@@ -39,6 +39,8 @@ class LdNode
       return -1
     elsif cover.min > b.cover.min then
       return +1
+    else
+      return 0
     end
  
   end
