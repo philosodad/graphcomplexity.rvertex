@@ -10,12 +10,17 @@ class Node
     @on = true
     @x = x
     @y = y
+    @id
     @neighbors = []
     @edges = Set[]
-    @id = @@id
-    @@id +=1
+    updateid
     @covers = Set[]
-    @weight = rand(50)
+    @weight = rand(50)+50
+  end
+
+  def updateid
+    @id = @@id
+    @@id += 1
   end
 
   def set_edges
@@ -29,6 +34,14 @@ class Node
   def zero_out
     @@id = 0
   end
-    
-                                 
+end
+
+class SetNode < Node
+  def initialize(id)
+    super(0,0)
+    @id = id
+  end
+
+  def updateid
+  end
 end

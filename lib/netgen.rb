@@ -22,4 +22,19 @@ class UnitDiskGraph
     node.neighbors.concat(possibles.select{|k| planardist(k, node) <= distance})
   end
 end
-      
+
+class SetGraph
+  attr_reader :edges, :nodes
+  def initialize nodes, edges
+    @nodes = nodes
+    @edges = edges
+    @nodes.each do |k|
+      @edges.each do |j|
+        if j.include?(k.id)
+          k.neighbors.concat(@nodes.select{|i| (j - Set[k.id]).include?(i.id)})
+        end
+      end
+    end
+  end
+    
+end

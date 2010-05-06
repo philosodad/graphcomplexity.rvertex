@@ -6,12 +6,14 @@ require 'node'
 class TestNode < Test::Unit::TestCase
 
   def setup #always required for a test case
+    @sn0 = SetNode.new(3)
     @n0 = Node.new(4,5)
     @n1 = Node.new(3,4)
     @n2 = Node.new(2,3)
     @n3 = Node.new(1,2)
     @n4 = Node.new(0,1)
     @n5 = Node.new(5,6)
+    @n6 = Node.new(12,24)
     @n4.on = false
     @nodes = [@n0, @n1, @n2, @n3, @n4, @n5]
     @n0.neighbors = [@n1, @n3, @n4]
@@ -27,7 +29,9 @@ class TestNode < Test::Unit::TestCase
     assert_equal @n4.id, 4
     assert_equal @n3.x, 1
     assert_equal @n3.y, 2
-    assert @n0.weight < 50
+    assert_equal @sn0.id, 3
+    assert_equal @n6.id, 6
+    assert @n0.weight < 100
     assert @n0.weight.class == Fixnum
   end
 

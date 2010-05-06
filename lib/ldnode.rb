@@ -1,6 +1,6 @@
 class LdNode
   include Comparable
-  attr_reader :cover, :id, :onremain, :lifetime
+  attr_reader :cover, :id, :onremain, :lifetime, :degree
   attr_accessor :edges, :nodes
   @@id = 0
   def initialize(set)
@@ -22,22 +22,22 @@ class LdNode
     @lifetime = nodes.select{|k| @cover.include?(k.id)}.min_by{|j| j.weight}.weight
   end
 
-  def <=>(a,b)
-    if a.degree < b.degree then
+  def <=>(b)
+    if degree < b.degree then
       return -1
-    elsif a.degree > b.degree then
+    elsif degree > b.degree then
       return 1
-    elsif a.lifetime > b.lifetime
+    elsif lifetime > b.lifetime
       return -1
-    elsif a.lifetime < b.lifetime
+    elsif lifetime < b.lifetime
       return 1
-    elsif a.onremain < b.onremain
+    elsif onremain < b.onremain
       return -1
-    elsif a.onremain > b.onremain then
+    elsif onremain > b.onremain then
       return 1
-    elsif a.cover.min < b.cover.min then
+    elsif cover.min < b.cover.min then
       return -1
-    elsif a.cover.min > b.cover.min then
+    elsif cover.min > b.cover.min then
       return +1
     end
  
