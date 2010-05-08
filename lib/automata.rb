@@ -2,23 +2,38 @@
 
 module BasicAutomata
   def transition(id, status)
-    if !@covers.ldnodes[@currentcover].cover.include?(id) and
-        !status
-      return true
-    elsif @covers.ldnodes[@currentcover].cover.include(@id) and 
-        @covers.ldnodes[@currentcover].onremain == 1 and 
+    curcov = @covers.ldnodes[@currentcover]
+    if !curcov.has?(id) and !status
+      return :continue
+    elsif curcov.has?(@id) and 
+        curcov.onremain == 1 and 
         !@on then
       @on = true
       return :sendon
-    elsif !@covers.ldnodes[@currentcover].cover.include(@id) and
-        @covers.ldnodes[@currentcover].onremain == 0 then
+    elsif !curcov.has?(@id) and
+        curcov.onremain == 0 then
       @on = false
       return :sendoff
-    elsif @covers.ldnodes[@currentcover].cover.include?(id) and !status 
+    elsif curcov.has?(id) and !status 
       @currentcover = (@currentcover+1)%@covers.ldnodes.length
-      return transistion(id, status)
-    elsif !@covers.ldnodes[@currentcover].cover.include(id) and status
-      return :reshuffle
+      return transition(id, status)
+    elsif !curcov.has?(id) and status
+      sort_covers
+      if curcov.has?(@id)
+        if @on then
+          return true
+        else
+          @on = true
+          return :sendon
+        end
+      else
+        if @on then
+          @on = false
+          return :sendoff
+        else
+          return true
+        end
+      end
     else
       return true
     end

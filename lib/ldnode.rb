@@ -21,6 +21,10 @@ class LdNode
     @onremain = nodes.select{|k| @cover.include?(k.id) and k.on == false}.length
     @lifetime = nodes.select{|k| @cover.include?(k.id)}.min_by{|j| j.weight}.weight
   end
+  
+  def has?(id)
+    return @cover.include?(id)
+  end
 
   def <=>(b)
     if degree < b.degree then
@@ -43,6 +47,10 @@ class LdNode
       return 0
     end
  
+  end
+
+  def zero_out
+    @@id = 0
   end
   
 end

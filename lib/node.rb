@@ -3,24 +3,54 @@ require 'cover'
 require 'ldgraph'
 require 'automata'
 class Node
-  include VertexCover
+  include VCLocal
   include BasicAutomata
-  attr_reader :x, :y, :id, :edges, :covers, :onlist
+  attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted
   attr_accessor :neighbors, :weight, :on
   @@id = 0
   def initialize(x,y)
-    @on = true
+    @on = nil
     @x = x
     @y = y
     @id
-    @neighbors = []
+    @neighbors = nil
     @edges = Set[]
     updateid
     @covers
     @weight = rand(50)+50
     @currentcover = 0
     @onlist = {}
-    set_ons
+    @booted = false
+  end
+
+  def boot
+    if @booted 
+      return true
+    else
+      if !@neighbors
+        return :fail
+      else
+        set_edges
+        @booted = true
+        @neighbors.each do |k|
+          if !k.booted
+            k.boot
+          end
+        end
+        set_covers
+        set_ons
+        return true
+      end
+    end
+  end
+
+  def send_initial
+    if @covers.ldnodes[@currentcover].has?(@id)
+      send_status
+      return true
+    else
+      return false
+    end
   end
 
   def updateid
@@ -41,6 +71,14 @@ class Node
     @neighbors.each{|k| k.neighbors.each{|j| @onlist[j.id] = j.on}}
   end
 
+  def compare_ons? newList
+    these = Set.new(@onlist.keys)
+    those = Set.new(newList.keys)
+    boths = these.intersection(those)
+    boths.each{|k| return false unless newList[k] == @onlist[k]}
+    return true
+  end
+
   def update_covers_on id, status
     if @onlist[id] != status then
       @onlist[id] = status
@@ -58,13 +96,14 @@ class Node
 
   def send_status
     @neighbors.each{|k| k.recieve_status(@id, @on)}
+    return true
   end
 
   def recieve_status id, status
     case transition id, status
     when true
     when :sendon, :sendoff
-      update_covers 
+      update_covers_on id, status
       send_status
     when :reshuffle
     end
