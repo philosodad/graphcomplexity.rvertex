@@ -5,7 +5,7 @@ require 'automata'
 class Node
   include VCLocal
   include BasicAutomata
-  attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted
+  attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted, :next, :now
   attr_accessor :neighbors, :weight, :on
   @@id = 0
   def initialize(x,y)
@@ -21,6 +21,7 @@ class Node
     @currentcover = 0
     @onlist = {}
     @booted = false
+    @next = []
   end
 
   def boot
@@ -44,16 +45,7 @@ class Node
     end
   end
 
-  def send_initial
-    start = @covers.ldnodes[@currentcover].cover.min
-    if start == @id
-      @on = true
-      send_status
-      return true
-    else
-      return false
-    end
-  end
+
 
   def updateid
     @id = @@id
@@ -96,19 +88,44 @@ class Node
     @covers.ldnodes.sort!
   end
 
+  def send_initial
+    start = @covers.ldnodes[@currentcover].cover.min
+    if start == @id
+      @next = :sendon
+      return true
+    else
+      @next = :continue
+      return false
+    end
+  end
+
+  def do_next
+    @now = @next
+    case @now
+    when :continue, nil
+      return true
+    when :sendoff
+      @next = :continue
+      @on = false
+    when :sendon
+      @next = :continue
+      @on = true
+    when :oddfail
+      return false
+    end
+  end
+
   def send_status
-  #  @neighbors.each{|k| k.recieve_status(@id, @on)}
-    return true
+    case @now
+    when :sendon, :sendoff
+      @neighbors.each{|k| k.recieve_status(@id, @on)}
+      return true
+    end
+    return false
   end
 
   def recieve_status id, status
-    case transition id, status
-    when true
-    when :sendon, :sendoff
-      update_covers_on id, status
-      send_status
-    when :reshuffle
-    end
+    @next = transition id, status
   end
 
   def zero_out

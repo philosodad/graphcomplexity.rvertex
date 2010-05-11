@@ -7,11 +7,9 @@ module BasicAutomata
     if curcov.has?(@id) and 
         curcov.onremain == 1 and 
         !@on then
-      @on = true
       return :sendon
     elsif !curcov.has?(@id) and
         curcov.onremain == 0 then
-      @on = false
       return :sendoff
     elsif !curcov.has?(id) and !status
       return :continue
@@ -21,26 +19,9 @@ module BasicAutomata
     elsif curcov.has?(id) and !status
       @currentcover = (@currentcover+1)%@covers.ldnodes.length
       return transition(id, status)
-=begin    elsif curcov.has?(id) and !status 
+    elsif !curcov.has?(id) and status
       @currentcover = (@currentcover+1)%@covers.ldnodes.length
       return transition(id, status)
-    elsif !curcov.has?(id) and status
-      sort_covers
-      if curcov.has?(@id)
-        if @on then
-          return true
-        else
-          @on = true
-          return :sendon
-        end
-      else
-        if @on then
-          @on = false
-          return :sendoff
-        else
-          return true
-        end
-=end      end
     else
       return :oddfail    
     end

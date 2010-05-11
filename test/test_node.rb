@@ -138,7 +138,31 @@ class TestNode < Test::Unit::TestCase
   end    
 
   def test_sendstatus
-    assert @n4.send_status
+    @snodes2.each{|k| k.send_initial}
+    @snodes2.each{|k| k.do_next}
+    [@sn11, @sn12, @sn14].each{|k| assert k.on}
+    [@sn10, @sn13].each{|k| assert_equal k.on, nil}
+    [@sn11, @sn12, @sn14].each{|k| assert k.send_status}
+    assert !@sn13.on
+    assert @sn13.covers.ldnodes[@sn13.currentcover].has?(@sn13.id)
+    assert @sn13.covers.ldnodes[@sn13.currentcover].onremain == 1
+    assert_equal @sn13.next, :sendon
+    assert_equal @sn10.next, :continue
+    assert_equal @sn11.next, :continue
+    assert_equal @sn12.next, :continue
+    assert_equal @sn14.next, :sendoff
+    @snodes2.each{|k| k.do_next}
+    assert @sn13.on
+    [@sn13, @sn12, @sn11].each{|k| assert k.on}
+    @snodes2.each{|k| k.send_status}
+    assert_equal @sn10.next, :sendoff
+    assert_equal @sn11.next, :continue
+    assert_equal @sn12.next, :continue
+    assert_equal @sn13.next, :continue
+    assert_equal @sn14.next, :continue
+    @snodes2.each{|k| k.do_next}
+    @snodes2.each{|k| k.send_status}
+    @snodes2.each{|k| assert_equal k.next, :continue}
   end
 
   def test_sendinitial
@@ -147,11 +171,10 @@ class TestNode < Test::Unit::TestCase
     assert @sn12.send_initial
     assert @sn14.send_initial
     assert_equal @sn10.send_initial, false
-    assert @sn11.on
-    assert @sn12.on
-    assert !@sn13.on
-    assert @sn14.on
-    assert_equal @sn_10, nil
+    assert_equal @sn11.next, :sendon
+    assert_equal @sn12.next, :sendon
+    assert_equal @sn13.next, :continue
+    assert_equal @sn14.next, :sendon
   end
 
   def test_compareons
@@ -187,6 +210,25 @@ class TestNode < Test::Unit::TestCase
     @sn21.on = true
     assert_equal @sn20.transition(@sn21.id, true), :sendoff
 #    puts "SN10 covers: #{@sn10.covers.ldnodes.collect{|k| k.cover}}"
+  end
+
+  def test_recievestatus
+    @snodes2.each{|k| k.send_initial}
+    [@sn11, @sn12, @sn14].each{|k| k.on = true}
+    assert_equal @sn10.recieve_status(@sn12.id, @sn12.on), :continue
+    assert_equal @sn13.recieve_status(@sn11.id, @sn11.on), :sendon
+    assert_equal @sn14.recieve_status(@sn12.id, @sn12.on), :sendoff
+    @sn14.on = false
+    assert_equal @sn11.recieve_status(@sn14.id, @sn14.on), :continue
+  end
+
+  def test_donext
+    @snodes2.each{|k| k.send_initial}
+    @snodes2.each{|k| k.do_next}
+    assert_equal @sn10.next, :continue
+    assert_equal @sn13.next, :continue
+    assert_equal @sn11.next, :continue
+    assert_equal @sn11.now, :sendon
   end
 
   def teardown
