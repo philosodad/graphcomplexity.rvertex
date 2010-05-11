@@ -2,6 +2,7 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'node'
+require 'set'
 
 class TestNode < Test::Unit::TestCase
 
@@ -15,11 +16,24 @@ class TestNode < Test::Unit::TestCase
     @sn12 = SetNode.new(12)
     @sn13 = SetNode.new(13)
     @sn14 = SetNode.new(14)
+    @sn20 = SetNode.new(20)
+    @sn21 = SetNode.new(21)
+    @sn22 = SetNode.new(22)
+    @sn23 = SetNode.new(23)
+    @sn20.neighbors = [@sn21]
+    @sn21.neighbors = [@sn20]
+    @sn20.weight = 50
+    @sn21.weight = 50
     @sn10.neighbors = [@sn11, @sn12, @sn13]
     @sn11.neighbors = [@sn14, @sn13, @sn10]
     @sn12.neighbors = [@sn10, @sn13, @sn14]
     @sn13.neighbors = [@sn10, @sn11, @sn12]
     @sn14.neighbors = [@sn11, @sn12]
+    @sn10.weight = 100
+    @sn11.weight = 45
+    @sn12.weight = 45
+    @sn13.weight = 50
+    @sn14.weight = 100
     @sn0.neighbors = [@sn1]
     @sn1.neighbors = [@sn0, @sn2]
     @sn2.neighbors = [@sn1]
@@ -37,13 +51,15 @@ class TestNode < Test::Unit::TestCase
     @nodes = [@n0, @n1, @n2, @n3, @n4, @n5]
     @snodes = [@sn0, @sn1, @sn2]
     @snodes2 = [@sn10, @sn11, @sn12, @sn13, @sn14]
+    @snodes3 = [@sn20, @sn21]
     @n0.neighbors = [@n1, @n3, @n4]
     @n1.neighbors = [@n0, @n2, @n3, @n4]
     @n2.neighbors = [@n1, @n3, @n4]
     @n3.neighbors = [@n0, @n1, @n2, @n4]
     @n4.neighbors = [@n0, @n1, @n2, @n3, @n5]
     @n5.neighbors = [@n4] 
-    [@nodes, @snodes, @snodes2].each{|k| k.each{|j| j.boot}}
+ #   [@nodes, @snodes, @snodes2].each{|k| k.each{|j| j.set_edges}}
+    [@nodes, @snodes, @snodes2, @snodes3].each{|k| k.each{|j| j.boot}}
   end
 
   def test_init
@@ -107,7 +123,7 @@ class TestNode < Test::Unit::TestCase
     m1.each{|k| g+=1 if k[4] == 1}
     assert_equal g, 5
     x = @n2.onlist.values.select{|k| k == nil}.length
-    @n2.on = false
+    @n1.on = false
     @n2.set_ons
     y = @n2.onlist.values.select{|k| k == nil}.length
     assert x != y
@@ -116,6 +132,9 @@ class TestNode < Test::Unit::TestCase
     @n4.update_covers_on 5, false
     @n4.covers.ldnodes.each{|k| h+= k.onremain}
     assert h != g
+    assert_equal @sn14.covers.ldnodes.collect{|k| k.cover}, [Set[14], Set[12,11]]
+    assert_equal @sn14.covers.ldnodes.collect{|k| k.lifetime}, [100,45]
+    assert_equal @sn14.covers.ldnodes.collect{|k| k.onremain}, [1, 2]
   end    
 
   def test_sendstatus
@@ -123,12 +142,16 @@ class TestNode < Test::Unit::TestCase
   end
 
   def test_sendinitial
-    puts "sn1 covers: #{@sn1.covers.inspect}"
-    assert @sn1.send_initial
-    puts "sn0 cover[0] #{@sn0.covers.ldnodes[0].inspect}"
-    assert @sn0.currentcover == 0
-#    assert !@sn0.covers.ldnodes[0].has?(@sn0.id)
-#    assert !@sn0.send_initial
+    assert @sn11.send_initial
+    assert !@sn13.send_initial
+    assert @sn12.send_initial
+    assert @sn14.send_initial
+    assert_equal @sn10.send_initial, false
+    assert @sn11.on
+    assert @sn12.on
+    assert !@sn13.on
+    assert @sn14.on
+    assert_equal @sn_10, nil
   end
 
   def test_compareons
@@ -138,18 +161,32 @@ class TestNode < Test::Unit::TestCase
     @snodes.each{|k| assert_not_nil k.covers}
     @snodes.each{|k| assert_kind_of k.covers, LdGraph}
     @snodes.each{|k| assert_nothing_raised{k.send_initial}}
-#    assert_equal @sn1.covers.ldnodes.length, 2
-    puts "SN10 covers: #{@sn10.covers.ldnodes.collect{|k| k.cover}}"
-#    assert_equal @sn10.covers.ldnodes.length, 3
-#    assert_equal @sn0.transition(@sn1.id, @sn1.on), :sendoff
-    assert !@sn0.on
-#    assert_equal @sn1.transition(@sn2.id, @sn2.on), true
-#    assert @sn1.on
-    @sn2.on = false
-    @sn1.on = false
-    @sn2.update_covers_on @sn1.id, false
-    @sn2.update_covers_on @sn2.id, false
-#    assert_equal @sn2.transition(@sn1.id, false), :sendon
+    @sn11.on = true
+    @sn12.on = true
+    @sn14.on = true
+    assert_equal @sn13.covers.ldnodes[@sn13.currentcover].cover, Set[11,12,13]
+    assert @sn11.on == true
+    assert @sn12.on == true
+    assert @sn12.id == 12
+    assert @sn13.covers.ldnodes[@sn13.currentcover].has?(@sn13.id)
+    assert @sn13.covers.ldnodes[@sn13.currentcover].has?(@sn12.id)
+    assert !@sn13.on
+    assert_equal ([@sn13]+@sn13.neighbors).select{|k| @sn13.covers.ldnodes[@sn13.currentcover].cover.include?(k.id) and k.on !=true}.length, 1
+    assert_equal @sn13.transition(@sn12.id, true), :sendon
+    assert_equal @sn14.transition(@sn12.id, false), :continue
+    @sn13.on = nil
+    assert @sn10.covers.ldnodes[@sn10.currentcover].has?(@sn12.id)
+    assert_equal @sn10.transition(@sn12.id, true), :continue
+    @sn13.on = true
+    assert_equal @sn10.transition(@sn12.id, true), :sendoff
+    assert_equal @sn20.covers.ldnodes[@sn20.currentcover].cover, Set[20]
+    assert_equal @sn21.covers.ldnodes[@sn21.currentcover].cover, Set[20]
+    @sn20.on = true
+    assert_equal @sn21.transition(@sn20.id, true), :sendoff
+    @sn20.on = nil
+    @sn21.on = true
+    assert_equal @sn20.transition(@sn21.id, true), :sendoff
+#    puts "SN10 covers: #{@sn10.covers.ldnodes.collect{|k| k.cover}}"
   end
 
   def teardown

@@ -2,10 +2,9 @@
 
 module BasicAutomata
   def transition(id, status)
+    sort_covers
     curcov = @covers.ldnodes[@currentcover]
-    if !curcov.has?(id) and !status
-      return :continue
-    elsif curcov.has?(@id) and 
+    if curcov.has?(@id) and 
         curcov.onremain == 1 and 
         !@on then
       @on = true
@@ -14,7 +13,15 @@ module BasicAutomata
         curcov.onremain == 0 then
       @on = false
       return :sendoff
-    elsif curcov.has?(id) and !status 
+    elsif !curcov.has?(id) and !status
+      return :continue
+    elsif curcov.has?(id) and 
+        status
+      return :continue
+    elsif curcov.has?(id) and !status
+      @currentcover = (@currentcover+1)%@covers.ldnodes.length
+      return transition(id, status)
+=begin    elsif curcov.has?(id) and !status 
       @currentcover = (@currentcover+1)%@covers.ldnodes.length
       return transition(id, status)
     elsif !curcov.has?(id) and status
@@ -33,9 +40,9 @@ module BasicAutomata
         else
           return true
         end
-      end
+=end      end
     else
-      return true
+      return :oddfail    
     end
   end     
 end

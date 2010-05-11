@@ -18,10 +18,14 @@ class LdNode
   end
 
   def set_on_lifetime(nodes)
-    @onremain = nodes.select{|k| @cover.include?(k.id) and k.on == false}.length
+    @onremain = nodes.select{|k| @cover.include?(k.id) and k.on == nil}.length
     @lifetime = nodes.select{|k| @cover.include?(k.id)}.min_by{|j| j.weight}.weight
   end
   
+  def set_onremain(nodes)
+    @onremain = nodes.select{|k| @cover.include?(k.id) and k.on != true}.length
+  end
+
   def has?(id)
     return @cover.include?(id)
   end

@@ -45,7 +45,9 @@ class Node
   end
 
   def send_initial
-    if @covers.ldnodes[@currentcover].has?(@id)
+    start = @covers.ldnodes[@currentcover].cover.min
+    if start == @id
+      @on = true
       send_status
       return true
     else
@@ -68,7 +70,6 @@ class Node
 
   def set_ons
     @neighbors.each{|k| @onlist[k.id] = k.on}
-    @neighbors.each{|k| k.neighbors.each{|j| @onlist[j.id] = j.on}}
   end
 
   def compare_ons? newList
@@ -91,11 +92,12 @@ class Node
   end
 
   def sort_covers
+    @covers.ldnodes.each{|k| k.set_onremain(@neighbors + [self])}
     @covers.ldnodes.sort!
   end
 
   def send_status
-    @neighbors.each{|k| k.recieve_status(@id, @on)}
+  #  @neighbors.each{|k| k.recieve_status(@id, @on)}
     return true
   end
 
