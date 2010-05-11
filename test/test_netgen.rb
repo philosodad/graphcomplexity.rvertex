@@ -17,8 +17,8 @@ class TestGraphs < Test::Unit::TestCase
     e2 = Set.new([1,2])
     edges = Set.new([e1,e2])
     @sg = SetGraph.new([@n0, @n1, @n2], edges)
-    @sg.nodes.each{|k| k.set_edges}
-    @sg.nodes.each{|k| k.set_covers}
+    @sg.nodes.each{|k| k.boot}
+    @sg.nodes.each{|k| k.boot}
   end
 
   def test_UDG
@@ -40,11 +40,11 @@ class TestGraphs < Test::Unit::TestCase
     assert_equal @n1.neighbors.length, 2
     assert_equal @n0.neighbors.length, 1
     assert_equal @n2.neighbors.length, 1
-    @sg.nodes.each{|k| assert k.on}
+    @sg.nodes.each{|k| assert_equal k.on, nil}
     assert_equal @n1.covers.class, LdGraph
     assert_equal @n1.covers.ldnodes[0].class, LdNode
     assert_equal @n1.covers.ldnodes.class, Array
     @sg.nodes.each{|k| k.covers.ldnodes.each{|j| assert_equal j.class, LdNode}}
-    @sg.nodes.each{|k| assert k.covers.ldnodes.length == 4}
+    @sg.nodes.each{|k| assert_equal k.covers.ldnodes.length, 2}
   end
 end

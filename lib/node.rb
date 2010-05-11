@@ -13,7 +13,7 @@ class Node
     @x = x
     @y = y
     @id
-    @neighbors = nil
+    @neighbors = []
     @edges = Set[]
     updateid
     @covers

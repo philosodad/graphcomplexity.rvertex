@@ -17,11 +17,11 @@ class TestLdGraph < Test::Unit::TestCase
 
   def test_init
     @ld1 = LdGraph.new(@testset, [@n0, @n1, @n2])
-    assert @ld1.ldnodes.length == 3
+    assert_equal @ld1.ldnodes.length, 2
     assert_kind_of @ld1.ldnodes[1], LdNode
     @ld1.ldnodes.each{|k| puts k.inspect}
     puts @ld1.edges.length
-    assert @ld1.edges.length == 2
+    assert @ld1.edges.length == 0
     puts @ld1.edges.inspect
     @ld1.ldnodes.each{|k| puts k.edges.inspect}
   end
