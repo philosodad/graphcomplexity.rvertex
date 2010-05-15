@@ -4,8 +4,8 @@ class LdNode
   attr_accessor :edges, :nodes, :onremain
   @@id = 0
   def initialize(set)
-    @onremain
-    @lifetime
+    @onremain = 0
+    @lifetime = 0
     @cover = set
     @degree = 0
     @edges = Set[]
@@ -14,7 +14,7 @@ class LdNode
   end
 
   def set_degree
-    @edges.each{|k| @degree += k[:weight]}
+    @edges.each{|k| @degree += k[:weight]} unless @edges.empty?
   end
 
   def set_on_lifetime(nodes)

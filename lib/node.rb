@@ -16,12 +16,12 @@ class Node
     @neighbors = []
     @edges = Set[]
     updateid
-    @covers
+    @covers = LdGraph.new(Set[], [])
     @weight = rand(50)+50
     @currentcover = 0
     @onlist = {}
     @booted = false
-    @next = []
+    @next
   end
 
   def boot
@@ -57,7 +57,7 @@ class Node
   end
 
   def set_covers
-    @covers = build_covers
+    @covers = build_covers unless @edges.empty?
   end
 
   def set_ons
@@ -89,7 +89,8 @@ class Node
   end
 
   def send_initial
-    start = @covers.ldnodes[@currentcover].cover.min
+    start = -1
+    start = @covers.ldnodes[@currentcover].cover.min unless @covers.ldnodes[@currentcover] == nil
     if start == @id
       @next = :sendon
       return true

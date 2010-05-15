@@ -16,10 +16,12 @@ class TestNode < Test::Unit::TestCase
     @sn12 = SetNode.new(12)
     @sn13 = SetNode.new(13)
     @sn14 = SetNode.new(14)
+    @sn15 = SetNode.new(15)
     @sn20 = SetNode.new(20)
     @sn21 = SetNode.new(21)
     @sn22 = SetNode.new(22)
     @sn23 = SetNode.new(23)
+    @sn24 = SetNode.new(24)
     @sn20.neighbors = [@sn21]
     @sn21.neighbors = [@sn20]
     @sn20.weight = 50
@@ -29,6 +31,7 @@ class TestNode < Test::Unit::TestCase
     @sn12.neighbors = [@sn10, @sn13, @sn14]
     @sn13.neighbors = [@sn10, @sn11, @sn12]
     @sn14.neighbors = [@sn11, @sn12]
+    @sn15.neighbors = []
     @sn10.weight = 100
     @sn11.weight = 45
     @sn12.weight = 45
@@ -50,7 +53,7 @@ class TestNode < Test::Unit::TestCase
     @n4.on = false
     @nodes = [@n0, @n1, @n2, @n3, @n4, @n5]
     @snodes = [@sn0, @sn1, @sn2]
-    @snodes2 = [@sn10, @sn11, @sn12, @sn13, @sn14]
+    @snodes2 = [@sn10, @sn11, @sn12, @sn13, @sn14, @sn15]
     @snodes3 = [@sn20, @sn21]
     @n0.neighbors = [@n1, @n3, @n4]
     @n1.neighbors = [@n0, @n2, @n3, @n4]

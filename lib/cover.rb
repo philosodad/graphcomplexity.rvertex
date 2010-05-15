@@ -2,6 +2,7 @@ require 'ldgraph'
 module VCLocal
   attr_reader :matrix
   def build_covers
+    @m = 0
     alledges = Set[]
     @edges.each{|k| alledges.add(k)}
     nset = Set.new(@neighbors.collect{|k| k.id})
@@ -13,8 +14,10 @@ module VCLocal
     nodes = @neighbors.to_set.add(self)
     nodes = nodes.to_a
     nodes = nodes.sort_by{|k| k.id}
+    @n = nodes
     alledges = alledges.to_a
     @matrix = []
+    @partmatrix = []
     alledges.each{@matrix.push([])}
     alledges.each_index do |k|
       nodes.each do |j|
@@ -26,7 +29,40 @@ module VCLocal
       end
     end
     
-    def rec_build_covers(x,y,c,covers, nodes) 
+    def build_all_subsets
+      n = @n.collect{|k| k.id}
+      subsets = [n]
+      m = n - [@id]
+      x = m.length
+      subsets.push(m)
+      while x > 1
+        thesesets = subsets.select{|k| k.length == x}
+        thesesets.each do |k|
+          k.each_index do |j|
+            r = k.dup
+            r.slice!(j)
+            subsets.push(r)
+          end
+        end
+#        puts "x=#{x}"
+        subsets.uniq!
+        x -=1
+      end
+      subsets.each_index{|k| if k>1 then subsets[k].push(@id) end}
+      subsets.push([@id])
+#      puts subsets.inspect
+      subsets.each_index{|k| subsets[k] = subsets[k].to_set}
+      subsets.to_set
+      return subsets
+    end
+
+    def test_cover(edges, cover)
+      edges.each{|k| return false if cover-k == cover} 
+    end
+    
+    @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
+#    puts @c.inspect
+    def rec_build_covers(x,y,c,covers)
       cover = c.dup
       if x == @matrix.length
         covers.add(cover)
@@ -36,19 +72,21 @@ module VCLocal
 #        puts "no more nodes to add in this row"
         return covers
       elsif @matrix[x][y] == 0
-        rec_build_covers(x, y+1, cover, covers, nodes)
+        rec_build_covers(x, y+1, cover, covers)
       elsif @matrix[x][y] == 1
-        cover.add(nodes[y].id)
+        cover.add(@n[y].id)
 #        puts "increase x"
-        rec_build_covers(x+1, 0, cover, covers, nodes)
+        rec_build_covers(x+1, 0, cover, covers)
 #        puts "now increase y"
-        rec_build_covers(x, y+1, c, covers, nodes)
+        rec_build_covers(x, y+1, c, covers)
       end
     end
-    return LdGraph.new(rec_build_covers(0,0, Set[], Set[], nodes), nodes)
+#    return LdGraph.new(rec_build_covers(0,0, Set[], Set[]), nodes)
+    return LdGraph.new(@c, nodes)
   end  
 end
-    module VertexCover
+
+module VertexCover
   attr_reader :matrix
   def build_covers
     alledges = Set[]
