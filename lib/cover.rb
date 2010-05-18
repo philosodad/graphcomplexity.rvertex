@@ -2,10 +2,10 @@ require 'ldgraph'
 module VCLocal
   attr_reader :matrix
   def build_covers
-    @m = 0
     alledges = Set[]
     @edges.each{|k| alledges.add(k)}
     nset = Set.new(@neighbors.collect{|k| k.id})
+    nset.add(@id)
     @neighbors.each do |k| 
       k.edges.each do |j| 
         alledges.add(j) if j.proper_subset?(nset)
@@ -13,10 +13,10 @@ module VCLocal
     end
     nodes = @neighbors.to_set.add(self)
     nodes = nodes.to_a
-    nodes = nodes.sort_by{|k| k.id}
-    @n = nodes
+#    nodes = nodes.sort_by{|k| k.id}
+    @n = nodes.collect{|k| k.id}
     alledges = alledges.to_a
-    @matrix = []
+=begin    @matrix = []
     @partmatrix = []
     alledges.each{@matrix.push([])}
     alledges.each_index do |k|
@@ -27,10 +27,10 @@ module VCLocal
           @matrix[k].push(0)
         end
       end
-    end
+=end    end
     
     def build_all_subsets
-      n = @n.collect{|k| k.id}
+      n = @n
       subsets = [n]
       m = n - [@id]
       x = m.length
@@ -62,7 +62,7 @@ module VCLocal
     
     @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
 #    puts @c.inspect
-    def rec_build_covers(x,y,c,covers)
+=begin    def rec_build_covers(x,y,c,covers)
       cover = c.dup
       if x == @matrix.length
         covers.add(cover)
@@ -81,7 +81,7 @@ module VCLocal
         rec_build_covers(x, y+1, c, covers)
       end
     end
-#    return LdGraph.new(rec_build_covers(0,0, Set[], Set[]), nodes)
+=end    return LdGraph.new(rec_build_covers(0,0, Set[], Set[]), nodes)
     return LdGraph.new(@c, nodes)
   end  
 end

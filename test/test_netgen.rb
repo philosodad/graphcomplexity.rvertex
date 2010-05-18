@@ -19,13 +19,13 @@ class TestGraphs < Test::Unit::TestCase
     @sg = SetGraph.new([@n0, @n1, @n2], edges)
     @sg.nodes.each{|k| k.boot}
     @sg.nodes.each{|k| k.boot}
-    @udg = UnitDiskGraph.new(100, 750, 150)
+    @udg = UnitDiskGraph.new(80, 100, 120)
     @rg = RandomGraph.new(100,@udg.edges.length)
-    @rg1 = RandomGraph.new(20, 140)
+    @rg1 = RandomGraph.new(20, 120)
   end
 
   def test_UDG
-    assert @udg.nodes.length == 100
+#    assert @udg.nodes.length == 400
 #    assert @udg.edges.length == 25*49
     @udg.edges.each{|k| assert k.length == 2}
     @udg.nodes.each{|k| k.set_edges}
@@ -33,6 +33,8 @@ class TestGraphs < Test::Unit::TestCase
     @udg.nodes.each{|k| assert k.neighbors.length == k.edges.length}
     puts "\nudg:#{@udg.nodes.collect{|k| k.neighbors.length}.max}(max)"
     puts "\nudg:#{@udg.nodes.collect{|k| k.neighbors.length}.min}(min)"
+    puts "\nudg:#{@udg.nodes.select{|k| k.neighbors.empty?}.length}(disconnected)"
+    puts "\nudg:#{@udg.nodes.select{|k| k.neighbors.empty?}.collect{|k| [k.x, k.y]}.inspect}"
   end
   
   def test_SG

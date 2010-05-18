@@ -11,9 +11,7 @@ class RandomSimulator
   end
 
   def set
-    @lock.synchronize {
-      @rg.nodes.each{|k| k.set_edges}
-    }
+    @rg.nodes.each{|k| k.set_edges}
 #    puts "#{@id}:set"
   end
 

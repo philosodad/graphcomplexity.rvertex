@@ -1,7 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'main'
+require 'sim'
 require 'netgen'
 
 class TestSim < Test::Unit::TestCase
@@ -21,13 +21,19 @@ class TestSim < Test::Unit::TestCase
     edges = Set.new([Set[0,1],Set[0,2],Set[0,3],Set[1,4], Set[1,3], Set[2,3], Set[2,4]])
     g = SetGraph.new(snodes2, edges)
     @sg = SetSimulator.new(g)
-#    @udg = UDGSimulator.new(50, 250, 100)
+    @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
-    @rg = RandomSimulator.new(20, 140)
+    @rg = RandomSimulator.new(15, 70)
     @rg.set
     @sg.set
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
     puts "initialized"
+  end
+
+  def test_udg
+#    @udg.set
+#    @udg.set_covers
+#    assert @udg.sim < 500
   end
 
   def test_randomsim
@@ -39,8 +45,8 @@ class TestSim < Test::Unit::TestCase
   def test_setsim
     @sg.set_covers
     assert @sg.sim < 500
-    [@sn11,@sn12,@sn13].each{|k| assert_equal k.on, true}
-    [@sn10, @sn14].each{|k| assert_equal k.on, false}
+#    [@sn11,@sn12,@sn13].each{|k| assert_equal k.on, true}
+#    [@sn10, @sn14].each{|k| assert_equal k.on, false}
   end
 
   def teardown
