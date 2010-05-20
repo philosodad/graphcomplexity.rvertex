@@ -4,14 +4,31 @@ require 'node'
 require 'planarmath'
 require 'set'
 
-class RandomGraph
+class SimpleGraph
   attr_reader :edges, :nodes
+  def initialize
+    @nodes = []
+    @edges = Set[]
+  end
+  def setEdges
+  end
+  def setNeighbors
+  end
+
+  def getOnWeight
+    weight = 0
+    @nodes.each{|k| if k.on then weight += k.weight end}
+    return weight
+  end
+end
+
+class RandomGraph < SimpleGraph
   def initialize(n, e)
     @nodes = []
     @edges = Set[]
     n.times{@nodes.push(Node.new(0,0))}
     setEdges(n,e)
-    setneighbors
+    setNeighbors
   end
   
   def setEdges(n,e)
@@ -28,15 +45,9 @@ class RandomGraph
         @edges.add(a.slice!(rand(x-1)))
         x = a.length
     end
-        
-=begin    until @edges.length == e do
-      n1 = @nodes[rand(n-1)]
-      n2 = @nodes[rand(n-1)]
-      @edges.add(Set[n1.id, n2.id]) unless n1 == n2
-=end    end
   end
 
-  def setneighbors
+  def setNeighbors
     kn = {}
     @nodes.each{|k| kn[k.id] = k}
     @edges.each do |s|
@@ -45,22 +56,23 @@ class RandomGraph
       kn[a[1]].neighbors.push(kn[a[0]])
     end
   end
-                              
-
 end
 
-class UnitDiskGraph
+class UnitDiskGraph < SimpleGraph
   include PlanarMath
-  attr_reader :edges, :nodes
   def initialize(size, space, distance)
     @nodes = []
     @edges = Set[]
     size.times{@nodes.push(Node.new(rand(space), rand(space)))}
-    @nodes.each{|k| setneighbors(k, distance)}
-    @nodes.each{|k| k.neighbors.each{|j| @edges.add(Set[k.id, j.id])}}
+    @nodes.each{|k| setNeighbors(k, distance)}
+    setEdges
   end
 
-  def setneighbors(node, distance)
+  def setEdges
+    @nodes.each{|k| k.neighbors.each{|j| @edges.add(Set[k.id, j.id])}}
+  end
+  
+  def setNeighbors(node, distance)
     possibles = @nodes - [node]
     possibles = possibles.select{|k| (k.x - node.x).abs <= distance}
     possibles = possibles.select{|k| (k.y - node.y).abs <= distance}
@@ -68,8 +80,7 @@ class UnitDiskGraph
   end
 end
 
-class SetGraph
-  attr_reader :edges, :nodes
+class SetGraph < SimpleGraph
   def initialize nodes, edges
     @nodes = nodes
     @edges = edges
@@ -80,7 +91,55 @@ class SetGraph
         end
       end
     end
+  end    
+end
+
+class GridGraph < SimpleGraph
+  include PlanarMath
+  def initialize size, min
+    super()
+    if size%2 == 0 then size -= 1 end
+    (0...size+1).each do |x| 
+      (0...size).each do |y| 
+        if y%2 == 0 and x%2 == 0 then
+          @nodes.push(Node.new((x*3)+3,(y*4)))
+        elsif x%2 == 1 and y%2 == 1 then
+          @nodes.push(Node.new(((x*3)-3), (y*4)))
+        end
+      end
+    end
+    @nodes = @nodes.select{|k| k.x < size*3 and k.y < size*3}
+    now = false
+    while isolated?(min) do
+      if not now
+        opennodes = @nodes.select{|k| k.neighbors.length < 6}
+        now = opennodes[rand(opennodes.length)]
+      end
+      choices = @nodes.select{|i| planardist(i,now) < 8} - ([now] + now.neighbors)
+      updated = false
+      while choices.length > 0
+        soon = choices[rand(choices.length)]
+        if now.neighbors.include?(soon)
+          choices.slice!(choices.index(soon))
+        else not now.neighbors.include?(soon)
+          now.neighbors.push(@nodes[@nodes.index(soon)])
+          soon.neighbors.push(@nodes[@nodes.index(now)])
+          now = @nodes[@nodes.index(soon)]
+          choices = []
+          updated = true
+        end
+      end
+      now = false unless updated == true
+    end
+    setEdges
   end
 
-    
+  def setEdges
+    @nodes.each{|k| k.neighbors.each{|j| @edges.add(Set[k.id, j.id])}}
+  end
+
+  def isolated?(min)
+    @nodes.each{|k| if k.neighbors.length < min then return true end}
+    return false
+  end
 end

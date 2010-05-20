@@ -43,9 +43,9 @@ class LdNode
       return -1
     elsif onremain > b.onremain then
       return 1
-    elsif cover.min < b.cover.min then
+    elsif @id < b.id then
       return -1
-    elsif cover.min > b.cover.min then
+    elsif @id > b.id then
       return +1
     else
       return 0

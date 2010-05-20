@@ -24,10 +24,20 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(15, 70)
+    @gg = GridSimulator.new(20,2)
     @rg.set
     @sg.set
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
     puts "initialized"
+  end
+
+  def test_gg
+    a = @gg.getOnWeight
+    @gg.set
+    @gg.set_covers
+    assert @gg.sim < 500
+    b = @gg.getOnWeight
+    assert_not_equal a,b
   end
 
   def test_udg
@@ -52,5 +62,7 @@ class TestSim < Test::Unit::TestCase
   def teardown
     @rg = nil
     @sg = nil
+    @gg = nil
+    @udg = nil
   end
 end

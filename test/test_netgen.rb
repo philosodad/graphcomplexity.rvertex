@@ -22,6 +22,25 @@ class TestGraphs < Test::Unit::TestCase
     @udg = UnitDiskGraph.new(80, 100, 120)
     @rg = RandomGraph.new(100,@udg.edges.length)
     @rg1 = RandomGraph.new(20, 120)
+    @gg = GridGraph.new(20,1)
+  end
+
+  def test_GG
+    @gg.nodes.each do |k|
+      assert @gg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length > 2
+    end
+    @gg.nodes.each do |k|
+      if @gg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length < 3 then
+        puts "\n #{k.x},#{k.y}"
+      end
+    end
+    @gg.nodes.each{|k| k.set_edges}
+    @gg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
+    puts "\ngg:#{@gg.nodes.collect{|k| k.neighbors.length}.max}(max)"
+    puts "\ngg:#{@gg.nodes.collect{|k| k.neighbors.length}.min}(min)"
+    puts "\ngg:#{@udg.nodes.select{|k| k.neighbors.empty?}.length}(disconnected)"
+    puts "\ngg:#{@udg.nodes.select{|k| k.neighbors.empty?}.collect{|k| [k.x, k.y]}.inspect}"
+
   end
 
   def test_UDG

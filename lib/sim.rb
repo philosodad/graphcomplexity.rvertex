@@ -50,6 +50,10 @@ class RandomSimulator
     end
     return true
   end
+
+  def getOnWeight
+    return @rg.getOnWeight
+  end
 end
 
 class UDGSimulator < RandomSimulator
@@ -63,6 +67,14 @@ class SetSimulator < RandomSimulator
   def initialize(g)
     @rg = g
     @lock = Mutex.new
+    @id = @@id
+    @@id += 1
+  end
+end
+
+class GridSimulator < RandomSimulator
+  def initialize(n,m)
+    @rg = GridGraph.new(n,m)
     @id = @@id
     @@id += 1
   end
