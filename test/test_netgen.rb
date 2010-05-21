@@ -23,6 +23,17 @@ class TestGraphs < Test::Unit::TestCase
     @rg = RandomGraph.new(100,@udg.edges.length)
     @rg1 = RandomGraph.new(20, 120)
     @gg = GridGraph.new(20,1)
+    @mg = MatchGraph.new(@gg)
+  end
+
+  def test_mg
+    @mg.nodes.each do |k|
+      assert @mg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length > 2
+    end
+    @mg.nodes.each{|k| k.set_edges}
+    @mg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
+    @mg.nodes.each{|k| assert_equal k.next, :choose}
+    @mg.nodes.each{|k| k.edges.each{|i| assert_equal i.weight, nil}}
   end
 
   def test_GG

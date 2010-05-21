@@ -62,7 +62,8 @@ class TestNode < Test::Unit::TestCase
     @n4.neighbors = [@n0, @n1, @n2, @n3, @n5]
     @n5.neighbors = [@n4] 
  #   [@nodes, @snodes, @snodes2].each{|k| k.each{|j| j.set_edges}}
-    [@nodes, @snodes, @snodes2, @snodes3].each{|k| k.each{|j| j.boot}}
+    [@nodes, @snodes, @snodes2, @snodes3].each{|k| k.each{|j| j.set_edges}}
+    [@nodes, @snodes, @snodes2, @snodes3].each{|k| k.each{|j| j.set_covers}}
   end
 
   def test_init
@@ -81,6 +82,7 @@ class TestNode < Test::Unit::TestCase
       a.neighbors.each{|k| assert k.neighbors.include?(a)}
       assert a.neighbors.length == a.edges.length
       a.edges.each{|k| assert k.length == 2}
+      assert a.onlist[a.id] == a.on
     end
   end
 
@@ -180,7 +182,22 @@ class TestNode < Test::Unit::TestCase
     assert_equal @sn14.next, :sendon
   end
 
-  def test_compareons
+  def test_updateon
+    @sn0.covers.ldnodes.each{|k| assert k.onremain == k.cover.length}
+    @sn0.on = true
+    @sn0.set_ons
+    @sn0.update_covers_on
+    @sn0.covers.ldnodes.each{|k| if k.has?(@sn0.id) then assert k.onremain == k.cover.length-1 end}
+    @sn1.on = true
+    @sn1.set_ons
+    @sn0.update_covers_on
+    @sn1.update_covers_on
+    @sn2.set_ons
+    @sn2.update_covers_on
+    assert_equal @sn2.on, nil
+    puts @sn2.onlist.inspect
+    assert @sn2.onlist[@sn1.id] == true
+    @snodes.each{|k| k.covers.ldnodes.each{|j| puts "\nk: #{k.id}, c:#{j.cover.inspect}, o:#{j.onremain}, s:#{k.on}"}}
   end
 
   def test_transition

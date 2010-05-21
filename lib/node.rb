@@ -7,7 +7,7 @@ require 'weighted_edge'
 
 class BasicNode
   attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted, :next, :now
-  attr_accessor :neighbors, :weight, :on
+  attr_accessor :neighbors, :weight, :on, :onlist
   @@id = 0
   def initialize
     @on = nil
@@ -16,6 +16,7 @@ class BasicNode
     @id
     @next
     @now
+    @onlist = {}
     updateid
   end
 
@@ -33,6 +34,12 @@ class BasicNode
 
   def set_edges
     @neighbors.each{|k| @edges.add(Set[k.id, @id])}
+    set_ons
+  end
+
+  def set_ons
+    @neighbors.each{|k| @onlist[k.id] = k.on}
+    @onlist[@id] = @on
   end
 
   def zero_out
@@ -42,13 +49,15 @@ class BasicNode
 end
 
 class MatchNode < BasicNode
-  include DGMM
+  attr_reader :rp, :subtract, :invites
+  include DGMM_min
   def initialize(*args)
     if args.size == 1 then
       if args[0].class == Node then
         x = args[0].x
         y = args[0].y
         weight = args[0].weight
+        id = args[0].id
       else 
         puts "with one argument, you should pass a Node"
       end
@@ -58,10 +67,15 @@ class MatchNode < BasicNode
       weight = rand(50) + 50
     end
     super()
+    @tid = @id
+    @id = id
     @x = x
     @y = y
     @weight = weight
     @next = :choose
+    @rp = nil
+    @invites = []
+    @subtract = 0
   end
 
   def set_edges
@@ -77,13 +91,23 @@ class MatchNode < BasicNode
     when :invite
       @next = :wait
     when :respond
-      @next = :choose
+      @next = :update
     when :listen
+      @next = :respond
       return true
     when :wait
+      @next = :update
       return true
+    when :update
+      update_weight
+      @next = :exchange
+    when :exchange
+      update_edges
+      @next = :choose
     when :choose
-      return true
+      choose_role
+    when :done
+      @next = :done
     end
   end
 
@@ -94,32 +118,57 @@ class MatchNode < BasicNode
     when :invite
       e = choose_edge
       if e == :empty then 
-        @next = :saturated
+        return true
       else
-        @next = :listen
         i = (e.uv - Set[@id]).first
-        n = @neighbors.select{|k| k.id == i}
-        n.recieve_status
+        @rp = @neighbors.select{|k| k.id == i}.first
+        @rp.recieve_status (@id)
       end
     when :respond
+      if not @invites.empty? then
+        n = @invites[rand(@invites.length)]
+        @rp = @neighbors.select{|k| k.id == n}.first
+        @neighbors.each{|k| k.recieve_status (@rp.id)}
+        @subtract = [check_battery, @rp.check_battery].min
+      end
+    when :choose
+      @subtract = 0
+      @rp = nil
     when :listen, :wait
       return true
-    when :choose
-      choose_role
     end
   end
 
-  def recieve_status
+  def recieve_status id
+    case @now
+    when :listen
+      add_invite(id)
+      return true
+    when :wait
+      if id == @id
+        @subtract = [check_battery, @rp.check_battery].min
+      end
+      return true
+    else
+      return false
+    end
   end
-      
-  def check_battery
-    return 100-@weight
+        
+  def set_now sym
+    @now = sym
   end
-  
+
+  def set_rp node
+    @rp = node
+  end
+  def set_next sym
+    @next = sym
+  end
 end
 
 class Node < BasicNode
   include VCLocal
+#  include BasicAutomata
   include BasicAutomata
   def initialize(x,y)
     super()
@@ -128,39 +177,14 @@ class Node < BasicNode
     @covers = LdGraph.new(Set[], [])
     @weight = rand(50)+50
     @currentcover = 0
-    @onlist = {}
     @booted = false
     @next
   end
   
-  def boot
-    if @booted 
-      return true
-    else
-      if !@neighbors
-        return :fail
-      else
-        set_edges
-        @booted = true
-        @neighbors.each do |k|
-          if !k.booted
-            k.boot
-          end
-        end
-        set_covers
-        set_ons
-        return true
-      end
-    end
-  end
-
   def set_covers
     @covers = build_covers unless @edges.empty?
   end
 
-  def set_ons
-    @neighbors.each{|k| @onlist[k.id] = k.on}
-  end
   
   def compare_ons? newList
     these = Set.new(@onlist.keys)
@@ -170,14 +194,10 @@ class Node < BasicNode
     return true
   end
 
-  def update_covers_on id, status
-    if @onlist[id] != status then
-      @onlist[id] = status
-      @covers.ldnodes.each do |k|
-        if k.cover.include?(id) then 
-          status ? k.onremain += 1 : k.onremain -=1
-        end
-      end
+  def update_covers_on
+    @covers.ldnodes.each do |k|
+      k.onremain = k.cover.length
+      k.cover.each{|j| if @onlist[j] == true then k.onremain -= 1 end}
     end
   end
 
@@ -201,14 +221,33 @@ class Node < BasicNode
   def do_next
     @now = @next
     case @now
-    when :continue, nil
+    when :continue
+      if @covers.ldnodes[@currentcover].has?(@id) then
+        a = @covers.ldnodes[@currentcover].cover.to_a
+        a = a.select{|k| @onlist[k] == nil}.min
+        if a == @id
+          @on = true
+          @now = :sendon
+          @next = :done
+        end
+      else
+        a = @covers.ldnodes[@currentcover].cover.to_a
+        a = a.select{|k| @onlist[k] != true}
+        if a.empty?
+          @on = false
+          @now = :sendoff
+          @next = :done
+        end
+      end unless @on != nil        
       return true
     when :sendoff
-      @next = :continue
+      @next = :done
       @on = false
+      @onlist[@id] = @on
     when :sendon
-      @next = :continue
+      @next = :done
       @on = true
+      @onlist[@id] = @on
     when :oddfail
       return false
     end

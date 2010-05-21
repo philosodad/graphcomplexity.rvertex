@@ -24,20 +24,42 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(15, 70)
-    @gg = GridSimulator.new(20,2)
+    @gg = GridSimulator.new(5,2)
+    @mg = MatchSimulator.new(@gg.rg)
     @rg.set
     @sg.set
+    @mg.set
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
     puts "initialized"
   end
 
+  def test_mg
+    assert_equal @mg.rg.covered, false
+    assert @mg.sim < 500
+    assert_equal @mg.rg.covered, true
+    @gg.set
+    @gg.set_covers
+    assert_equal @gg.rg.covered, false
+    @gg.sim
+    assert_equal @gg.rg.covered, true
+    b = @gg.getOnWeight
+    puts "\nb: #{b}"
+    puts "\ngg: #{@gg.getOnWeight}, mg:#{@mg.getOnWeight}"
+    @mg.rg.nodes.each{|k| k.on = true}
+    puts "\mgmod: #{@mg.getOnWeight}"
+  end
+
   def test_gg
     a = @gg.getOnWeight
+    puts "a: #{a}"
     @gg.set
     @gg.set_covers
     assert @gg.sim < 500
     b = @gg.getOnWeight
+    puts "b: #{b}"
     assert_not_equal a,b
+    @gg.rg.nodes.each{|k| k.on = true}
+    assert_equal @gg.rg.covered, true
   end
 
   def test_udg
@@ -60,6 +82,13 @@ class TestSim < Test::Unit::TestCase
   end
 
   def teardown
+    @mg.rg.nodes.each{|k| k.edges.each{|j| j = nil}}
+    [@rg, @sg, @gg, @udg, @mg].each do |k| 
+      k.rg.nodes[0].zero_out
+      k.rg.nodes.each{|k| k = nil}
+      k.zero_out
+    end
+      
     @rg = nil
     @sg = nil
     @gg = nil

@@ -17,10 +17,46 @@ class SimpleGraph
 
   def getOnWeight
     weight = 0
-    @nodes.each{|k| if k.on then weight += k.weight end}
+    @nodes.each{|k| if k.on == true then weight += k.weight end}
     return weight
   end
+
+  def getInverseWeight
+    weight = 0
+    @nodes.each{|k| if k.on == true then weight += 100-k.weight end}
+    return weight
+  end
+
+  def covered
+    onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
+    @edges.each{|k| return false if k-onlist == k}
+    return true
+  end
+    
 end
+
+class MatchGraph < SimpleGraph
+  def initialize g
+    super()
+    @n = []
+    g.nodes.each{|k| @n.push(MatchNode.new(k))}
+    @nodes = @n
+    g.edges.each{|k| @edges.add(k)}
+  end
+
+  def setNeighbors
+    kn = {}
+    @nodes.each{|k| kn[k.id] = k}
+    @edges.each do |s|
+      a = s.to_a
+      kn[a[0]].neighbors.push(kn[a[1]])
+      kn[a[1]].neighbors.push(kn[a[0]])
+    end
+  end
+
+      
+end
+                           
 
 class RandomGraph < SimpleGraph
   def initialize(n, e)
