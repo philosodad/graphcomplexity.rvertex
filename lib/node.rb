@@ -17,6 +17,8 @@ class BasicNode
     @next
     @now
     @onlist = {}
+    @keyedweights = {}
+    @weight
     updateid
   end
 
@@ -40,6 +42,11 @@ class BasicNode
   def set_ons
     @neighbors.each{|k| @onlist[k.id] = k.on}
     @onlist[@id] = @on
+    @neighbors.each{|k| @keyedweights[k.id] = k.weight}
+    @keyedweights[@id] = @weight
+  end
+
+  def remove_self
   end
 
   def zero_out
@@ -47,6 +54,7 @@ class BasicNode
   end
   
 end
+
 
 class MatchNode < BasicNode
   attr_reader :rp, :subtract, :invites
@@ -166,6 +174,10 @@ class MatchNode < BasicNode
   end
 end
 
+class MatchMaxNode < MatchNode
+  include DGMM_max
+end
+
 class Node < BasicNode
   include VCLocal
 #  include BasicAutomata
@@ -178,7 +190,8 @@ class Node < BasicNode
     @weight = rand(50)+50
     @currentcover = 0
     @booted = false
-    @next
+    @next = :analyze
+    @round = 0
   end
   
   def set_covers
@@ -205,61 +218,55 @@ class Node < BasicNode
     @covers.ldnodes.each{|k| k.set_onremain(@neighbors + [self])}
     @covers.ldnodes.sort!
   end
-  
-  def send_initial
-    start = -1
-    start = @covers.ldnodes[@currentcover].cover.min unless @covers.ldnodes[@currentcover] == nil
-    if start == @id
-      @next = :sendon
-      return true
-    else
-      @next = :continue
-      return false
-    end
-  end
 
   def do_next
+    curcov = @covers.ldnodes[@currentcover]
     @now = @next
     case @now
-    when :continue
-      if @covers.ldnodes[@currentcover].has?(@id) then
-        a = @covers.ldnodes[@currentcover].cover.to_a
-        a = a.select{|k| @onlist[k] == nil}.min
-        if a == @id
-          @on = true
-          @now = :sendon
-          @next = :done
-        end
-      else
-        a = @covers.ldnodes[@currentcover].cover.to_a
-        a = a.select{|k| @onlist[k] != true}
-        if a.empty?
-          @on = false
-          @now = :sendoff
-          @next = :done
-        end
-      end unless @on != nil        
-      return true
-    when :sendoff
-      @next = :done
-      @on = false
-      @onlist[@id] = @on
-    when :sendon
-      @next = :done
-      @on = true
-      @onlist[@id] = @on
-    when :oddfail
-      return false
+    when :analyze
+      if highest_priority? then
+        @on = true
+        @onlist[@id] = true
+        @now = :sendon
+        @next = :analyze
+      elsif out_of_cover? and covered? and @on != false
+        @on = false
+        @onlist[@id] = false
+        @now = :sendoff
+        @next = :analyze
+      elsif out_of_cover? and @on
+        @on = nil
+        @onlist[@id] = nil
+        @now = :sendoff
+        @next = :analyze
+      elsif !out_of_cover? and !@on
+        @on = true
+        @onlist[@id] = true
+        @now = :sendon
+        @next = :done
+      elsif !covered? and @on == false
+        @on = nil
+        @onlist[@id] = nil
+        @now = :sendoff
+        @next = :analyze
+      elsif @on != nil
+        @next = :analyze
+      end
+    when :change_cover
+      @currentcover += 1
+      @currentcover = @currentcover%@covers.ldnodes.length
+      @next = :analyze
+    else
     end
+    @round += 1
   end
+
   
   def send_status
     case @now
     when :sendon, :sendoff
       @neighbors.each{|k| k.recieve_status(@id, @on)}
-      return true
     end
-    return false
   end
   
   def recieve_status id, status

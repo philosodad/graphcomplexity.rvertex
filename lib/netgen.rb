@@ -27,13 +27,24 @@ class SimpleGraph
     return weight
   end
 
-  def covered
+  def get_total_weight
+    @nodes.collect{|k| k.weight}.inject(0){|i, j| i+j}
+  end
+
+  def covered?
     onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
     @edges.each{|k| return false if k-onlist == k}
     return true
   end
+
+  def remove_node n
+    @edges.delete_if{|k| k.include?(n.id)}
+    @nodes.delete_if{|k| k.id = n.id}
+    n.remove_self
+  end
     
 end
+
 
 class MatchGraph < SimpleGraph
   def initialize g
@@ -42,6 +53,7 @@ class MatchGraph < SimpleGraph
     g.nodes.each{|k| @n.push(MatchNode.new(k))}
     @nodes = @n
     g.edges.each{|k| @edges.add(k)}
+    setNeighbors
   end
 
   def setNeighbors
@@ -57,6 +69,14 @@ class MatchGraph < SimpleGraph
       
 end
                            
+class MatchMaxGraph < MatchGraph
+  def initialize g
+    super(g)
+    @n = []
+    g.nodes.each{|k| @n.push(MatchMaxNode.new(k))}
+    @nodes = @n
+  end
+end
 
 class RandomGraph < SimpleGraph
   def initialize(n, e)

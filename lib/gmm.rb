@@ -57,6 +57,13 @@ module DGMM
 
 end
 
+module DGMM_max
+  def check_battery
+    e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
+    return 100-(@weight + e)
+  end
+end
+
 module DGMM_min
   def choose_role
     @invites = []

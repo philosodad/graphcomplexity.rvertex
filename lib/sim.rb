@@ -5,14 +5,12 @@ class RandomSimulator
   @@id = 0
   def initialize(n,e)
     @rg = RandomGraph.new(n,e)
-    @lock = Mutex.new
     @id = @@id
     @@id += 1
   end
 
   def set
     @rg.nodes.each{|k| k.set_edges}
-#    puts "#{@id}:set"
   end
 
   def set_covers
@@ -20,7 +18,6 @@ class RandomSimulator
     @rg.nodes.each do |k|
       threads << Thread.new(k) do |j|
         j.set_covers
-       # puts "\n#{@id}: #{j.id} thread finished"
       end
     end
     threads.each{|t| t.join}
@@ -28,17 +25,12 @@ class RandomSimulator
 
   def sim
     g = 0
-    @rg.nodes.each{|k| k.send_initial}
-  #  puts "\n #{@id}: continues"
-    until g > 500 or allon
+    until g > 800 or @rg.covered?
       @rg.nodes.each{|k| k.do_next}
       @rg.nodes.each{|k| k.send_status}
       g += 1
     end
-    s = String.new()
     puts g
-    # @rg.nodes.each{|k| s = s + "#{@id}:#{k.id}.now:#{k.now}; "}
-    #puts s
     return g
   end
 
@@ -50,6 +42,7 @@ class RandomSimulator
     end
     return true
   end
+
   def allcontinue
     @rg.nodes.each do |k|
       if k.now != :continue
@@ -65,6 +58,10 @@ class RandomSimulator
 
   def getInverseWeight
     return @rg.getInverseWeight
+  end
+
+  def get_total_weight
+    return @rg.get_total_weight
   end
 
   def zero_out
@@ -83,7 +80,6 @@ end
 class SetSimulator < RandomSimulator
   def initialize(g)
     @rg = g
-    @lock = Mutex.new
     @id = @@id
     @@id += 1
   end
@@ -109,9 +105,17 @@ class MatchSimulator < RandomSimulator
   def all_done
     return @rg.nodes.select{|k| k.now != :done}.empty?
   end
+
   def set
-    @rg.setNeighbors
     @rg.nodes.each{|k| k.set_edges}
+  end
+end
+
+class MatchMaxSimulator < MatchSimulator
+  def initialize(g)
+    @rg = MatchMaxGraph.new(g)
+    @id = @@id
+    @@id +=1
   end
 end
 
