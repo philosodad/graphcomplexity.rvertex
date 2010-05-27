@@ -26,15 +26,27 @@ class RandomSimulator
   def sim
     g = 0
     until g > 800 or @rg.covered?
-      @rg.nodes.each{|k| k.do_next}
-      @rg.nodes.each{|k| k.send_status}
+      threads = []
+      @rg.nodes.each do |k|
+        threads << Thread.new(k) do |j|
+          j.do_next
+        end
+      end
+      threads.each{|t| t.join}
+      threads = []
+      @rg.nodes.each do |k|
+        threads << Thread.new(k) do |j|
+          j.send_status
+        end
+      end
+      threads.each{|t| t.join}
       g += 1
     end
     puts g
     return g
   end
 
-  def allon
+  def all_on
     @rg.nodes.each do |k|
       if k.on == nil
         return false
@@ -43,7 +55,7 @@ class RandomSimulator
     return true
   end
 
-  def allcontinue
+  def all_continue
     @rg.nodes.each do |k|
       if k.now != :continue
         return false
@@ -52,12 +64,12 @@ class RandomSimulator
     return true
   end
 
-  def getOnWeight
-    return @rg.getOnWeight
+  def get_on_weight
+    return @rg.get_on_weight
   end
 
-  def getInverseWeight
-    return @rg.getInverseWeight
+  def get_inverse_weight
+    return @rg.get_inverse_weight
   end
 
   def get_total_weight
@@ -126,3 +138,13 @@ class GridSimulator < RandomSimulator
     @@id += 1
   end
 end
+
+class TotalWeightSimulator < RandomSimulator
+  def initialize(n,m)
+    @rg = TotalWeightGraph.new(n,m)
+    @id = @@id
+    @@id += 1
+  end
+end
+
+

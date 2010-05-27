@@ -58,3 +58,79 @@ class LdNode
   end
   
 end
+
+class SimpleLdNode < LdNode
+  def set_degree nodes
+    n = nodes.select{|k| @cover.include?(k.id)}
+    n = n.select{|k| !k.on}
+    n = n.collect{|k| k.weight}
+    @degree = n.inject(0){|i, j| i+j}
+  end    
+
+  def set_on_lifetime nodes
+    @onremain = nodes.select{|k| @cover.include?(k.id) and k.on == nil}.length
+    @lifetime = nodes.select{|k| @cover.include?(k.id) and k.on == nil}.min_by{|j| j.weight}.weight
+  end
+
+  def <=>(b)
+    if 2*degree < b.degree then
+      return -1
+    elsif 2*b.degree < degree then
+      return 1
+    elsif lifetime < b.lifetime
+      return -1
+    elsif lifetime > b.lifetime
+      return 1
+    elsif @id < b.id then
+      return -1
+    elsif @id > b.id then
+      return +1
+    else
+      return 0
+    end
+  end
+end
+
+class TotalWeightLdNode < LdNode
+  attr_reader :totalweight
+  def initialize set
+    super
+    @totalweight = 0   
+  end
+  
+  def set_on_lifetime nodes
+    @onremain = nodes.select{|k| @cover.include?(k.id) and k.on == nil}.length
+    @lifetime = nodes.select{|k| @cover.include?(k.id) and k.on == nil}.max_by{|j| j.weight}.weight
+  end
+
+  def set_total_weight nodes
+    n = nodes.select{|k| @cover.include?(k.id)}
+    n = n.select{|k| !k.on}
+    n = n.collect{|k| k.weight}
+    @totalweight = n.inject(0){|i, j| i+j}
+  end
+    
+  def <=>(b)
+    if totalweight < b.totalweight then
+      return -1
+    elsif
+      totalweight > b.totalweight then
+      return 1
+    elsif degree < degree then
+      return -1
+    elsif b.degree < degree then
+      return 1
+    elsif lifetime < b.lifetime
+      return -1
+    elsif lifetime > b.lifetime
+      return 1
+    elsif @id < b.id then
+      return -1
+    elsif @id > b.id then
+      return +1
+    else
+      return 0
+    end
+  end
+
+end

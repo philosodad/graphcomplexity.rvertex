@@ -6,10 +6,11 @@ class LdGraph
   def initialize(coverset, nodes)
     @ldnodes = []
     @edges = []
-    if not coverset.empty?
-      coverset = kill_redundant(coverset)
-      coverset.each{|k| @ldnodes.push(LdNode.new(k))}
-    end
+    add_nodes coverset
+    set_edges_and_degrees nodes
+  end
+
+  def set_edges_and_degrees nodes
     if not nodes.empty?
 #      rec_edge_build(@ldnodes.dup)
       it_edge_build(@ldnodes.dup)
@@ -19,6 +20,13 @@ class LdGraph
       @ldnodes.each{|k| k.set_on_lifetime(nodes)}
       #    puts @ldnodes.inspect
       @ldnodes.sort!
+    end
+  end
+
+  def add_nodes coverset
+    if not coverset.empty?
+      coverset = kill_redundant(coverset)
+      coverset.each{|k| @ldnodes.push(LdNode.new(k))}
     end
   end
 
@@ -68,4 +76,36 @@ class LdGraph
     end
   end
     
+end
+
+class TotalWeightLdGraph < LdGraph
+  def initialize(coverset, nodes)
+    super
+    set_total_weight nodes
+  end
+
+  def add_nodes coverset
+    if not coverset.empty?
+      coverset = kill_redundant(coverset)
+      coverset.each{|k| @ldnodes.push(TotalWeightLdNode.new(k))}
+    end
+  end
+
+  
+  def set_total_weight nodes
+    @ldnodes.each{|k| k.set_total_weight nodes}
+  end
+end
+
+class SimpleLdGraph < LdGraph
+  def add_nodes coverset
+    if not coverset.empty?
+      coverset.each{|k| @ldnodes.push(SimpleLdNode.new(k))}
+    end
+  end
+
+  def set_edges_and_degrees nodes
+    @ldnodes.each{|k| k.set_degree nodes}
+    @ldnodes.each{|k| k.set_on_lifetime nodes}
+  end
 end

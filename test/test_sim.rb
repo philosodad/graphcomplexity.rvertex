@@ -24,7 +24,8 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(15, 70)
-    @gg = GridSimulator.new(5,2)
+    @gg = GridSimulator.new(30,2)
+    @tg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
     @rg.set
     @sg.set
@@ -33,33 +34,39 @@ class TestSim < Test::Unit::TestCase
     puts "initialized"
   end
 
+  def test_tg
+    @tg.set
+    @tg.set_covers
+    assert @tg.sim < 500, "tg > 500"
+  end
+
   def test_mg
-    assert_equal @mg.rg.covered, false
+    assert_equal @mg.rg.covered?, false
     assert @mg.sim < 500
-    assert_equal @mg.rg.covered, true
+    assert_equal @mg.rg.covered?, true
     @gg.set
     @gg.set_covers
-    assert_equal @gg.rg.covered, false
+    assert_equal @gg.rg.covered?, false
     @gg.sim
-    assert_equal @gg.rg.covered, true
-    b = @gg.getOnWeight
+    assert_equal @gg.rg.covered?, true
+    b = @gg.get_on_weight
     puts "\nb: #{b}"
-    puts "\ngg: #{@gg.getOnWeight}, mg:#{@mg.getOnWeight}"
+    puts "\ngg: #{@gg.get_on_weight}, mg:#{@mg.get_on_weight}"
     @mg.rg.nodes.each{|k| k.on = true}
-    puts "\mgmod: #{@mg.getOnWeight}"
+    puts "\mgmod: #{@mg.get_on_weight}"
   end
 
   def test_gg
-    a = @gg.getOnWeight
+    a = @gg.get_on_weight
     puts "a: #{a}"
     @gg.set
     @gg.set_covers
     assert @gg.sim < 500
-    b = @gg.getOnWeight
+    b = @gg.get_on_weight
     puts "b: #{b}"
     assert_not_equal a,b
     @gg.rg.nodes.each{|k| k.on = true}
-    assert_equal @gg.rg.covered, true
+    assert_equal @gg.rg.covered?, true
   end
 
   def test_udg
@@ -75,20 +82,21 @@ class TestSim < Test::Unit::TestCase
   end
 
   def test_setsim
+    @sg.set
     @sg.set_covers
-    assert @sg.sim < 500
+#    assert @sg.sim < 500
 #    [@sn11,@sn12,@sn13].each{|k| assert_equal k.on, true}
 #    [@sn10, @sn14].each{|k| assert_equal k.on, false}
   end
 
   def teardown
     @mg.rg.nodes.each{|k| k.edges.each{|j| j = nil}}
-    [@rg, @sg, @gg, @udg, @mg].each do |k| 
+    [@rg, @sg, @gg, @udg, @mg, @tg].each do |k| 
       k.rg.nodes[0].zero_out
       k.rg.nodes.each{|k| k = nil}
       k.zero_out
     end
-      
+    @tg = nil
     @rg = nil
     @sg = nil
     @gg = nil

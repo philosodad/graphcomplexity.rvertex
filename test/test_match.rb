@@ -10,7 +10,7 @@ class TestMatch < Test::Unit::TestCase
     gs.set
     gs.set_covers
     gs.sim
-    puts gs.getOnWeight
+    puts gs.get_on_weight
   end
 
   def test_match
@@ -19,10 +19,10 @@ class TestMatch < Test::Unit::TestCase
     ms = MatchSimulator.new(gs.rg)
     puts "#{ms.rg.class}"
     puts "#{ms.rg.nodes.length}"
-    ms.rg.setNeighbors
+    ms.rg.set_neighbors
     puts ms.rg.nodes[0].neighbors.inspect
     ms.set
     ms.sim
-    puts ms.getOnWeight
+    puts ms.get_on_weight
   end
 end

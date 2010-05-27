@@ -13,7 +13,7 @@ class Experiment
       mweight = 0
       tweight = 0
       20.times do
-        @gg = GridSimulator.new(i, 2)
+        @gg = TotalWeightSimulator.new(i, 2)
         @mg = MatchSimulator.new(@gg.rg)
         [@gg, @mg].each{|k| k.set}
         @gg.set_covers

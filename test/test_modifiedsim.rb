@@ -36,7 +36,7 @@ class TestModSim < Test::Unit::TestCase
     assert @mg.rg.covered?, "matchgrid not covered"
     assert @gg.rg.covered?, "auto didn't cover"
     assert @xg.rg.covered?, "xg didn't cover"
-    puts "gg:#{@gg.getOnWeight}, mg:#{@mg.getOnWeight}, tw:#{@gg.get_total_weight}"
+    puts "gg:#{@gg.get_on_weight}, mg:#{@mg.get_on_weight}, tw:#{@gg.get_total_weight}"
   end
 
   def teardown

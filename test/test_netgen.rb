@@ -17,18 +17,17 @@ class TestGraphs < Test::Unit::TestCase
     e2 = Set.new([1,2])
     edges = Set.new([e1,e2])
     @sg = SetGraph.new([@n0, @n1, @n2], edges)
-    @sg.nodes.each{|k| k.boot}
-    @sg.nodes.each{|k| k.boot}
     @udg = UnitDiskGraph.new(80, 100, 120)
     @rg = RandomGraph.new(100,@udg.edges.length)
     @rg1 = RandomGraph.new(20, 120)
     @gg = GridGraph.new(20,1)
+    @tg = TotalWeightGraph.new(20,1)
     @mg = MatchGraph.new(@gg)
   end
 
   def test_mg
     @mg.nodes.each do |k|
-      assert @mg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length > 2
+      assert @mg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2
     end
     @mg.nodes.each{|k| k.set_edges}
     @mg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
@@ -38,10 +37,10 @@ class TestGraphs < Test::Unit::TestCase
 
   def test_GG
     @gg.nodes.each do |k|
-      assert @gg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length > 2
+      assert @gg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2
     end
     @gg.nodes.each do |k|
-      if @gg.nodes.select{|i| @gg.planardist(i,k) < 8 and i != k}.length < 3 then
+      if @gg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length < 3 then
         puts "\n #{k.x},#{k.y}"
       end
     end
@@ -54,6 +53,24 @@ class TestGraphs < Test::Unit::TestCase
 
   end
 
+  def test_MG
+    
+    @tg.nodes.each do |k|
+      assert @tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length > 2
+    end
+    @tg.nodes.each do |k|
+      if @tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length < 3 then
+        puts "\n #{k.x},#{k.y}"
+      end
+    end
+    @tg.nodes.each{|k| k.set_edges}
+    @tg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
+    puts "\ntg:#{@tg.nodes.collect{|k| k.neighbors.length}.max}(max)"
+    puts "\ntg:#{@tg.nodes.collect{|k| k.neighbors.length}.min}(min)"
+    puts "\ntg:#{@udg.nodes.select{|k| k.neighbors.empty?}.length}(disconnected)"
+    puts "\ntg:#{@udg.nodes.select{|k| k.neighbors.empty?}.collect{|k| [k.x, k.y]}.inspect}"
+  end
+  
   def test_UDG
 #    assert @udg.nodes.length == 400
 #    assert @udg.edges.length == 25*49
@@ -68,6 +85,8 @@ class TestGraphs < Test::Unit::TestCase
   end
   
   def test_SG
+    @sg.nodes.each{|k| k.set_edges}
+    @sg.nodes.each{|k| k.set_covers}
     assert_equal @n1.id, 1
     assert @sg.nodes.length == 3
     assert @sg.edges.length == 2

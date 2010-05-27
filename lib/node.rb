@@ -19,7 +19,7 @@ class BasicNode
     @onlist = {}
     @keyedweights = {}
     @weight
-    updateid
+    update_id
   end
 
   def do_next
@@ -29,7 +29,7 @@ class BasicNode
   def recieve_status
   end
 
-  def updateid
+  def update_id
     @id = @@id
     @@id += 1
   end
@@ -178,6 +178,33 @@ class MatchMaxNode < MatchNode
   include DGMM_max
 end
 
+class SimpleNode < BasicNode
+  include SimpleVC
+  def initialize(x,y)
+    super()
+    @x = x
+    @y = y
+    @covers = init_covers
+    @weight = rand(50)+50
+    @currentcover = 0
+  end
+
+  def init_covers
+    return SimpleLdGraph.new(Set[], [])
+  end
+
+  def set_covers
+    @covers = build_covers unless @edges.empty?
+  end
+end
+
+class TotalWeightNode < SimpleNode
+  include TotalWeightVC
+  def init_covers
+    return TotalWeightLdGraph.new(Set[], [])
+  end
+end
+
 class Node < BasicNode
   include VCLocal
 #  include BasicAutomata
@@ -280,6 +307,8 @@ class SetNode < Node
     @id = id
   end
   
-  def updateid
+  def update_id
   end
 end
+
+
