@@ -116,7 +116,7 @@ class TotalWeightLdNode < LdNode
     elsif
       totalweight > b.totalweight then
       return 1
-    elsif degree < degree then
+    elsif degree < b.degree then
       return -1
     elsif b.degree < degree then
       return 1
@@ -132,5 +132,28 @@ class TotalWeightLdNode < LdNode
       return 0
     end
   end
+end
 
+class DegreeWeightLdNode < TotalWeightLdNode
+  def <=>(b)
+    if degree < b.degree then
+      return -1
+    elsif degree > b.degree then
+      return 1
+    elsif totalweight < b.totalweight then
+      return -1
+    elsif totalweight > b.totalweight then
+      return 1
+    elsif lifetime < b.lifetime then
+      return -1
+    elsif lifetime > b.lifetime then
+      return 1
+    elsif id < b.id then
+      return -1
+    elsif id > b.id then
+      return 1
+    else
+      return 0
+    end
+  end
 end

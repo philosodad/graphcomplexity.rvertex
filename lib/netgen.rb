@@ -3,7 +3,84 @@
 require 'node'
 require 'planarmath'
 require 'set'
+require 'ruby-prof'
 
+class NotaGraph
+  include PlanarMath
+  attr_reader :edges, :nodes
+  def initialize size
+    @nodes = []
+    @edges = Set[]
+    set_nodes size
+    set_neighbors
+#    set_edges
+  end
+
+  def set_nodes size
+    (0...size).each do |x| 
+      (0...size-1).each do |y| 
+        if y%2 == 0 and x < size-1 then
+          @nodes.push(Node.new((x*6)+3,(y*4)))
+        elsif y%2 == 1 then
+          @nodes.push(Node.new((x*6), (y*4)))
+        end
+      end
+    end
+  end
+  
+  def set_neighbors
+    distance = 8
+    byx = @nodes.sort_by{|x| x.x}
+    byy = @nodes.sort_by{|y| y.y}
+    @nodes.each do |k|
+      puts k.id if k.id%100 == 0
+      possibles = []
+      xpossibles = []
+      ypossibles = []
+      xindex = byx.index(k)
+      yindex = byy.index(k)
+      up = 1
+      down = -1
+      until byx[xindex+up] == nil or (byx[xindex+up].x - k.x).abs > distance do
+        xpossibles.push(byx[xindex+up])
+        up +=1
+      end
+      until xindex+down < 0 or (byx[xindex+down].x - k.x).abs > distance do
+        xpossibles.push(byx[xindex+down])
+        down -= 1
+      end
+      up = 1
+      down = -1
+      until byy[yindex+up] == nil or (byy[yindex+up].y - k.y).abs > distance do
+        ypossibles.push(byy[yindex+up])
+        up +=1
+      end
+      until yindex+down < 0 or (byy[yindex+down].x - k.y).abs > distance do
+        ypossibles.push(byy[yindex+down])
+        down -= 1
+      end
+ #     puts "length of possibles: #{possibles.length}"
+      possibles = ypossibles + xpossibles
+  #    puts "length of possibles: #{possibles.length}"
+      k.neighbors.concat(possibles.select{|i| planar_distance(k,i) < distance})        
+    end    
+  end
+
+  def set_neighbors_obs
+    @nodes.each do |node|
+      puts node.id if node.id%100 == 0
+      distance = 8
+      possibles = @nodes - [node]
+      xmin = node.x - distance
+      xmax = node.x + distance
+      ymin = node.y - distance
+      ymax = node.y + distance
+      possibles = possibles.select{|k| k.x >= xmin and k.x <= xmax and k.y >= ymin and k.y <= ymax}
+      node.neighbors.concat(possibles)
+    end
+  end
+end
+                        
 class SimpleGraph
   attr_reader :edges, :nodes
   def initialize
@@ -166,46 +243,75 @@ class GridGraph < SimpleGraph
   include PlanarMath
   def initialize size, min
     super()
-    if size%2 == 0 then size -= 1 end
     add_nodes size
-    @nodes = @nodes.select{|k| k.x < size*3 and k.y < size*3}
-    now = false
-    while isolated?(min) do
-      if not now
-        opennodes = @nodes.select{|k| k.neighbors.length < 6}
-        now = opennodes[rand(opennodes.length)]
-      end
-      choices = @nodes.select{|i| planar_distance(i,now) < 8} - ([now] + now.neighbors)
-      updated = false
-      while choices.length > 0
-        soon = choices[rand(choices.length)]
-        if now.neighbors.include?(soon)
-          choices.slice!(choices.index(soon))
-        else not now.neighbors.include?(soon)
-          now.neighbors.push(@nodes[@nodes.index(soon)])
-          soon.neighbors.push(@nodes[@nodes.index(now)])
-          now = @nodes[@nodes.index(soon)]
-          choices = []
-          updated = true
-        end
-      end
-      now = false unless updated == true
-    end
+    @byx = @nodes.sort_by{|k| k.x}
+    @byy = @nodes.sort_by{|k| k.y}
+    set_neighbors min, 8
     set_edges
   end
 
   def add_nodes size
-    (0...size+1).each do |x| 
-      (0...size).each do |y| 
-        if y%2 == 0 and x%2 == 0 then
-          @nodes.push(Node.new((x*3)+3,(y*4)))
-        elsif x%2 == 1 and y%2 == 1 then
-          @nodes.push(Node.new(((x*3)-3), (y*4)))
+    (0...size).each do |x| 
+      (0...size-1).each do |y| 
+        if y%2 == 0 and x < size-1 then
+          @nodes.push(Node.new((x*6)+3,(y*4)))
+        elsif y%2 == 1 then
+          @nodes.push(Node.new((x*6), (y*4)))
         end
       end
     end
   end
-
+  
+  def set_neighbors min, distance
+    choices = {}
+    ids = {}
+    @nodes.each do |k|
+      choices[k.id] = []
+      xpossibles = []
+      ypossibles = []
+      xindex = @byx.index(k)
+      yindex = @byy.index(k)
+      up = 1
+      down = -1
+      until @byx[xindex+up] == nil or (@byx[xindex+up].x - k.x).abs > distance do
+        xpossibles.push(@byx[xindex+up])
+        up +=1
+      end
+      until xindex+down < 0 or (@byx[xindex+down].x - k.x).abs > distance do
+        xpossibles.push(@byx[xindex+down])
+        down -= 1
+      end
+      up = 1
+      down = -1
+      until @byy[yindex+up] == nil or (@byy[yindex+up].y - k.y).abs > distance do
+        ypossibles.push(@byy[yindex+up])
+        up +=1
+      end
+      until yindex+down < 0 or (@byy[yindex+down].x - k.y).abs > distance do
+        ypossibles.push(@byy[yindex+down])
+        down -= 1
+      end
+      possibles = ypossibles + xpossibles
+      choices[k.id].concat(possibles.select{|i| planar_distance(k,i) < distance}) 
+    end
+    while isolated?(min)
+      now = @nodes[rand(@nodes.length)]
+      while now != nil
+        maybes = choices[now.id]
+        if maybes.length > 0 then
+          soon = maybes[rand(maybes.length)]
+          now.neighbors.concat([soon])
+          soon.neighbors.concat([now])
+          choices[now.id] = choices[now.id] - [soon]
+          choices[soon.id] = choices[soon.id] - [now]
+          now = soon
+        else
+          now = nil
+        end
+      end
+    end
+  end
+        
   def set_edges
     @nodes.each{|k| k.neighbors.each{|j| @edges.add(Set[k.id, j.id])}}
   end
@@ -224,6 +330,20 @@ class TotalWeightGraph < GridGraph
           @nodes.push(TotalWeightNode.new((x*3)+3,(y*4)))
         elsif x%2 == 1 and y%2 == 1 then
           @nodes.push(TotalWeightNode.new(((x*3)-3), (y*4)))
+        end
+      end
+    end
+  end
+end
+
+class DegreeWeightGraph < GridGraph
+  def add_node size
+    (0...size+1).each do |x|
+      (0...size).each do |y|
+        if y%2 == 0 and x%2 == 0 then
+          @nodes.push(DegreeWeightNode.new((x*3)+3,(y*4)))
+        elsif x%2 == 1 and y%2 == 1 then
+          @nodes.push(DegreeWeightNode.new((x*3)+3, (y*4)))
         end
       end
     end

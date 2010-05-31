@@ -205,6 +205,13 @@ class TotalWeightNode < SimpleNode
   end
 end
 
+class DegreeWeightNode < SimpleNode
+  include DegreeWeightVC
+  def init_covers
+    return DegreeWeightLdGraph.new(Set[], [])
+  end
+end
+
 class Node < BasicNode
   include VCLocal
 #  include BasicAutomata

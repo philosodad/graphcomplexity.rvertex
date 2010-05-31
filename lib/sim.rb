@@ -147,4 +147,11 @@ class TotalWeightSimulator < RandomSimulator
   end
 end
 
+class DegreeWeightSimulator < RandomSimulator
+  def initialize(n,m)
+    @rg = DegreeWeightGraph.new(n,m)
+    @id = @@id
+    @@id += 1
+  end
+end
 

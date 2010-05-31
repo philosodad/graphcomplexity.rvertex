@@ -97,6 +97,15 @@ class TotalWeightLdGraph < LdGraph
   end
 end
 
+class DegreeWeightLdGraph < TotalWeightLdGraph
+  def add_nodes coverset
+    if not coverset.empty?
+      coverset = kill_redundant(coverset)
+      coverset.each{|k| @ldnodes.push(DegreeWeightLdNode.new(k))}
+    end
+  end
+end
+
 class SimpleLdGraph < LdGraph
   def add_nodes coverset
     if not coverset.empty?

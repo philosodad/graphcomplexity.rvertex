@@ -56,7 +56,7 @@ class TestGraphs < Test::Unit::TestCase
   def test_MG
     
     @tg.nodes.each do |k|
-      assert @tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length > 2
+      assert @tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length > 2, "expected #{@tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length}"
     end
     @tg.nodes.each do |k|
       if @tg.nodes.select{|i| @tg.planar_distance(i,k) < 8 and i != k}.length < 3 then

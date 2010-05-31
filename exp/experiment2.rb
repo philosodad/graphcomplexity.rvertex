@@ -7,21 +7,17 @@ class Experiment
   end
 
   def experiment
-    [10,20,40, 80, 160].each do |i|
+    [10,20,40, 80].each do |i|
       r = 20
       runs = 0
       max = 0
       min = 50000000
       mg = []
-      threads = []
       r.times do
-        threads << Thread.new do 
-          rg = GridGraph.new(i, 2)
-          @mg = MatchSimulator.new(rg)
-          mg.push(@mg)
-        end
+        rg = GridGraph.new(i, 2)
+        @mg = MatchSimulator.new(rg)
+        mg.push(@mg)
       end
-      threads.each{|t| t.join}
       puts i
       threads = []
       mg.each do |k|
@@ -40,7 +36,7 @@ class Experiment
   end
   
   def print_to_file
-    File.open("exp2.1.csv", 'w') {|x|
+    File.open("exp2.3.csv", 'w') {|x|
     @table.each_index do |k|
       s = String.new
       @table[k].each_index.each do |i|
