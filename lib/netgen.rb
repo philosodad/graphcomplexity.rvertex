@@ -3,7 +3,6 @@
 require 'node'
 require 'planarmath'
 require 'set'
-require 'ruby-prof'
 
 class NotaGraph
   include PlanarMath
@@ -66,7 +65,7 @@ class NotaGraph
     end    
   end
 
-  def set_neighbors_obs
+  def set_neighbors_obsolete
     @nodes.each do |node|
       puts node.id if node.id%100 == 0
       distance = 8
@@ -110,8 +109,13 @@ class SimpleGraph
 
   def covered?
     onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
-    @edges.each{|k| return false if k-onlist == k}
+    @edges.each{|k| return false if k - onlist == k}
     return true
+  end
+
+  def coverable?
+    zerolist = Set.new(@nodes.collect{|k| k.id if k.weight == 0})
+    @edges.each{|k| return false if (k - zerolist).empty?}
   end
 
   def remove_node n

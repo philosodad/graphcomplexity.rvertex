@@ -1,3 +1,5 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','lib')
+
 require 'sim'
 
 class Experiment
@@ -32,7 +34,7 @@ class Experiment
   end
 
   def print_to_file
-    File.open("output.dat", 'w') {|x|
+    File.open("exp1.csv", 'w') {|x|
     (0..3).each do |k|
       s = String.new
       (0..2).each do |i|

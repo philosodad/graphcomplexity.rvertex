@@ -76,6 +76,11 @@ class LdGraph
     end
   end
     
+  def burn_cover node, nodes
+    @ldnodes = @ldnodes.select{|k| !k.cover.include?(node.id)}
+    @edges = []
+    set_edges_and_degrees nodes
+  end
 end
 
 class TotalWeightLdGraph < LdGraph

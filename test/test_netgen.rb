@@ -25,6 +25,16 @@ class TestGraphs < Test::Unit::TestCase
     @mg = MatchGraph.new(@gg)
   end
 
+  def test_coverable
+    [@sg, @udg, @rg, @rg1, @gg, @tg, @mg].each do |k|
+      assert k.coverable?
+    end
+    @n0.weight = 0
+    assert @sg.coverable?, "sg not coverable"
+    @n1.weight = 0
+    assert !@sg.coverable?, 'sg still coverable'
+  end
+
   def test_mg
     @mg.nodes.each do |k|
       assert @mg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2

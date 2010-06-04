@@ -46,6 +46,10 @@ class BasicNode
     @keyedweights[@id] = @weight
   end
 
+  def remove_neighbor node
+    @neighbors.delete(node)
+  end
+
   def remove_self
   end
 
@@ -232,6 +236,9 @@ class Node < BasicNode
     @covers = build_covers unless @edges.empty?
   end
 
+  def burn_cover node
+    @covers.burn_cover node, [self]+@neighbors-[node]
+  end
   
   def compare_ons? newList
     these = Set.new(@onlist.keys)
