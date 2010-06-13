@@ -18,7 +18,7 @@ class BasicNode
     @now
     @onlist = {}
     @keyedweights = {}
-    @weight
+    @weight = rand(5000) + 5000
     update_id
   end
 
@@ -50,6 +50,14 @@ class BasicNode
     @neighbors.delete(node)
   end
 
+  def set_now symb
+    @now = symb
+  end
+
+  def set_next symb
+    @next = symb
+  end
+
   def remove_self
   end
 
@@ -65,7 +73,7 @@ class MatchNode < BasicNode
   include DGMM_min
   def initialize(*args)
     if args.size == 1 then
-      if args[0].class == Node then
+      if args[0].class == Node or SetNode then
         x = args[0].x
         y = args[0].y
         weight = args[0].weight
@@ -76,14 +84,14 @@ class MatchNode < BasicNode
     elsif args.size == 2 then
       x = args[0]
       y = args[1]
-      weight = rand(50) + 50
+      weight = nil
     end
     super()
     @tid = @id
     @id = id
     @x = x
     @y = y
-    @weight = weight
+    @weight = weight unless weight == nil
     @next = :choose
     @rp = nil
     @invites = []
@@ -120,6 +128,8 @@ class MatchNode < BasicNode
       choose_role
     when :done
       @next = :done
+    when :out_of_batt
+      @next = :out_of_batt
     end
   end
 
@@ -173,6 +183,7 @@ class MatchNode < BasicNode
   def set_rp node
     @rp = node
   end
+
   def set_next sym
     @next = sym
   end
@@ -218,14 +229,12 @@ end
 
 class Node < BasicNode
   include VCLocal
-#  include BasicAutomata
   include BasicAutomata
   def initialize(x,y)
     super()
     @x = x
     @y = y
     @covers = LdGraph.new(Set[], [])
-    @weight = rand(50)+50
     @currentcover = 0
     @booted = false
     @next = :analyze
@@ -297,7 +306,8 @@ class Node < BasicNode
       @currentcover += 1
       @currentcover = @currentcover%@covers.ldnodes.length
       @next = :analyze
-    else
+    when :out_of_batt
+      @next = :out_of_batt
     end
     @round += 1
   end
@@ -311,18 +321,28 @@ class Node < BasicNode
   end
   
   def recieve_status id, status
-    @next = transition id, status
+    @next = transition id, status unless @now == :out_of_batt
   end
 end
 
 class SetNode < Node
-  def initialize(id)
-    super(0,0)
-    @id = id
+  def initialize(x)
+    if x.class == Fixnum then
+      super(0,0)
+      @id = x
+    elsif x.class == Node then
+      super(x.x, x.y)
+      @id = x.id
+      @weight = x.weight
+    end
   end
   
   def update_id
   end
+end
+
+class SetNodeObs < SetNode
+  include VCLocal_Obs
 end
 
 

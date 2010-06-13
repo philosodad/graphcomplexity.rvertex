@@ -23,6 +23,24 @@ class RandomSimulator
     threads.each{|t| t.join}
   end
 
+  def long_sim
+    while @rg.coverable? do
+      sim
+      p @rg.nodes.select{|k| k.on}.collect{|j| j.id}
+      @rg.reduce_by_min
+      @rg.nodes.each do |k| 
+        if k.weight == 0 then 
+          k.on = false
+          k.set_next(:out_of_batt)
+          k.neighbors.each{|j| j.burn_cover(k)}
+        else
+          k.on = nil
+          k.set_next(:analyze)
+        end
+      end
+    end
+  end
+        
   def sim
     g = 0
     until g > 800 or @rg.covered?
@@ -102,6 +120,22 @@ class MatchSimulator < RandomSimulator
     @rg = MatchGraph.new(g)
     @id = @@id
     @@id += 1
+  end
+
+  def long_sim
+    while @rg.coverable?
+      sim
+      p @rg.nodes.select{|k| k.on}.collect{|j| j.id}
+      p @rg.nodes.collect{|k| k.class}
+      @rg.reduce_by_min
+      puts "hey"
+      @rg.nodes.each do |k|
+        k.edges.each{|j| j.weight = nil}
+        k.on = nil
+        k.set_next :choose
+      end
+      p @rg.nodes.collect{|k| k.weight}
+    end
   end
 
   def sim

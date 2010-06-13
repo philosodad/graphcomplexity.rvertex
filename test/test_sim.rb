@@ -24,7 +24,7 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(15, 70)
-    @gg = GridSimulator.new(30,2)
+    @gg = GridSimulator.new(20,2)
     @tg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
     @rg.set

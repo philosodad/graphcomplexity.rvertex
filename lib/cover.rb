@@ -21,6 +21,46 @@ module VCLocal
       m = n - [@id]
       x = m.length
       subsets.push(m)
+      (1..x).each do |k|
+        subsets = subsets+(m.combination(k).to_a)
+      end
+      subsets.each_index{|k| if k>1 then subsets[k].push(@id) end}
+      subsets.push([@id])
+      subsets.each_index{|k| subsets[k] = subsets[k].to_set}
+      subsets.to_set
+      return subsets
+    end
+
+    def test_cover(edges, cover)
+      edges.each{|k| return false if cover-k == cover} 
+    end
+    @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
+    return LdGraph.new(@c, nodes)
+  end  
+end
+
+module VCLocal_Obs
+  attr_reader :matrix
+  def build_covers
+    alledges = Set[]
+    @edges.each{|k| alledges.add(k)}
+    nset = Set.new(@neighbors.collect{|k| k.id})
+    nset.add(@id)
+    @neighbors.each do |k| 
+      k.edges.each do |j| 
+        alledges.add(j) if j.proper_subset?(nset)
+      end
+    end
+    nodes = @neighbors.to_set.add(self)
+    nodes = nodes.to_a
+    @n = nodes.collect{|k| k.id}
+    alledges = alledges.to_a    
+    def build_all_subsets
+      n = @n
+      subsets = [n]
+      m = n - [@id]
+      x = m.length
+      subsets.push(m)
       while x > 1
         thesesets = subsets.select{|k| k.length == x}
         thesesets.each do |k|
@@ -39,7 +79,7 @@ module VCLocal
       subsets.to_set
       return subsets
     end
-
+    
     def test_cover(edges, cover)
       edges.each{|k| return false if cover-k == cover} 
     end

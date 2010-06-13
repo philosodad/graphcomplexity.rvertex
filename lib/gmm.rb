@@ -111,6 +111,7 @@ module DGMM_min
   end
 
   def check_battery
+    if weight == 0 then return 1.0/0 end
     e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
     return @weight - e
   end

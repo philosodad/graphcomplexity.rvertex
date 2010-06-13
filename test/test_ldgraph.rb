@@ -48,9 +48,9 @@ class TestLdGraph < Test::Unit::TestCase
     @snodes2.each{|k| k.set_covers}
     assert @sn10.id == 10
     p @sn11.covers
-#    @sn10.neighbors.each{|k| k.remove_neighbor(@sn10)}
-#    assert !@sn11.neighbors.include?(@sn10)
-#    assert @sn11.neighbors.include?(@sn13)
+    @sn10.neighbors.each{|k| k.remove_neighbor(@sn10)}
+    assert !@sn11.neighbors.include?(@sn10)
+    assert @sn11.neighbors.include?(@sn13)
     @sn10.neighbors.each{|k| k.neighbors.each{|j| assert_not_nil j}}
     @sn10.neighbors.each{|k| k.burn_cover @sn10}
     p @sn11.covers

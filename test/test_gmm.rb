@@ -33,15 +33,18 @@ class TestGMM < Test::Unit::TestCase
     @mn0.weight = 70
     @mn1.weight = 10
     [@mn0, @mn1].each{|k| k.set_edges}
-    assert_equal @mn0.check_battery, 30
-    assert_equal @mn1.check_battery, 90
-    @mn0.edges.first.weight = 30
-    @mn1.edges.first.weight = 30
-    assert_equal @mn0.check_battery, 0
-    assert_equal @mn1.check_battery, 60
-    @mn1.edges.each{|k| if k.weight == nil then k.weight = 40 end}
-    assert_equal @mn1.check_battery, 20
+    assert_equal @mn0.check_battery, 70
+    assert_equal @mn1.check_battery, 10
+    @mn0.edges.first.weight = 10
+    @mn1.edges.first.weight = 10
+    assert_equal @mn0.check_battery, 60
+    assert_equal @mn1.check_battery, 0
+    @mn1.edges.each{|k| if k.weight == nil then k.weight = 0 end}
+    assert_equal @mn1.check_battery, 0
+    @mn1.weight = 0
+    assert_equal @mn0.check_battery, 60
   end
+
   def test_setedges
     @mn1.set_edges
     @mn1.edges.each{|k| assert_equal k.class, WeightedEdge}
@@ -77,7 +80,7 @@ class TestGMM < Test::Unit::TestCase
     @mn7.weight = 40
     @mn7.send_status
     assert_equal @mn7.rp, @mn6
-    assert_equal @mn7.subtract, 50
+    assert_equal @mn6.subtract, 40
   end
 
   def test_recievestatus
