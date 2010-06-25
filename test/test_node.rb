@@ -3,6 +3,7 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 require 'test/unit'
 require 'node'
 require 'set'
+require 'node_match'
 
 class TestNode < Test::Unit::TestCase
 
@@ -143,7 +144,6 @@ class TestNode < Test::Unit::TestCase
   end    
 
   def test_sendstatus
-    @snodes2.each{|k| k.send_initial}
     @snodes2.each{|k| k.do_next}
     [@sn11, @sn12, @sn14].each{|k| assert k.on}
     [@sn10, @sn13].each{|k| assert_equal k.on, nil}
@@ -170,7 +170,7 @@ class TestNode < Test::Unit::TestCase
     @snodes2.each{|k| assert_equal k.next, :continue}
   end
 
-  def test_sendinitial
+=begin  def test_sendinitial
     assert @sn11.send_initial
     assert !@sn13.send_initial
     assert @sn12.send_initial
@@ -180,7 +180,7 @@ class TestNode < Test::Unit::TestCase
     assert_equal @sn12.next, :sendon
     assert_equal @sn13.next, :continue
     assert_equal @sn14.next, :sendon
-  end
+=end  end
 
   def test_updateon
     @sn0.covers.ldnodes.each{|k| assert k.onremain == k.cover.length}

@@ -24,10 +24,10 @@ class RandomSimulator
   end
 
   def long_sim
+    t = 0
     while @rg.coverable? do
       sim
-      p @rg.nodes.select{|k| k.on}.collect{|j| j.id}
-      @rg.reduce_by_min
+      t += @rg.reduce_by_min
       @rg.nodes.each do |k| 
         if k.weight == 0 then 
           k.on = false
@@ -39,6 +39,8 @@ class RandomSimulator
         end
       end
     end
+    puts "#{@id} t: #{t}"
+    return t
   end
         
   def sim
@@ -60,7 +62,7 @@ class RandomSimulator
       threads.each{|t| t.join}
       g += 1
     end
-    puts g
+    puts "#{@id} g: #{g}"
     return g
   end
 
@@ -123,19 +125,16 @@ class MatchSimulator < RandomSimulator
   end
 
   def long_sim
+    t = 0
     while @rg.coverable?
       sim
-      p @rg.nodes.select{|k| k.on}.collect{|j| j.id}
-      p @rg.nodes.collect{|k| k.class}
-      @rg.reduce_by_min
-      puts "hey"
+      t += @rg.reduce_by_min
       @rg.nodes.each do |k|
-        k.edges.each{|j| j.weight = nil}
-        k.on = nil
-        k.set_next :choose
+        k.reset
       end
-      p @rg.nodes.collect{|k| k.weight}
     end
+    puts "#{@id} t: #{t}"
+    return t
   end
 
   def sim
@@ -145,9 +144,10 @@ class MatchSimulator < RandomSimulator
       @rg.nodes.each{|k| k.send_status}
       g+=1
     end
-    puts g
+    puts "#{@id} g: #{g}"
     return g
   end
+
   def all_done
     return @rg.nodes.select{|k| k.now != :done}.empty?
   end
@@ -163,6 +163,46 @@ class MatchMaxSimulator < MatchSimulator
     @id = @@id
     @@id +=1
   end
+end
+
+class MatchMWMSimulator < MatchSimulator
+  def initialize(g)
+    @rg = MatchMWMGraph.new(g)
+    @id = @@id
+    @@id +=1
+  end
+end
+
+class MatchRedSimulator < MatchSimulator
+  def initialize(g)
+    @rg = MatchRedGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+  
+
+class StarSimulator < MatchSimulator
+  def initialize(g)
+    @rg = StarGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
+
+  def sim
+    g = 0
+    until all_done or g > 20000
+      @rg.nodes.each{|k| k.do_next}
+      @rg.nodes.each{|k| k.send_status}
+#      @rg.nodes.each{|k| puts "#{k.id}-now: #{k.now}"}
+#      @rg.nodes.each{|k| puts "#{k.id}-next: #{k.next}"}
+#      @rg.nodes.each{|k| puts "#{k.id}-sat:  #{k.satlevel}"}
+      g+=1
+    end
+    puts "#{@id} g: #{g}"
+    return g
+  end
+
 end
 
 class GridSimulator < RandomSimulator

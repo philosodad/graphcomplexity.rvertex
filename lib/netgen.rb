@@ -3,6 +3,8 @@
 require 'node'
 require 'planarmath'
 require 'set'
+require 'node_match'
+require 'node_star'
                         
 class SimpleGraph
   attr_reader :edges, :nodes
@@ -30,6 +32,7 @@ class SimpleGraph
     min = lowest_weight.weight
     nodes = @nodes.select{|k| k.weight > 0 and k.on}
     nodes.each{|k| k.weight = k.weight - min unless k.weight == 0}
+    return min
   end
 
   def get_inverse_weight
@@ -61,13 +64,32 @@ class SimpleGraph
     
 end
 
-
+class StarGraph < SimpleGraph
+  def initialize g
+    super()
+    @edges = g.edges
+    @nodes = []
+    g.nodes.each{|k| @nodes.push(StarNode.new(k))}
+    set_neighbors
+  end
+  
+  def set_neighbors
+    kn = {}
+    @nodes.each{|k| kn[k.id] = k}
+    @edges.each do |s|
+      a = s.to_a
+      kn[a[0]].neighbors.push(kn[a[1]])
+      kn[a[1]].neighbors.push(kn[a[0]])
+    end
+  end      
+end
+    
 class MatchGraph < SimpleGraph
   def initialize g
     super()
-    @n = []
-    g.nodes.each{|k| @n.push(MatchNode.new(k))}
-    @nodes = @n
+    n = []
+    g.nodes.each{|k| n.push(MatchNode.new(k))}
+    @nodes = n
     g.edges.each{|k| @edges.add(k)}
     set_neighbors
   end
@@ -82,17 +104,36 @@ class MatchGraph < SimpleGraph
       kn[a[0]].neighbors.push(kn[a[1]])
       kn[a[1]].neighbors.push(kn[a[0]])
     end
-  end
-
-      
+  end      
 end
                            
 class MatchMaxGraph < MatchGraph
   def initialize g
     super(g)
-    @n = []
-    g.nodes.each{|k| @n.push(MatchMaxNode.new(k))}
-    @nodes = @n
+    n = []
+    g.nodes.each{|k| n.push(MatchMaxNode.new(k))}
+    @nodes = n
+  end
+end
+
+class MatchRedGraph < MatchGraph
+  def initialize g
+    super(g)
+    n = []
+    g.nodes.each{|k| n.push(MatchRedNode.new(k))}
+    @nodes = n
+    set_neighbors
+  end
+end
+                          
+
+class MatchMWMGraph < MatchGraph
+  def initialize g
+    super(g)
+    n = []
+    g.nodes.each{|k| n.push(MatchMWMNode.new(k))}
+    @nodes = n
+    set_neighbors
   end
 end
 

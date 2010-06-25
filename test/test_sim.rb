@@ -27,6 +27,7 @@ class TestSim < Test::Unit::TestCase
     @gg = GridSimulator.new(20,2)
     @tg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
+    @tg = StarSimulator.new(@gg.rg)
     @rg.set
     @sg.set
     @mg.set

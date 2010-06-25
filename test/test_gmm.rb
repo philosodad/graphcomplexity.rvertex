@@ -1,8 +1,8 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'node'
 require 'set'
+require 'node_match'
 
 class TestGMM < Test::Unit::TestCase
   def setup
@@ -141,7 +141,7 @@ class TestGMM < Test::Unit::TestCase
       @nod3.each{|k| k.do_next}
       @nod3.each{|k| k.send_status}
     end
-    @nod3.each{|k| assert k.on == true}
+    @nod3.each{|k| assert k.on == true, "nod3 nodes not all on"}
   end
   def test_chooseedge
     @mn0.set_edges

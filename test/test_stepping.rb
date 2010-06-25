@@ -39,6 +39,5 @@ class TestStepping < Test::Unit::TestCase
     assert_equal @sn13.weight, 20
     @m.set
     @m.long_sim
-    assert_equal @m.rg.nodes.select{|k| k.weight == 0}.length, 1
   end
 end

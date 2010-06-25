@@ -10,7 +10,7 @@ class Experiment
   end
 
   def experiment
-    [10,20,40].each do |i| 
+    [10,20].each do |i| 
       gweight = 0
       mweight = 0
       tweight = 0

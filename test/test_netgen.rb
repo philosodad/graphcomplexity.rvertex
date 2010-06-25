@@ -23,6 +23,7 @@ class TestGraphs < Test::Unit::TestCase
     @gg = GridGraph.new(20,1)
     @tg = TotalWeightGraph.new(20,1)
     @mg = MatchGraph.new(@gg)
+    @wg = MatchMWMGraph.new(@gg)
   end
 
   def test_coverable
@@ -38,11 +39,13 @@ class TestGraphs < Test::Unit::TestCase
 
   def test_lowestweight
     puts "testing lowest weight"
+    @sg.nodes.each{|k| k.on = true}
     assert_equal @sg.lowest_weight, @n1
   end
 
   def test_reducebymin
     puts "testing reduce by minimum"
+    @sg.nodes.each{|k| k.on = true}
     @sg.reduce_by_min
     assert_equal @n0.weight, 2
     assert_equal @n1.weight, 0
@@ -66,6 +69,21 @@ class TestGraphs < Test::Unit::TestCase
     @mg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
     @mg.nodes.each{|k| assert_equal k.next, :choose}
     @mg.nodes.each{|k| k.edges.each{|i| assert_equal i.weight, nil}}
+  end
+
+  def test_wg
+    puts "testing match_mwm graph"
+    @wg.nodes.each do |k|
+      assert @wg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2
+    end
+    @wg.nodes.each_index do |k|
+      assert_equal @wg.nodes[k].id, @wg.nodes[k].id
+      assert_equal @wg.nodes[k].weight, @wg.nodes[k].weight
+    end
+    @wg.nodes.each{|k| k.set_edges}
+    @wg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
+    @wg.nodes.each{|k| assert_equal k.next, :choose}
+    @wg.nodes.each{|k| k.edges.each{|i| assert_equal i.weight, nil}}
   end
 
   def test_GG

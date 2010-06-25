@@ -6,39 +6,43 @@ class Experiment
   def initialize
     @gg
     @mg
-    @table = []
+    @table = [["size","star","match","total"]]
   end
 
   def experiment
     [10,20].each do |i| 
-      gweight = 0
+      wweight = 0
       mweight = 0
       tweight = 0
+      wrounds = 0
       20.times do
-        @gg = DegreeWeightSimulator.new(i, 2)
-        @mg = MatchSimulator.new(@gg.rg)
-        [@gg, @mg].each{|k| k.set}
-        @gg.set_covers
-        [@gg, @mg].each{|k| k.sim}
-        gweight += @gg.get_on_weight
+        @gg = GridGraph.new(i, 2)
+        @mg = MatchSimulator.new(@gg)
+        @wg = StarSimulator.new(@gg)
+        [@wg, @mg].each{|k| k.set}
+        [@wg, @mg].each{|k| k.sim}
+        if @wg.rg.covered?
+          wweight += @wg.get_on_weight
+          wrounds += 1
+        end
         mweight += @mg.get_on_weight
         tweight += @mg.get_total_weight
         @gg = nil
         @mg = nil
       end
-      gweight = gweight/20.0
+      wweight = wweight/wrounds.to_f unless wrounds == 0
       mweight = mweight/20.0
       tweight = tweight/20.0
-      @table.push([i, gweight, mweight, tweight])
+      @table.push([i, wweight, mweight, tweight])
     end
   end
 
   def print_to_file
-    File.open("exp1_b.csv", 'w') {|x|
+    File.open("exp5_a.tab", 'w') {|x|
       @table.each_index do |k|
         s = String.new
         @table[k].each_index do |i|
-          s << @table[k][i].to_s + ','
+          s << @table[k][i].to_s + ?\t
         end
         x.puts(s)
       end

@@ -20,6 +20,7 @@ module BasicAutomata
 
   def highest_priority?
     start = -1
+    notons = []
     notons = @covers.ldnodes[@currentcover].cover.select{|k| @onlist[k] != true} unless @covers.ldnodes[@currentcover] == nil
     notonweights = @keyedweights.select{|k| notons.include?(k)}
     if notonweights.values.max == @weight
