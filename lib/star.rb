@@ -29,7 +29,7 @@ module StarMachine
 #          puts "k is #{k.satlevel}"
           @satlevel += b/@weight
           if k.satlevel.round(5) == 1.0 then 
-            k.on = :true
+            k.on = true
             k.next = :done
 #            puts "set #{k.id}"
           end
@@ -42,7 +42,7 @@ module StarMachine
       end
     else
 #      puts "#{@id}: tails"
-      msat = @satlevel.to_f
+      msat = @satlevel
       on = false
       final = nil
       @leaves.each_index do |k| 

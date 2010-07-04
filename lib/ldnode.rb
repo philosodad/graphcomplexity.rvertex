@@ -59,6 +59,31 @@ class LdNode
   
 end
 
+class ShortLifeLdNode < LdNode
+  def <=>(b)
+    if degree < b.degree then
+      return -1
+    elsif degree > b.degree then
+      return 1
+    elsif lifetime < b.lifetime
+      return -1
+    elsif lifetime > b.lifetime
+      return 1
+    elsif onremain < b.onremain
+      return -1
+    elsif onremain > b.onremain then
+      return 1
+    elsif @id < b.id then
+      return -1
+    elsif @id > b.id then
+      return +1
+    else
+      return 0
+    end
+ 
+  end
+end
+
 class SimpleLdNode < LdNode
   def set_degree nodes
     n = nodes.select{|k| @cover.include?(k.id)}

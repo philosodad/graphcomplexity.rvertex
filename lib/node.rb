@@ -102,6 +102,8 @@ class DegreeWeightNode < SimpleNode
   end
 end
 
+class ShortLifeNode < SimpleNode
+end
 class Node < BasicNode
   include VCLocal
   include BasicAutomata

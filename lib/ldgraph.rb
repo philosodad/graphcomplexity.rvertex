@@ -123,3 +123,11 @@ class SimpleLdGraph < LdGraph
     @ldnodes.each{|k| k.set_on_lifetime nodes}
   end
 end
+
+class ShortLifeLdGraph < LdGraph
+  def add_nodes coverset
+    if not coverset.empty?
+      coverset.each{|k| @ldnodes.push(SimpleLdNode.new(k))}
+    end
+  end
+end
