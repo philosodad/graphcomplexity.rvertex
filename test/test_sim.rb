@@ -23,25 +23,47 @@ class TestSim < Test::Unit::TestCase
     @sg = SetSimulator.new(g)
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
-    @rg = RandomSimulator.new(15, 70)
-    @gg = GridSimulator.new(20,2)
+    @rg = RandomSimulator.new(17, 70)
+    @ig = RandomSimulator.new(100, 800)
+    @gg = GridSimulator.new(5,2)
     @tg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
     @tg = StarSimulator.new(@gg.rg)
+    @pg = PCDSimulator.new(@ig.rg)
+    @dg = MatchRedSimulator.new(@ig.rg)
+    @eg = PCDDeltaSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
+    @pg.set
+    @dg.set
+    @eg.set
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
     puts "initialized"
   end
 
+  def test_pg
+    puts "testing pg"
+    assert @pg.rg.coverable?
+    assert @pg.sim < 500, "pg > 500"
+    assert @eg.sim < 500, "eg > 500"
+    assert @dg.sim
+    assert @eg.rg.covered?, "eg not covered"
+    b = @pg.get_on_weight
+    a = @dg.get_on_weight
+    c = @eg.get_on_weight
+    puts "\npg: #{b}, dg: #{a}, @eg: #{c}"
+  end
+
   def test_tg
+    puts "testing starsim"
     @tg.set
-    @tg.set_covers
+#    @tg.set_covers
     assert @tg.sim < 500, "tg > 500"
   end
 
   def test_mg
+    puts "testing matchsim"
     assert_equal @mg.rg.covered?, false
     assert @mg.sim < 500
     assert_equal @mg.rg.covered?, true
@@ -58,6 +80,7 @@ class TestSim < Test::Unit::TestCase
   end
 
   def test_gg
+    puts "testing gridsim"
     a = @gg.get_on_weight
     puts "a: #{a}"
     @gg.set

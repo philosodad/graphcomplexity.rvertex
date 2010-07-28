@@ -1,4 +1,22 @@
 require 'ldgraph'
+require 'pcdgraph'
+
+module PCD
+  attr_reader :first_cover
+  def build_first_cover
+    if @neighbors.empty? then return :empty end
+    nset = Set.new(@neighbors)
+    nnset = Set.new(@neighbors.collect{|k| k.neighbors}.flatten)-nset
+    a = PCD_Graph_Node.new(nset.to_a)
+    b = PCD_Graph_Node.new(nnset.to_a)
+    @first_cover = [a,b].min
+    @covers.add_node(@first_cover)
+  end
+  def get_covers
+    @neighbors.each{|k|  @covers.add_node(k.first_cover.dup)}
+  end
+end
+
 module VCLocal
   attr_reader :matrix
   def build_covers
@@ -282,3 +300,46 @@ module SimpleVC
   end
 end
 
+
+module CoverComposer
+  def build_matrix nodes, edges
+  end
+
+  def decompose_matrix matrix
+  end
+
+  def compose_from matrix
+    covers = []
+    stop = false
+    x = 0
+    y = 0
+    memo = []
+    matrix.length.times{|k| memo[k] = 0}
+    until stop
+      puts "x:#{x},y:#{y}"
+      if x < matrix.length and y < matrix[x].length
+        if matrix[x][y] == 0
+          y += 1
+        elsif matrix[x][y] == 1
+          memo[x] = y
+          x+=1
+          y = 0
+        end
+      elsif x == matrix.length
+        puts "found a cover: #{memo}"
+        covers.push(memo.dup)
+        x -= 1
+        y = memo[x] + 1
+      elsif y == matrix[x].length
+        if x > 0
+          memo[x] = 0
+          x -= 1
+          y = memo[x] + 1
+        else
+          stop = true
+        end
+      end
+    end
+    return covers
+  end
+end

@@ -5,6 +5,7 @@ require 'planarmath'
 require 'set'
 require 'node_match'
 require 'node_star'
+require 'node_pcd'
                         
 class SimpleGraph
   attr_reader :edges, :nodes
@@ -58,10 +59,50 @@ class SimpleGraph
 
   def remove_node n
     @edges.delete_if{|k| k.include?(n.id)}
-    @nodes.delete_if{|k| k.id = n.id}
+    @nodes.delete_if{|k| k.id == n.id}
     n.remove_self
   end
     
+end
+
+class PCDDeltaGraph < SimpleGraph
+  def initialize g
+    super()
+    @edges = g.edges
+    @nodes = []
+    g.nodes.each{|k| @nodes.push(PCDDeltaNode.new(k))}
+    set_neighbors
+  end
+
+  def set_neighbors
+    kn = {}
+    @nodes.each{|k| kn[k.id] = k}
+    @edges.each do |s|
+      a = s.to_a
+      kn[a[0]].neighbors.push(kn[a[1]])
+      kn[a[1]].neighbors.push(kn[a[0]])
+    end
+  end      
+end
+
+class PCDGraph < SimpleGraph
+  def initialize g
+    super()
+    @edges = g.edges
+    @nodes = []
+    g.nodes.each{|k| @nodes.push(PCDNode.new(k))}
+    set_neighbors
+  end
+
+  def set_neighbors
+    kn = {}
+    @nodes.each{|k| kn[k.id] = k}
+    @edges.each do |s|
+      a = s.to_a
+      kn[a[0]].neighbors.push(kn[a[1]])
+      kn[a[1]].neighbors.push(kn[a[0]])
+    end
+  end      
 end
 
 class StarGraph < SimpleGraph
@@ -149,11 +190,9 @@ class RandomGraph < SimpleGraph
   def set_edges(n,e)
     m = @nodes.collect{|k| k.id}
     a = []
-    x = m.length
-    while x > 1
-      l = m.slice!(0)
+    m.length.times do
+      l = m.shift
       m.each{|k| a.push(Set[l,k])}
-      x = m.length
     end
     x = a.length
     e.times do 

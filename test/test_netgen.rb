@@ -24,6 +24,7 @@ class TestGraphs < Test::Unit::TestCase
     @tg = TotalWeightGraph.new(20,1)
     @mg = MatchGraph.new(@gg)
     @wg = MatchMWMGraph.new(@gg)
+    @pg = PCDGraph.new(@rg)
   end
 
   def test_coverable
@@ -165,5 +166,31 @@ class TestGraphs < Test::Unit::TestCase
     puts "\nrg1:#{@rg1.nodes.collect{|k| k.neighbors.length}.max}(max)"
     puts "\nrg:#{@rg.nodes.collect{|k| k.neighbors.length}.min}(min)"
     puts "\nrg1:#{@rg1.nodes.collect{|k| k.neighbors.length}.min}(min)"
+  end
+
+  def test_pg
+    puts "testing pcd graph"
+    @pg.edges.each{|k| assert k.length == 2}
+    @pg.nodes.each{|k| assert k.class == PCDNode}
+    @pg.nodes.each{|k| assert k.covers.class == PCD_Graph} 
+    @pg.nodes.each{|k| k.build_first_cover}
+    @pg.nodes.each{|k| assert_not_nil k.id}
+    @pg.nodes.each{|k| k.neighbors.each{|j| assert j.neighbors.include?(k)}}
+    @pg.nodes.each{|k| assert !(k.neighbors.empty?)}
+    @pg.nodes.each{|k| assert k.first_cover.class == PCD_Graph_Node}
+    @pg.nodes.each do |k|
+      if k.first_cover.ids.include?(k.id) then
+        k.neighbors.each{|j| assert !(k.first_cover.ids.include?(j.id))}
+      else
+        k.neighbors.each{|j| assert k.first_cover.ids.include?(j.id)}
+        assert (k.first_cover.ids - k.neighbors.collect{|k| k.id}).empty?
+      end
+    end
+    @pg.nodes.each do |k|
+      k.get_covers
+    end
+    @pg.nodes.each do |k|
+      assert k.covers.nodes.length == k.neighbors.length + 1
+    end
   end
 end

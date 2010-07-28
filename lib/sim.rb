@@ -117,6 +117,45 @@ class SetSimulator < RandomSimulator
   end
 end
 
+class PCDSimulator < RandomSimulator
+  def initialize(g)
+    @rg = PCDGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
+
+  def sim
+    g = 0
+    until all_done or g > 500
+      @rg.nodes.each{|k| k.do_next}
+      @rg.nodes.each{|k| k.send_status}
+      g+=1
+    end
+    puts "#{@id} g: #{g}"
+    return g
+  end
+
+  def all_done
+    return @rg.nodes.select{|k| k.now != :done}.empty?
+  end
+
+  def set
+    @rg.nodes.each{|k| k.build_first_cover}
+    @rg.nodes.each{|k| k.get_covers}
+    @rg.nodes.each{|k| k.covers.set_edges}
+    @rg.nodes.each{|k| k.covers.set_degrees}
+  end
+
+end
+
+class PCDDeltaSimulator < PCDSimulator
+  def initialize(g)
+    @rg = PCDDeltaGraph.new(g)
+    @id = @@id
+    @@id +=1
+  end
+end
+
 class MatchSimulator < RandomSimulator
   def initialize(g)
     @rg = MatchGraph.new(g)
