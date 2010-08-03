@@ -71,28 +71,6 @@ module VCLocalShort
     end
     nodes = @neighbors.to_set.add(self)
     nodes = nodes.to_a
-    @n = nodes.collect{|k| k.id}
-    alledges = alledges.to_a    
-    def build_all_subsets
-      n = @n
-      subsets = [n]
-      m = n - [@id]
-      x = m.length
-      subsets.push(m)
-      (1..x).each do |k|
-        subsets = subsets+(m.combination(k).to_a)
-      end
-      subsets.each_index{|k| if k>1 then subsets[k].push(@id) end}
-      subsets.push([@id])
-      subsets.each_index{|k| subsets[k] = subsets[k].to_set}
-      subsets.to_set
-      return subsets
-    end
-
-    def test_cover(edges, cover)
-      edges.each{|k| return false if cover-k == cover} 
-    end
-    @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
     return ShortLifeLdGraph.new(@c, nodes)
   end  
 end
@@ -303,31 +281,58 @@ end
 
 module CoverComposer
   def build_matrix nodes, edges
+    m = []
+    edges = edges.to_a
+    edges.each{|k| m.push([])}
+    nlist = nodes.collect{|k| k.id}
+    edges.each_index do |k|
+      nlist.each do |j|
+        if edges[k].include?(j)
+          m[k].push(1)
+        else
+          m[k].push(0)
+        end
+      end
+    end
+    return m, nlist
   end
 
+  def construct_covers nodes, edges
+    a,b = build_matrix nodes, edges
+    c = compose_from a,b
+    d = covers_to_set c
+    return d
+  end
+    
   def decompose_matrix matrix
   end
+  
+  def covers_to_set covers
+    l = Set[]
+    covers.each{|k| l.add(Set.new(k))}
+    return l
+  end
 
-  def compose_from matrix
+  def compose_from matrix, key
     covers = []
     stop = false
     x = 0
     y = 0
     memo = []
+    keymemo = []
     matrix.length.times{|k| memo[k] = 0}
     until stop
-      puts "x:#{x},y:#{y}"
       if x < matrix.length and y < matrix[x].length
         if matrix[x][y] == 0
           y += 1
         elsif matrix[x][y] == 1
           memo[x] = y
+          keymemo[x] = key[y]
           x+=1
           y = 0
         end
       elsif x == matrix.length
-        puts "found a cover: #{memo}"
-        covers.push(memo.dup)
+        covers.push(keymemo.dup)
         x -= 1
         y = memo[x] + 1
       elsif y == matrix[x].length

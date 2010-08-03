@@ -3,6 +3,7 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 require 'test/unit'
 require 'netgen'
 require 'node'
+require 'benchmark'
 
 class TestGraphs < Test::Unit::TestCase
 
@@ -20,11 +21,13 @@ class TestGraphs < Test::Unit::TestCase
     @udg = UnitDiskGraph.new(80, 100, 120)
     @rg = RandomGraph.new(100,@udg.edges.length)
     @rg1 = RandomGraph.new(20, 120)
-    @gg = GridGraph.new(20,1)
+    @cg1 = CoverNodeGraph.new(@rg1)
+    @gg = GridGraph.new(30,2)
     @tg = TotalWeightGraph.new(20,1)
     @mg = MatchGraph.new(@gg)
     @wg = MatchMWMGraph.new(@gg)
     @pg = PCDGraph.new(@rg)
+    @cg = CoverGridGraph.new(30,2)
   end
 
   def test_coverable
@@ -58,7 +61,7 @@ class TestGraphs < Test::Unit::TestCase
   end
   
   def test_mg
-    puts "testing match graph"
+    puts "testing match graph!"
     @mg.nodes.each do |k|
       assert @mg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2
     end
@@ -70,6 +73,36 @@ class TestGraphs < Test::Unit::TestCase
     @mg.nodes.each{|k| assert_equal k.neighbors.length, k.edges.length}
     @mg.nodes.each{|k| assert_equal k.next, :choose}
     @mg.nodes.each{|k| k.edges.each{|i| assert_equal i.weight, nil}}
+  end
+
+  def test_cg
+    puts "testing cover graph"
+    @cg.nodes.each{|k| k.set_edges}
+    @cg.nodes.each{|k| k.set_covers}
+    @cg.nodes.each{|k| assert_equal k.covers.class, LdGraph}
+    @cg.nodes.each{|k| assert k.covers.ldnodes.length > 0}
+  end
+
+  def test_compare
+    puts "testing mg versus cg"
+    [@cg, @mg].each{|k| k.nodes.each{|j| j.set_edges}}
+    t1 = Benchmark.realtime do 
+      @cg.nodes.each{|k| k.set_covers}
+    end
+    t2 = Benchmark.realtime do
+      @gg.nodes.each{|k| k.set_covers}
+    end
+    puts "cg: #{t1}, gg: #{t2}"
+    puts "testing rg versus cg"
+    [@cg1, @rg1].each{|k| k.nodes.each{|j| j.set_edges}}
+    t3 = Benchmark.realtime do
+      @rg1.nodes.each{|k| k.set_covers}
+    end
+    puts "rg set"
+    t4 = Benchmark.realtime do
+      @cg1.nodes.each{|k| k.set_covers}
+    end
+    puts "cg1: #{t4}, @rg1: #{t3}"
   end
 
   def test_wg
@@ -88,7 +121,7 @@ class TestGraphs < Test::Unit::TestCase
   end
 
   def test_GG
-    puts "testing grid graph"
+    puts "testing grid graph!"
     @gg.nodes.each do |k|
       assert @gg.nodes.select{|i| @gg.planar_distance(i,k) < 8 and i != k}.length > 2
     end

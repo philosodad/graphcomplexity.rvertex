@@ -6,6 +6,7 @@ require 'set'
 require 'node_match'
 require 'node_star'
 require 'node_pcd'
+require 'nethelpers'
                         
 class SimpleGraph
   attr_reader :edges, :nodes
@@ -66,6 +67,7 @@ class SimpleGraph
 end
 
 class PCDDeltaGraph < SimpleGraph
+  include Neighborly
   def initialize g
     super()
     @edges = g.edges
@@ -73,19 +75,10 @@ class PCDDeltaGraph < SimpleGraph
     g.nodes.each{|k| @nodes.push(PCDDeltaNode.new(k))}
     set_neighbors
   end
-
-  def set_neighbors
-    kn = {}
-    @nodes.each{|k| kn[k.id] = k}
-    @edges.each do |s|
-      a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
-    end
-  end      
 end
 
 class PCDGraph < SimpleGraph
+  include Neighborly
   def initialize g
     super()
     @edges = g.edges
@@ -93,19 +86,10 @@ class PCDGraph < SimpleGraph
     g.nodes.each{|k| @nodes.push(PCDNode.new(k))}
     set_neighbors
   end
-
-  def set_neighbors
-    kn = {}
-    @nodes.each{|k| kn[k.id] = k}
-    @edges.each do |s|
-      a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
-    end
-  end      
 end
 
 class StarGraph < SimpleGraph
+  include Neighborly
   def initialize g
     super()
     @edges = g.edges
@@ -113,19 +97,10 @@ class StarGraph < SimpleGraph
     g.nodes.each{|k| @nodes.push(StarNode.new(k))}
     set_neighbors
   end
-  
-  def set_neighbors
-    kn = {}
-    @nodes.each{|k| kn[k.id] = k}
-    @edges.each do |s|
-      a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
-    end
-  end      
 end
     
 class MatchGraph < SimpleGraph
+  include Neighborly
   def initialize g
     super()
     n = []
@@ -137,15 +112,6 @@ class MatchGraph < SimpleGraph
 
   def invert_weight
   end
-  def set_neighbors
-    kn = {}
-    @nodes.each{|k| kn[k.id] = k}
-    @edges.each do |s|
-      a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
-    end
-  end      
 end
                            
 class MatchMaxGraph < MatchGraph
@@ -179,6 +145,7 @@ class MatchMWMGraph < MatchGraph
 end
 
 class RandomGraph < SimpleGraph
+  include Neighborly
   def initialize(n, e)
     @nodes = []
     @edges = Set[]
@@ -198,16 +165,6 @@ class RandomGraph < SimpleGraph
     e.times do 
         @edges.add(a.slice!(rand(x-1)))
         x = a.length
-    end
-  end
-
-  def set_neighbors
-    kn = {}
-    @nodes.each{|k| kn[k.id] = k}
-    @edges.each do |s|
-      a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
     end
   end
 end
@@ -367,6 +324,32 @@ class DegreeWeightGraph < GridGraph
         end
       end
     end
+  end
+end
+
+class CoverGridGraph < GridGraph
+  def add_node size
+    (0..size).each do |x|
+      (0...size).each do |y|
+        if y%2 == 0 and x%2 == 0 then
+          @nodes.push(CoverNode.new((x*3)+3,(y*4)))
+        elsif x%2 == 1 and y%2 == 1 then
+          @nodes.push(CoverNode.new(((x*3)-3), (y*4)))
+        end
+      end
+    end
+  end
+end
+
+class CoverNodeGraph < SimpleGraph
+  include Neighborly
+  def initialize g
+    super()
+    n = []
+    g.nodes.each{|k| n.push(CoverNode.new(k))}
+    @nodes = n
+    g.edges.each{|k| @edges.add(k)}
+    set_neighbors
   end
 end
 

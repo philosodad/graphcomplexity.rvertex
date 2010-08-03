@@ -104,6 +104,7 @@ end
 
 class ShortLifeNode < SimpleNode
 end
+
 class Node < BasicNode
   include VCLocal
   include BasicAutomata
@@ -214,4 +215,30 @@ class SetNodeObs < SetNode
   include VCLocal_Obs
 end
 
+class CoverNode < Node
+  include CoverComposer
+  def initialize *args
+    if args.length == 2
+      super(args[0], args[1])
+    elsif args.length == 1
+      super(0,0)
+      @id = args[0].id
+      @weight = args[0].weight
+    end
+  end
+  def set_covers
+    n = @neighbors + [self]
+    alledges = Set[]
+    @edges.each{|k| alledges.add(k)}
+    nset = Set.new(@neighbors.collect{|k| k.id})
+    nset.add(@id)
+    @neighbors.each do |k| 
+      k.edges.each do |j| 
+        alledges.add(j) if j.proper_subset?(nset)
+      end
+    end
+    c = construct_covers n, alledges
+    @covers = LdGraph.new(c, n)
+  end
+end
 
