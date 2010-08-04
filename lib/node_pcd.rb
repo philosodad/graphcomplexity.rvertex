@@ -1,10 +1,11 @@
 require 'node'
 require 'actions_pcd'
+require 'helpers_node'
 class PCDNode < BasicNode
   include PCD
   include Comparable
   include PCD_OneCheck
-  attr_reader :redundant
+  include Redundant
   def initialize(*args)
     if args.size == 1 then
       if args[0].class == Node or args[0].class == SetNode then
@@ -31,6 +32,7 @@ class PCDNode < BasicNode
     @onlist = Set[]
     @offlist = Set[]
     @redundant = false
+    @on = nil
   end
 
   def off?
@@ -59,37 +61,8 @@ class PCDNode < BasicNode
     end
   end
 
-  def check_finished
-    if @neighbors.select{|k| k.now == :decided or k.now == :finish}.length == @neighbors.length
-      if @on
-        if @neighbors.select{|k| !k.on}.empty?
-          @redundant = true
-        end
-      end
-      @next = :finish
-    else
-      @next = :decided
-    end
-  end
-
-  def check_redundant
-    if @neighbors.select{|k| k.now == :finish or k.now == :done}.length == @neighbors.length
-      if @redundant
-        if @neighbors.select{|k| k.redundant}.empty?
-          @on = false
-        else
-          a = @neighbors.select{|k| k.redundant} + [self]
-          if a.max == self
-            @on = false
-          end
-        end
-      end
-      @next = :done
-    else
-      @next = :finish
-    end  
-  end
 end
+
 
 class PCDDeltaNode < PCDNode
   include PCD_DeltaCheck
@@ -108,3 +81,26 @@ class PCDDeltaNode < PCDNode
   end
   
 end
+
+class PCDAllNode < PCDDeltaNode
+  include PCDAll
+  include PCD_AllCheck
+  def initialize *args
+    super(*args)
+    @cur = 0
+  end
+
+  def <=>(other)
+    return nil unless other.instance_of? PCDAllNode
+    if @weight < other.weight
+      return -1
+    elsif @weight > other.weight
+      return 1
+    elsif @id < other.id
+      return -1
+    else
+      return 1
+    end
+  end
+end
+

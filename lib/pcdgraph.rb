@@ -12,6 +12,7 @@ class PCD_Graph
     @nodes.push(n)
     @nodes.uniq!
   end
+  
   def set_edges
     n = @nodes.dup
     n.length.times do

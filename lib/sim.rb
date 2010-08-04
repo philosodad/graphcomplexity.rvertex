@@ -1,4 +1,4 @@
-require 'netgen'
+require 'netgen_pcd.rb'
 
 class RandomSimulator
   attr_reader :rg, :id
@@ -153,6 +153,21 @@ class PCDDeltaSimulator < PCDSimulator
     @rg = PCDDeltaGraph.new(g)
     @id = @@id
     @@id +=1
+  end
+end
+
+class PCDAllSimulator < PCDSimulator
+  def initialize(g)
+    @rg = PCDAllGraph.new(g)
+    @id = @@id
+    @@id +=1
+  end
+
+  def set
+    @rg.nodes.each{|k| k.build_local_cover}
+    @rg.nodes.each{|k| k.get_covers}
+    @rg.nodes.each{|k| k.covers.set_edges}
+    @rg.nodes.each{|k| k.covers.set_degrees}
   end
 end
 

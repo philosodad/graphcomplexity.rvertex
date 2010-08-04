@@ -1,5 +1,7 @@
+require 'rubygems'
 require 'ldgraph'
 require 'pcdgraph'
+require 'inline'
 
 module PCD
   attr_reader :first_cover
@@ -14,6 +16,22 @@ module PCD
   end
   def get_covers
     @neighbors.each{|k|  @covers.add_node(k.first_cover.dup)}
+  end
+end
+
+module PCDAll
+  attr_reader :local_covers
+  def build_local_cover
+    if @neighbors.empty? then return :empty end
+    nset = Set.new(@neighbors)
+    nnset = Set.new(@neighbors.collect{|k| k.neighbors}.flatten)-nset
+    a = PCD_Graph_Node.new(nset.to_a)
+    b = PCD_Graph_Node.new(nnset.to_a)
+    @local_covers = [a,b]
+    @local_covers.each{|k| @covers.add_node(k)}
+  end
+  def get_covers
+    @neighbors.each{|k| k.local_covers.each{|j| @covers.add_node(j)}}
   end
 end
 
@@ -347,4 +365,5 @@ module CoverComposer
     end
     return covers
   end
+
 end

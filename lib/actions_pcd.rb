@@ -127,3 +127,92 @@ module PCD_DeltaCheck
     return (o.empty? and s.empty?)
   end
 end
+
+module PCD_AllCheck
+  def do_next
+    @now = @next
+    case @now
+    when :analyze
+      cur = @covers.nodes[@cur]
+      if cur.ids.include?(@id)
+        @on = true
+        @next = :decided
+      elsif (@neighbors - @onlist.to_a).empty?
+        @on = false
+        @next = :decided
+      end      
+    when :decided
+      check_finished
+    when :finish
+      check_redundant
+    when :done
+      @next = :done
+    end
+  end
+
+  def send_status
+    @neighbors.each{|k| k.recieve_status(self)}
+  end
+
+  def recieve_status n
+    @onlist.add(n) if n.on
+    if @on == nil 
+      if n.on
+        while !@covers.nodes[@cur].ids.include?(n.id)
+          @cur += 1
+          @cur = @cur%@covers.nodes.length
+        end
+      elsif !n.on
+        @on = true if weight < n.weight
+        @next = :decided
+      end
+    end
+  end
+end
+
+module PCDMachine
+ def do_next
+    @now = @next
+    case @now
+    when :analyze
+      cur = @covers.nodes[@cur]
+      if cur.ids.include?(@id)
+        @on = true
+        @next = :decided
+      elsif (@neighbors - @onlist.to_a).empty?
+        @on = false
+        @next = :decided
+      else
+        nmin = (@neighbors - @onlist.to_a).collect{|k| k.weight}.min
+        if @weight < nmin
+          @on = true
+          @next = :decided
+        else
+          @cur = @cur+1
+          @next = :analyze
+          end
+      end      
+    when :decided
+      check_finished
+    when :finish
+      check_redundant
+    when :done
+      @next = :done
+    end
+  end
+
+  def send_status
+    if @on or self.off?
+      @neighbors.each{|k| k.recieve_status(self)}
+    end
+  end
+
+  def recieve_status n
+    if n.off? and @next == :analyze
+      @on = true
+      @next = :decided
+    else
+      @onlist.add(n)
+    end
+  end
+end

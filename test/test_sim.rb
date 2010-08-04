@@ -2,7 +2,8 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'sim'
-require 'netgen'
+require 'netgen_pcd.rb'
+
 
 class TestSim < Test::Unit::TestCase
   def setup
@@ -26,12 +27,15 @@ class TestSim < Test::Unit::TestCase
     @rg = RandomSimulator.new(17, 70)
     @ig = RandomSimulator.new(100, 800)
     @gg = GridSimulator.new(5,2)
-    @tg = TotalWeightSimulator.new(5,2)
+    @wg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
     @tg = StarSimulator.new(@gg.rg)
     @pg = PCDSimulator.new(@ig.rg)
     @dg = MatchRedSimulator.new(@ig.rg)
     @eg = PCDDeltaSimulator.new(@ig.rg)
+    @ng = MatchSimulator.new(@ig.rg)
+    @ag = PCDAllSimulator.new(@ig.rg)
+    @lg = StarSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
@@ -44,15 +48,27 @@ class TestSim < Test::Unit::TestCase
 
   def test_pg
     puts "testing pg"
+    @ng.set
+    @ag.set
     assert @pg.rg.coverable?
     assert @pg.sim < 500, "pg > 500"
     assert @eg.sim < 500, "eg > 500"
-    assert @dg.sim
+    assert @dg.sim < 500, "dg > 500"
+    assert @ng.sim < 500, "mg > 500"
+    assert @ag.sim < 500, "ag > 500"
+    assert @ag.rg.covered?, "ag not covered"
     assert @eg.rg.covered?, "eg not covered"
+    if @lg.sim < 500 then
+      f = @lg.get_on_weight
+    else
+      f = 100.0/0
+    end
     b = @pg.get_on_weight
     a = @dg.get_on_weight
     c = @eg.get_on_weight
-    puts "\npg: #{b}, dg: #{a}, @eg: #{c}"
+    d = @ng.get_on_weight
+    e = @ag.get_on_weight
+    puts "\npg: #{b}, dg: #{a}, eg: #{c}, ng: #{d}, ag: #{e}, @sg: #{f}"
   end
 
   def test_tg
@@ -115,15 +131,12 @@ class TestSim < Test::Unit::TestCase
 
   def teardown
     @mg.rg.nodes.each{|k| k.edges.each{|j| j = nil}}
-    [@rg, @sg, @gg, @udg, @mg, @tg].each do |k| 
+    [@wg,@ng, @rg, @sg, @gg, @udg, @mg, @tg, @sg, @eg, @ag, @pg].each do |k| 
       k.rg.nodes[0].zero_out
       k.rg.nodes.each{|k| k = nil}
       k.zero_out
     end
-    @tg = nil
-    @rg = nil
-    @sg = nil
-    @gg = nil
-    @udg = nil
+    [@wg, @ng, @rg, @sg, @gg, @udg, @mg, @tg, @sg, @eg, @ag, @pg].each{|k| k = nil}
+
   end
 end

@@ -66,27 +66,6 @@ class SimpleGraph
     
 end
 
-class PCDDeltaGraph < SimpleGraph
-  include Neighborly
-  def initialize g
-    super()
-    @edges = g.edges
-    @nodes = []
-    g.nodes.each{|k| @nodes.push(PCDDeltaNode.new(k))}
-    set_neighbors
-  end
-end
-
-class PCDGraph < SimpleGraph
-  include Neighborly
-  def initialize g
-    super()
-    @edges = g.edges
-    @nodes = []
-    g.nodes.each{|k| @nodes.push(PCDNode.new(k))}
-    set_neighbors
-  end
-end
 
 class StarGraph < SimpleGraph
   include Neighborly

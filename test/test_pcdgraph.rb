@@ -17,7 +17,9 @@ class TestLdGraph < Test::Unit::TestCase
     @setnet = SetGraph.new(@n, @e)
     @net = PCDGraph.new(@setnet)
     @delta = PCDDeltaGraph.new(@setnet)
+    @all = PCDAllGraph.new(@setnet)
     @sim = PCDSimulator.new(@setnet)
+    @allsim = PCDAllSimulator.new(@setnet)
   end
 
   def test_setup
@@ -59,7 +61,32 @@ class TestLdGraph < Test::Unit::TestCase
     @delta.nodes.each{|k| assert k.onlist.empty?}
     @delta.nodes.each{|k| k.send_status}
     @delta.nodes.each{|k| assert !k.onlist.empty?}
-    @delta.nodes[0].covers.inspect
+    puts "\ndelta: #{@delta.nodes[0].covers.inspect}"
+  end
+
+  def test_all
+    puts "test_all"
+    @all.nodes.each{|k| k.build_local_cover}
+    @all.nodes.each{|k| k.get_covers}
+    @all.nodes.each{|k| k.covers.set_edges}
+    @all.nodes.each{|k| assert !k.covers.edges.empty?, "this cover has no edges"}
+    @all.nodes.each{|k| k.covers.set_degrees}
+    assert !@all.covered?, "why is all covered?"
+    @all.nodes.each{|k| k.do_next}
+    w = @all.get_on_weight
+    assert w > 0, "weight too low"
+    assert @all.coverable?, "all not coverable"
+    @all.nodes.each{|k| k.send_status}
+    @all.nodes.each{|k| k.do_next}
+    @all.nodes.each{|k| puts k.now}
+    @all.nodes.each{|k| k.send_status}
+    @all.nodes.each{|k| k.do_next}
+    @all.nodes.each{|k| k.send_status}
+    e = @all.get_on_weight    
+    assert @all.covered?, "all not covered"
+    assert w != e, "weights did not change"
+    a = @all.nodes[0].covers.inspect
+    puts "\nall: #{a}"
   end
 
   def test_sim
