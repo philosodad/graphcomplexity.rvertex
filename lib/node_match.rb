@@ -138,8 +138,7 @@ class MatchMWMNode < MatchNode
 end
 
 class MatchRedNode < MatchNode
-  include Comparable
-  attr_reader :redundant
+  include Redundant
   include DGMM_red
   def initialize *args
     super(*args)
@@ -175,19 +174,4 @@ class MatchRedNode < MatchNode
       @next = :done
     end
   end
-
-  def <=>(other)
-    return nil unless other.instance_of? MatchRedNode
-    if @weight < other.weight
-      return -1
-    elsif @weight > other.weight
-      return 1
-    elsif @id < other.id
-      return -1
-    else
-      return 1
-    end
-  end
-
-  
 end

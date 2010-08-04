@@ -2,7 +2,7 @@ module StarMachine
   def choose_nodetype
     x = @neighbors.select{|k| !k.on}
     if x.empty? then
-      return :done
+      return :decided
     elsif rand(2) == 1 then 
       return :notroot 
     else 
@@ -30,12 +30,12 @@ module StarMachine
           @satlevel += b/@weight
           if k.satlevel.round(5) == 1.0 then 
             k.on = true
-            k.next = :done
+            k.next = :decided
 #            puts "set #{k.id}"
           end
           if @satlevel.round(5) == 1.0
             @on = true
-            @next = :done
+            @next = :decided
 #            puts "set self #{@id}"
           end
         end
@@ -66,12 +66,12 @@ module StarMachine
         @satlevel += b/@weight
         if r.satlevel.round(5) == 1.0 then
           r.on = true
-          r.next = :done
+          r.next = :decided
  #         puts "set #{r.id}"
         end
         if @satlevel.round(5) == 1.0 then
           @on = true
-          @next = :done
+          @next = :decided
  #         puts "set self #{@id}"
         end
       end
@@ -84,3 +84,4 @@ module StarMachine
   end
 
 end
+

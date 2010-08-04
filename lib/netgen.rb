@@ -65,18 +65,6 @@ class SimpleGraph
   end
     
 end
-
-
-class StarGraph < SimpleGraph
-  include Neighborly
-  def initialize g
-    super()
-    @edges = g.edges
-    @nodes = []
-    g.nodes.each{|k| @nodes.push(StarNode.new(k))}
-    set_neighbors
-  end
-end
     
 class MatchGraph < SimpleGraph
   include Neighborly

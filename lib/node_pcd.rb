@@ -49,7 +49,7 @@ class PCDNode < BasicNode
   
 
   def <=>(other)
-    return nil unless other.instance_of? PCDNode
+    return nil unless other.instance_of? self.class
     if @weight < other.weight
       return -1
     elsif @weight > other.weight
@@ -65,21 +65,7 @@ end
 
 
 class PCDDeltaNode < PCDNode
-  include PCD_DeltaCheck
-
-  def <=>(other)
-    return nil unless other.instance_of? PCDDeltaNode
-    if @weight < other.weight
-      return -1
-    elsif @weight > other.weight
-      return 1
-    elsif @id < other.id
-      return -1
-    else
-      return 1
-    end
-  end
-  
+  include PCD_DeltaCheck  
 end
 
 class PCDAllNode < PCDDeltaNode
@@ -88,19 +74,6 @@ class PCDAllNode < PCDDeltaNode
   def initialize *args
     super(*args)
     @cur = 0
-  end
-
-  def <=>(other)
-    return nil unless other.instance_of? PCDAllNode
-    if @weight < other.weight
-      return -1
-    elsif @weight > other.weight
-      return 1
-    elsif @id < other.id
-      return -1
-    else
-      return 1
-    end
   end
 end
 

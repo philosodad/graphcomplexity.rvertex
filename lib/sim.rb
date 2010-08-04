@@ -248,15 +248,20 @@ class StarSimulator < MatchSimulator
     until all_done or g > 20000
       @rg.nodes.each{|k| k.do_next}
       @rg.nodes.each{|k| k.send_status}
-#      @rg.nodes.each{|k| puts "#{k.id}-now: #{k.now}"}
-#      @rg.nodes.each{|k| puts "#{k.id}-next: #{k.next}"}
-#      @rg.nodes.each{|k| puts "#{k.id}-sat:  #{k.satlevel}"}
       g+=1
     end
     puts "#{@id} g: #{g}"
     return g
   end
 
+end
+
+class StarRedSimulator < StarSimulator
+  def initialize(g)
+    @rg = StarRedGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
 end
 
 class GridSimulator < RandomSimulator

@@ -1,4 +1,5 @@
 module Redundant
+  include Comparable
   attr_reader :redundant
   def check_finished
     if @neighbors.select{|k| k.now == :decided or k.now == :finish}.length == @neighbors.length
@@ -30,4 +31,18 @@ module Redundant
       @next = :finish
     end  
   end
+
+  def <=>(other)
+    return nil unless other.instance_of? self.class
+    if @weight < other.weight
+      return -1
+    elsif @weight > other.weight
+      return 1
+    elsif @id < other.id
+      return -1
+    else
+      return 1
+    end
+  end
+    
 end

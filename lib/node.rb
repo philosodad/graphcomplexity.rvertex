@@ -4,6 +4,7 @@ require 'ldgraph'
 require 'automata'
 require 'gmm'
 require 'weighted_edge'
+require 'helpers_node'
 
 class BasicNode
   attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted, :next, :now

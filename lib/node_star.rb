@@ -50,7 +50,7 @@ class StarNode < BasicNode
       @next = :wait
     when :wait
       @next = :choose
-    when :done
+    when :decided
       @next = :done
     end
   end
@@ -77,6 +77,35 @@ class StarNode < BasicNode
       @roots.push(object)
     when :pause
       @leaves.push(object)
+    end
+  end
+end
+
+class StarRedNode < StarNode
+  include Redundant
+  def do_next
+    @now = @next
+    case @now
+    when :choose
+      @next = choose_nodetype
+    when :notleaf
+      @next = :pause
+    when :pause
+      @next = :root
+    when :root
+      @next = :choose
+    when :notroot
+      @next = :leaf
+    when :leaf
+      @next = :wait
+    when :wait
+      @next = :choose
+    when :decided
+      check_finished
+    when :finish
+      check_redundant
+    when :done
+      @next = :done
     end
   end
 end

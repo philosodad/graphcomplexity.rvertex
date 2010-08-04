@@ -2,7 +2,8 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'sim'
-require 'netgen_pcd.rb'
+require 'netgen_pcd'
+require 'netgen_star'
 
 
 class TestSim < Test::Unit::TestCase
@@ -35,7 +36,8 @@ class TestSim < Test::Unit::TestCase
     @eg = PCDDeltaSimulator.new(@ig.rg)
     @ng = MatchSimulator.new(@ig.rg)
     @ag = PCDAllSimulator.new(@ig.rg)
-    @lg = StarSimulator.new(@ig.rg)
+    @lg = StarRedSimulator.new(@ig.rg)
+    @kg = StarSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
@@ -58,17 +60,23 @@ class TestSim < Test::Unit::TestCase
     assert @ag.sim < 500, "ag > 500"
     assert @ag.rg.covered?, "ag not covered"
     assert @eg.rg.covered?, "eg not covered"
-    if @lg.sim < 500 then
+    if @lg.sim < 20000 then
       f = @lg.get_on_weight
     else
-      f = 100.0/0
+      f = @lg.get_total_weight
+    end
+    if @kg.sim < 20000 then
+      g = @kg.get_on_weight
+    else
+      g = @kg.get_total_weight
     end
     b = @pg.get_on_weight
     a = @dg.get_on_weight
     c = @eg.get_on_weight
     d = @ng.get_on_weight
     e = @ag.get_on_weight
-    puts "\npg: #{b}, dg: #{a}, eg: #{c}, ng: #{d}, ag: #{e}, @sg: #{f}"
+    h = @ig.get_total_weight
+    puts "\npg: #{b}, dg: #{a}, eg: #{c}, ng: #{d}, ag: #{e}, lg: #{f}, kg:#{g}, to: #{h}"
   end
 
   def test_tg
