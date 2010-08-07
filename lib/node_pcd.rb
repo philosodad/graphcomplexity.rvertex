@@ -47,6 +47,10 @@ class PCDNode < BasicNode
     return PCD_Graph.new
   end
   
+  def burn_cover node
+    @covers.burn_cover node
+  end
+
 
   def <=>(other)
     return nil unless other.instance_of? self.class

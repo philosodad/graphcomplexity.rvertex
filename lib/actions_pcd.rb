@@ -134,7 +134,19 @@ module PCD_AllCheck
     case @now
     when :analyze
       cur = @covers.nodes[@cur]
-      if cur.ids.include?(@id)
+      while cur == nil and !@covers.nodes.empty?
+        @covers.nodes.shift
+        cur = @covers.nodes[@cur]
+      end
+      if @covers.nodes.empty? then 
+        if @weight > 0
+          @on = true
+          @next = :decided
+        else
+          @on = false
+          @next = :decided
+        end
+      elsif cur.ids.include?(@id)
         @on = true
         @next = :decided
       elsif (@neighbors - @onlist.to_a).empty?
@@ -147,6 +159,8 @@ module PCD_AllCheck
       check_redundant
     when :done
       @next = :done
+    when :out_of_batt
+      @next = :decided
     end
   end
 
@@ -162,8 +176,13 @@ module PCD_AllCheck
           @cur += 1
           @cur = @cur%@covers.nodes.length
         end
+        l = @covers.nodes.select{|k| k.ids.include?(@id)}
+        if l.empty? then 
+          @on = true
+          @next = :decided
+        end
       elsif !n.on
-        @on = true if weight < n.weight
+        @on = true if (@weight < n.weight or n.off?)
         @next = :decided
       end
     end

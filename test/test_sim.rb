@@ -129,6 +129,14 @@ class TestSim < Test::Unit::TestCase
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
   end
 
+  def test_longsim
+    puts "testing long sim"
+    @ag.set
+    a,b,c = @ag.long_sim
+    assert_equal c, 0
+#    @pg.long_sim
+  end
+
   def test_setsim
     @sg.set
     @sg.set_covers

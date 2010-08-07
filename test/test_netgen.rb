@@ -1,8 +1,10 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'netgen'
-require 'node'
+require 'netgen_pcd'
+require 'netgen_star'
+require 'node_pcd'
+require 'node_star'
 require 'benchmark'
 
 class TestGraphs < Test::Unit::TestCase
@@ -28,6 +30,7 @@ class TestGraphs < Test::Unit::TestCase
     @wg = MatchMWMGraph.new(@gg)
     @pg = PCDGraph.new(@rg)
     @cg = CoverGridGraph.new(30,2)
+    @ag = PCDAllGraph.new(@rg)
   end
 
   def test_coverable

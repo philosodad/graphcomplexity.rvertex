@@ -1,4 +1,6 @@
-require 'netgen_pcd.rb'
+require 'netgen_pcd'
+require 'netgen_star'
+
 
 class RandomSimulator
   attr_reader :rg, :id
@@ -25,22 +27,29 @@ class RandomSimulator
 
   def long_sim
     t = 0
+    s = ""
+    f = 0
     while @rg.coverable? do
-      sim
+      i = sim
+      s = s + "#{i}, "
+      if i > 500 then f += 1 end
       t += @rg.reduce_by_min
       @rg.nodes.each do |k| 
         if k.weight == 0 then 
           k.on = false
           k.set_next(:out_of_batt)
+          k.set_now(:out_of_batt)
           k.neighbors.each{|j| j.burn_cover(k)}
         else
           k.on = nil
           k.set_next(:analyze)
+          k.set_now(:analyze)
         end
       end
     end
     puts "#{@id} t: #{t}"
-    return t
+    s = s + "#{t}"
+    return t, s, f
   end
         
   def sim
@@ -137,6 +146,10 @@ class PCDSimulator < RandomSimulator
 
   def all_done
     return @rg.nodes.select{|k| k.now != :done}.empty?
+  end
+
+  def all_decided
+    return @rg.nodes.select{|k| (k.now != :decided) and (k.now != :finish) and (k.now != :done)}.empty?
   end
 
   def set

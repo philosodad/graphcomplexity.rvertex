@@ -49,4 +49,13 @@ class PCD_Graph
     end
     @nodes.sort!
   end
+
+  def burn_cover node
+    n = @nodes.select{|k| !k.ids.include?(node.id)}
+    @nodes = []
+    @nodes = n
+    @edges = Set[]
+    set_edges
+    set_degrees
+  end
 end

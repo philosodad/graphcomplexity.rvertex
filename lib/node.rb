@@ -125,7 +125,7 @@ class Node < BasicNode
   end
 
   def burn_cover node
-    @covers.burn_cover node, [self]+@neighbors-[node]
+    @covers.burn_cover node
   end
   
   def compare_ons? newList

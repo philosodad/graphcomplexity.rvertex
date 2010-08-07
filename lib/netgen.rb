@@ -6,7 +6,7 @@ require 'set'
 require 'node_match'
 require 'node_star'
 require 'node_pcd'
-require 'nethelpers'
+require 'helpers_netgen'
                         
 class SimpleGraph
   attr_reader :edges, :nodes
@@ -56,7 +56,14 @@ class SimpleGraph
   def coverable?
     zerolist = Set.new(@nodes.collect{|k| k.id if k.weight == 0})
     @edges.each{|k| return false if (k - zerolist).empty?}
+    return true
   end
+
+  def isolated?(min)
+    @nodes.each{|k| if k.neighbors.length < min then return true end}
+    return false
+  end
+
 
   def remove_node n
     @edges.delete_if{|k| k.include?(n.id)}
@@ -113,12 +120,14 @@ end
 
 class RandomGraph < SimpleGraph
   include Neighborly
+  include Connectable
   def initialize(n, e)
     @nodes = []
     @edges = Set[]
     n.times{@nodes.push(Node.new(0,0))}
     set_edges(n,e)
     set_neighbors
+    connect!
   end
   
   def set_edges(n,e)
