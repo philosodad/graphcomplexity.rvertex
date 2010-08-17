@@ -3,9 +3,11 @@
 require 'node'
 require 'planarmath'
 require 'set'
+require 'node_ldg'
 require 'node_match'
 require 'node_star'
 require 'node_pcd'
+require 'node_dumb'
 require 'helpers_netgen'
                         
 class SimpleGraph
@@ -124,12 +126,16 @@ class RandomGraph < SimpleGraph
   def initialize(n, e)
     @nodes = []
     @edges = Set[]
-    n.times{@nodes.push(Node.new(0,0))}
+    add_nodes n
     set_edges(n,e)
     set_neighbors
     connect!
   end
   
+  def add_nodes n
+    n.times{@nodes.push(LDGNode.new(0,0))}
+  end
+
   def set_edges(n,e)
     m = @nodes.collect{|k| k.id}
     a = []
@@ -145,12 +151,35 @@ class RandomGraph < SimpleGraph
   end
 end
 
+class RandomGraphRed < RandomGraph
+  def initialize(*args)
+    if args.length == 1 and args[0].class == RandomGraph
+      g = args[0]
+      @edges = g.edges
+      @nodes = []
+      put_nodes(g)
+      set_neighbors
+    else
+      super(args[0], args[1])
+    end
+  end
+  
+  def add_nodes n
+    n.times{@nodes.push(LDGRedNode.new(0,0))}
+  end
+
+  def put_nodes g
+    g.nodes.each{|k| @nodes.push(LDGRedNode.new(k))}
+  end
+
+end
+
 class UnitDiskGraph < SimpleGraph
   include PlanarMath
   def initialize(size, space, distance)
     @nodes = []
     @edges = Set[]
-    size.times{@nodes.push(Node.new(rand(space), rand(space)))}
+    size.times{@nodes.push(LDGNode.new(rand(space), rand(space)))}
     @nodes.each{|k| set_neighbors(k, distance)}
     set_edges
   end
@@ -206,9 +235,9 @@ class GridGraph < SimpleGraph
     (0...size).each do |x| 
       (0...size-1).each do |y| 
         if y%2 == 0 and x < size-1 then
-          @nodes.push(Node.new((x*6)+3,(y*4)))
+          @nodes.push(LDGNode.new((x*6)+3,(y*4)))
         elsif y%2 == 1 then
-          @nodes.push(Node.new((x*6), (y*4)))
+          @nodes.push(LDGNode.new((x*6), (y*4)))
         end
       end
     end

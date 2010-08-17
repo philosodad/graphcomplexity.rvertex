@@ -11,10 +11,10 @@ class Experiment
   end
 
   def experiment
-    [500, 1000].each do |i| 
-      [4,8,16].each do |k|
-        10.times do
-          @rg = RandomGraph.new(i, i*k)
+    [50, 150].each do |i| 
+      [1.5,3,5].each do |k|
+        200.times do
+          @rg = RandomGraph.new(i, (i*k).to_i)
           @ag = PCDAllSimulator.new(@rg)
           @fails += @ag.long_sim[2]
           @attempts += 1

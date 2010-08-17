@@ -1,6 +1,7 @@
 require 'netgen_pcd'
 require 'netgen_star'
-
+require 'netgen_dumb'
+require 'helpers_sim'
 
 class RandomSimulator
   attr_reader :rg, :id
@@ -110,6 +111,14 @@ class RandomSimulator
   end
 end
 
+class RandomRedSimulator < RandomSimulator
+  def initialize(g)
+    @rg = RandomGraphRed.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
 class UDGSimulator < RandomSimulator
   def initialize(n, d, s)
     @rg = UnitDiskGraph.new(n,d,s)
@@ -126,30 +135,21 @@ class SetSimulator < RandomSimulator
   end
 end
 
+class DumbRedSimulator < RandomSimulator
+  include Sim_To_Done
+  def initialize(g)
+    @rg = DumbRedGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
 class PCDSimulator < RandomSimulator
+  include Sim_To_Done
   def initialize(g)
     @rg = PCDGraph.new(g)
     @id = @@id
     @@id += 1
-  end
-
-  def sim
-    g = 0
-    until all_done or g > 500
-      @rg.nodes.each{|k| k.do_next}
-      @rg.nodes.each{|k| k.send_status}
-      g+=1
-    end
-    puts "#{@id} g: #{g}"
-    return g
-  end
-
-  def all_done
-    return @rg.nodes.select{|k| k.now != :done}.empty?
-  end
-
-  def all_decided
-    return @rg.nodes.select{|k| (k.now != :decided) and (k.now != :finish) and (k.now != :done)}.empty?
   end
 
   def set
@@ -184,7 +184,16 @@ class PCDAllSimulator < PCDSimulator
   end
 end
 
+class PCDAllSimulatorNoRed < PCDAllSimulator
+  def initialize(g)
+    @rg = PCDAllGraphNoRed.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
 class MatchSimulator < RandomSimulator
+  include Sim_To_Done
   def initialize(g)
     @rg = MatchGraph.new(g)
     @id = @@id
@@ -202,21 +211,6 @@ class MatchSimulator < RandomSimulator
     end
     puts "#{@id} t: #{t}"
     return t
-  end
-
-  def sim
-    g = 0
-    until all_done or g > 500
-      @rg.nodes.each{|k| k.do_next}
-      @rg.nodes.each{|k| k.send_status}
-      g+=1
-    end
-    puts "#{@id} g: #{g}"
-    return g
-  end
-
-  def all_done
-    return @rg.nodes.select{|k| k.now != :done}.empty?
   end
 
   def set
@@ -257,14 +251,7 @@ class StarSimulator < MatchSimulator
   end
 
   def sim
-    g = 0
-    until all_done or g > 20000
-      @rg.nodes.each{|k| k.do_next}
-      @rg.nodes.each{|k| k.send_status}
-      g+=1
-    end
-    puts "#{@id} g: #{g}"
-    return g
+    super(20000)
   end
 
 end

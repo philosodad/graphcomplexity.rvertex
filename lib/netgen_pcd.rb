@@ -21,6 +21,12 @@ class PCDAllGraph < PCDRootGraph
   end
 end
 
+class PCDAllGraphNoRed < PCDRootGraph
+  def put_nodes g
+    g.nodes.each{|k| @nodes.push(PCDAllNodeNoRed.new(k))}
+  end
+end
+
 class PCDDeltaGraph < PCDRootGraph
   def put_nodes g
     g.nodes.each{|k| @nodes.push(PCDDeltaNode.new(k))}

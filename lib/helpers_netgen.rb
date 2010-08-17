@@ -22,7 +22,7 @@ module Connectable
       tree.push(i)
       nebs = i.neighbors
       x = nebs.length
-      if x == 0 then puts "#{i.id} has no neighbors and this is the tree: #{tree.class}, #{tree.length}" end
+#      if x == 0 then puts "#{i.id} has no neighbors and this is the tree: #{tree.class}, #{tree.length}" end
       while !nebs.empty?
         j = nebs.slice!(rand(x))
         tree.push(j)
@@ -42,7 +42,7 @@ module Connectable
         u.neighbors.push(v)
         v.neighbors.push(u)
         @edges.add(Set[u.id,v.id])
-        puts "I just added an edge from #{u.id} to #{v.id}"
+#        puts "I just added an edge from #{u.id} to #{v.id}"
         puts @nodes.include?(u)
         puts @nodes.include?(v)
         j += 1

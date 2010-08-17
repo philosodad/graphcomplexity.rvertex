@@ -1,4 +1,4 @@
-module PCD_OneCheck
+module PCD_One_Acts
   def do_next
     @now = @next
     case @now
@@ -63,7 +63,7 @@ module PCD_OneCheck
   end
 end
 
-module PCD_DeltaCheck
+module PCD_Delta_Acts
   def do_next
     @now = @next
     case @now
@@ -128,7 +128,148 @@ module PCD_DeltaCheck
   end
 end
 
-module PCD_AllCheck
+module PCD_All_Acts
+    def do_next
+    @now = @next
+    case @now
+    when :analyze
+      cur = @covers.nodes[@cur]
+      while cur == nil and !@covers.nodes.empty?
+        @covers.nodes.shift
+        cur = @covers.nodes[@cur]
+      end
+      if @covers.nodes.empty? then 
+        if @weight > 0
+          @on = true
+          @next = :decided
+        else
+          @on = false
+          @next = :decided
+        end
+      elsif cur.ids.include?(@id)
+        @on = true
+        @next = :decided
+      elsif (@neighbors - @onlist.to_a).empty?
+        @on = false
+        @next = :decided
+      else
+        rem = @neighbors - @onlist.to_a
+        ids = [@id] + rem.collect{|k| k.id}
+        covs = []
+        @covers.nodes.each{|k| covs.push(k)}
+        covs.each{|k| if k.ids - ids == k.ids then covs.delete(k) end}
+        covs.sort!
+        if covs[0].ids.include?(@id)
+          @on = true
+          @next = :decided
+        else
+          @cur += 1
+          @cur = @cur%@covers.nodes.length
+        end
+      end      
+    when :decided
+      check_finished
+    when :finish
+      check_redundant
+    when :done
+      @next = :done
+    when :out_of_batt
+      @next = :decided
+    end
+  end
+
+  def send_status
+    @neighbors.each{|k| k.recieve_status(self)}
+  end
+  
+  def recieve_status n
+    @onlist.add(n) if n.on
+    if @on == nil
+      if n.on
+        if n.weight = @onlist.to_a.collect{|k| k.weight}.min
+          @covers.nodes.each_index do |k|
+            c = @covers.nodes[k].ids
+            if c.include?(@id) and c.include?(n.id) then
+              @cur = k
+              break
+            end
+          end
+        end
+      elsif !n.on
+        @next = :analyze
+      end
+    end
+  end
+end
+
+
+module PCD_All_Acts_No_Red
+  def do_next
+    @now = @next
+    case @now
+    when :analyze
+      cur = @covers.nodes[@cur]
+      while cur == nil and !@covers.nodes.empty?
+        @covers.nodes.shift
+        cur = @covers.nodes[@cur]
+      end
+      if @covers.nodes.empty? then 
+        if @weight > 0
+          @on = true
+          @next = :done
+        else
+          @on = false
+          @next = :done
+        end
+      elsif cur.ids.include?(@id)
+        @on = true
+        @next = :done
+      elsif (@neighbors - @onlist.to_a).empty?
+        @on = false
+        @next = :done
+      else
+        rem = @neighbors - @onlist.to_a
+        ids = [@id] + rem.collect{|k| k.id}
+        covs = []
+        @covers.nodes.each{|k| covs.push(k)}
+        covs.each{|k| if k.ids - ids == k.ids then covs.delete(k) end}
+        covs.sort!
+        if covs[0].ids.include?(@id)
+          @on = true
+          @next = :done
+        else
+          @cur += 1
+          @cur = @cur%@covers.nodes.length
+        end
+      end
+    when :done
+      @next = :done
+    when :out_of_batt
+      @next = :done
+    end
+  end
+
+  def recieve_status n
+    @onlist.add(n) if n.on
+    if @on == nil
+      if n.on
+        if n.weight = @onlist.to_a.collect{|k| k.weight}.min
+          @covers.nodes.each_index do |k|
+            c = @covers.nodes[k].ids
+            if c.include?(@id) and c.include?(n.id) then
+              @cur = k
+              break
+            end
+          end
+        end
+      elsif !n.on
+        @next = :analyze
+      end
+    end
+  end
+end
+
+module PCD_All_Acts_Naive
   def do_next
     @now = @next
     case @now
@@ -176,7 +317,7 @@ module PCD_AllCheck
           @cur += 1
           @cur = @cur%@covers.nodes.length
         end
-        l = @covers.nodes.select{|k| k.ids.include?(@id)}
+        l = @covers.nodes.select{|k| !k.ids.include?(@id)}
         if l.empty? then 
           @on = true
           @next = :decided

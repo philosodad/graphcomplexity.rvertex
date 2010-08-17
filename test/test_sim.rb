@@ -2,9 +2,6 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'sim'
-require 'netgen_pcd'
-require 'netgen_star'
-
 
 class TestSim < Test::Unit::TestCase
   def setup
@@ -26,7 +23,7 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(17, 70)
-    @ig = RandomSimulator.new(100, 800)
+    @ig = RandomSimulator.new(50, 150)
     @gg = GridSimulator.new(5,2)
     @wg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
@@ -38,6 +35,9 @@ class TestSim < Test::Unit::TestCase
     @ag = PCDAllSimulator.new(@ig.rg)
     @lg = StarRedSimulator.new(@ig.rg)
     @kg = StarSimulator.new(@ig.rg)
+    @bg = RandomRedSimulator.new(@ig.rg)
+    @og = PCDAllSimulatorNoRed.new(@ig.rg)
+    @ug = DumbRedSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
@@ -50,16 +50,29 @@ class TestSim < Test::Unit::TestCase
 
   def test_pg
     puts "testing pg"
-    @ng.set
-    @ag.set
+    [@pg, @eg, @og, @ug, @dg, @eg, @ng, @bg,@lg,@ag].each do |k|
+      assert_equal k.get_total_weight, @ig.get_total_weight
+    end
+    [@ng, @ag, @og, @ug].each{|k| k.set}
+    [@bg, @ig].each do |k|
+      k.set
+      k.set_covers
+    end
     assert @pg.rg.coverable?
     assert @pg.sim < 500, "pg > 500"
     assert @eg.sim < 500, "eg > 500"
     assert @dg.sim < 500, "dg > 500"
     assert @ng.sim < 500, "mg > 500"
     assert @ag.sim < 500, "ag > 500"
+    assert @bg.sim < 500, "bg > 500"
+    assert @ig.sim < 500, "ig > 500"
+    assert @og.sim < 500, "og > 500"
+#    assert @ug.sim < 500, "ug > 500"
+    @ug.sim
     assert @ag.rg.covered?, "ag not covered"
     assert @eg.rg.covered?, "eg not covered"
+    assert @ug.rg.covered?, "ug not covered"
+    assert @og.rg.covered?, "og not covered"
     if @lg.sim < 20000 then
       f = @lg.get_on_weight
     else
@@ -70,13 +83,27 @@ class TestSim < Test::Unit::TestCase
     else
       g = @kg.get_total_weight
     end
+    i = @ig.get_on_weight
+    j = @bg.get_on_weight
     b = @pg.get_on_weight
     a = @dg.get_on_weight
     c = @eg.get_on_weight
     d = @ng.get_on_weight
     e = @ag.get_on_weight
     h = @ig.get_total_weight
-    puts "\npg: #{b}, dg: #{a}, eg: #{c}, ng: #{d}, ag: #{e}, lg: #{f}, kg:#{g}, to: #{h}"
+    k = @og.get_on_weight
+    l = @ug.get_on_weight
+    puts "\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} LDG Red\t#{j}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}"
+  end
+
+  def test_ug
+    puts "testing dumb"
+    @ug.set
+    @ug.rg.nodes.each do |k| 
+      assert !k.neighbors.empty?, "ug node has no neighbors"
+      assert !k.edges.empty?, "ug node has no edges"
+    end
+    assert !@ug.rg.edges.empty?, "ug edges are empty"
   end
 
   def test_tg

@@ -1,14 +1,13 @@
 require 'node'
 require 'actions_pcd'
 require 'helpers_node'
-class PCDNode < BasicNode
+
+class PCDRoot < BasicNode
   include PCD
   include Comparable
-  include PCD_OneCheck
-  include Redundant
   def initialize(*args)
     if args.size == 1 then
-      if args[0].class == Node or args[0].class == SetNode then
+      if args[0].class == LDGNode or args[0].class == SetNode then
         x = args[0].x
         y = args[0].y
         weight = args[0].weight
@@ -34,7 +33,6 @@ class PCDNode < BasicNode
     @redundant = false
     @on = nil
   end
-
   def off?
     if @on == true or @on == nil
       return false
@@ -50,7 +48,7 @@ class PCDNode < BasicNode
   def burn_cover node
     @covers.burn_cover node
   end
-
+  
 
   def <=>(other)
     return nil unless other.instance_of? self.class
@@ -67,17 +65,29 @@ class PCDNode < BasicNode
 
 end
 
-
-class PCDDeltaNode < PCDNode
-  include PCD_DeltaCheck  
+class PCDRedundant < PCDRoot
+  include Redundant
 end
 
-class PCDAllNode < PCDDeltaNode
+class PCDNode < PCDRedundant
+  include PCD
+  include PCD_One_Acts
+end
+
+
+class PCDDeltaNode < PCDNode
+  include PCD_Delta_Acts
+end
+
+class PCDAllNode < PCDRedundant
   include PCDAll
-  include PCD_AllCheck
+  include PCD_All_Acts
   def initialize *args
     super(*args)
     @cur = 0
   end
 end
 
+class PCDAllNodeNoRed < PCDAllNode
+  include PCD_All_Acts_No_Red
+end
