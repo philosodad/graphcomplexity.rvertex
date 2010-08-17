@@ -48,7 +48,7 @@ class RandomSimulator
         end
       end
     end
-    puts "#{@id} t: #{t}"
+#    puts "#{@id} t: #{t}"
     s = s + "#{t}"
     return t, s, f
   end
@@ -72,7 +72,7 @@ class RandomSimulator
       threads.each{|t| t.join}
       g += 1
     end
-    puts "#{@id} g: #{g}"
+#    puts "#{@id} g: #{g}"
     return g
   end
 

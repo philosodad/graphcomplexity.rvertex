@@ -157,7 +157,7 @@ class RandomGraphRed < RandomGraph
       g = args[0]
       @edges = g.edges
       @nodes = []
-      put_nodes(g)
+      puts_nodes(g)
       set_neighbors
     else
       super(args[0], args[1])
