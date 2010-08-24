@@ -97,7 +97,7 @@ class Experiment
         strruns = strruns / (x - strfail).to_f
         mtcruns = mtcruns / (x - mtcfail).to_f
         tworuns = tworuns / (x - twofail).to_f
-        nodes = k
+        nodes = k*i
         links = links / x.to_f
         
         @average.push([nodes, links, ldgwate, pcdwate, strwate,mtcwate,twowate,totwate])
@@ -150,5 +150,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 50
+x.experiment 30
 x.print_to_file

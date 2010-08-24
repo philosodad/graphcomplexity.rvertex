@@ -221,11 +221,11 @@ module PCD_All_Acts_No_Red
           @on = false
           @next = :done
         end
-      elsif cur.ids.include?(@id)
-        @on = true
-        @next = :done
       elsif (@neighbors - @onlist.to_a).empty?
         @on = false
+        @next = :done
+      elsif cur.ids.include?(@id)
+        @on = true
         @next = :done
       else
         rem = @neighbors - @onlist.to_a
