@@ -66,7 +66,6 @@ class Experiment
           mtcwate += h
           mtcfail += g
           twofail += t
-          ldgruns += q
           pcdruns += r
           strruns += y
           mtcruns += z
