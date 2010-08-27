@@ -36,6 +36,7 @@ class Experiment
         nodes = 0
         links = 0
         x.times do
+          $stdout.flush
           g = RandomGraph.new(i, (i*k).to_i)
           links += g.edges.length
           ldg_sim = RandomRedSimulator.new(g)
