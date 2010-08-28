@@ -43,8 +43,8 @@ module Connectable
         v.neighbors.push(u)
         @edges.add(Set[u.id,v.id])
 #        puts "I just added an edge from #{u.id} to #{v.id}"
-        puts @nodes.include?(u)
-        puts @nodes.include?(v)
+#        puts @nodes.include?(u)
+#        puts @nodes.include?(v)
         j += 1
       end
     end

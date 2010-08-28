@@ -84,7 +84,7 @@ module PCD_Delta_Acts
       nset = Set.new(@neighbors)
       nnset = Set.new(@neighbors.collect{|k| k.neighbors}.flatten)-nset-Set[self]
       nn = (nset + nnset).to_a
-      if @weight < nn.select{|k| !k.on}.collect{|k| k.weight}.min
+      if !nn.select{|k| !k.on}.empty? and @weight < nn.select{|k| !k.on}.collect{|k| k.weight}.min then
         @on = true
         @next = :decided
       else

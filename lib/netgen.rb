@@ -138,6 +138,21 @@ class RandomGraph < SimpleGraph
 
   def set_edges(n,e)
     m = @nodes.collect{|k| k.id}
+    until @edges.length == e
+      x = rand(n)
+      y = x
+      until y != x
+        y = rand(n)
+      end
+      i = m[x]
+      j = m[y]
+      s = Set[i,j]
+      @edges.add(s)
+    end
+  end
+      
+  def aset_edges(n,e)
+    m = @nodes.collect{|k| k.id}
     a = []
     m.length.times do
       l = m.shift
@@ -145,7 +160,7 @@ class RandomGraph < SimpleGraph
     end
     x = a.length
     e.times do 
-        @edges.add(a.slice!(rand(x-1)))
+        @edges.add(a.slice!(rand(x)))
         x = a.length
     end
   end

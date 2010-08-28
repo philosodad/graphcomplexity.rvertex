@@ -47,6 +47,12 @@ class TestSim < Test::Unit::TestCase
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
     puts "initialized"
   end
+  def test_giant
+    puts 'testing giant'
+    @giant = PCDAllSimulator.new(RandomGraph.new(10000,40000))
+    @giant.set
+    assert @giant.sim < 500
+  end
 
   def test_pg
     puts "testing pg"
