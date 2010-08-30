@@ -127,7 +127,8 @@ end
 class ShortLifeLdGraph < LdGraph
   def add_nodes coverset
     if not coverset.empty?
-      coverset.each{|k| @ldnodes.push(SimpleLdNode.new(k))}
+      coverset = kill_redundant(coverset)
+      coverset.each{|k| @ldnodes.push(ShortLifeLdNode.new(k))}
     end
   end
 end

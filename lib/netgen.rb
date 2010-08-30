@@ -150,20 +150,6 @@ class RandomGraph < SimpleGraph
       @edges.add(s)
     end
   end
-      
-  def aset_edges(n,e)
-    m = @nodes.collect{|k| k.id}
-    a = []
-    m.length.times do
-      l = m.shift
-      m.each{|k| a.push(Set[l,k])}
-    end
-    x = a.length
-    e.times do 
-        @edges.add(a.slice!(rand(x)))
-        x = a.length
-    end
-  end
 end
 
 class RandomGraphRed < RandomGraph
@@ -187,6 +173,16 @@ class RandomGraphRed < RandomGraph
     g.nodes.each{|k| @nodes.push(LDGRedNode.new(k))}
   end
 
+end
+
+class RandomGraphShort < RandomGraphRed
+  def add_nodes n
+    n.times{@nodes.push(LDGShortRedNode.new(0,0))}
+  end
+
+  def put_nodes(g)
+    g.nodes.each{|k| @nodes.push(LDGShortRedNode.new(k))}
+  end
 end
 
 class UnitDiskGraph < SimpleGraph

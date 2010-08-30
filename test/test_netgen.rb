@@ -31,11 +31,12 @@ class TestGraphs < Test::Unit::TestCase
     @pg = PCDGraph.new(@rg)
     @cg = CoverGridGraph.new(30,2)
     @ag = PCDAllGraph.new(@rg)
+    @vg = RandomGraphShort.new(@rg1)
   end
 
   def test_coverable
     puts "testing coverable"
-    [@sg, @udg, @rg, @rg1, @gg, @tg, @mg].each do |k|
+    [@sg, @udg, @rg, @rg1, @gg, @tg, @mg, @vg].each do |k|
       assert k.coverable?
     end
     @n0.weight = 0
@@ -84,6 +85,10 @@ class TestGraphs < Test::Unit::TestCase
     @cg.nodes.each{|k| k.set_covers}
     @cg.nodes.each{|k| assert_equal k.covers.class, LdGraph}
     @cg.nodes.each{|k| assert k.covers.ldnodes.length > 0}
+    puts 'testing short graph'
+    @vg.nodes.each{|k| k.set_edges}
+    puts 'attempting to set covers'
+    @vg.nodes.each{|k| k.set_covers}
   end
 
   def test_compare
@@ -98,14 +103,14 @@ class TestGraphs < Test::Unit::TestCase
     puts "cg: #{t1}, gg: #{t2}"
     puts "testing rg versus cg"
     [@cg1, @rg1].each{|k| k.nodes.each{|j| j.set_edges}}
-    t3 = Benchmark.realtime do
-      @rg1.nodes.each{|k| k.set_covers}
-    end
-    puts "rg set"
-    t4 = Benchmark.realtime do
-      @cg1.nodes.each{|k| k.set_covers}
-    end
-    puts "cg1: #{t4}, @rg1: #{t3}"
+#    t3 = Benchmark.realtime do
+#      @rg1.nodes.each{|k| k.set_covers}
+#    end
+#    puts "rg set"
+#    t4 = Benchmark.realtime do
+#      @cg1.nodes.each{|k| k.set_covers}
+#    end
+#    puts "cg1: #{t4}, @rg1: #{t3}"
   end
 
   def test_wg

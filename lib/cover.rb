@@ -51,28 +51,30 @@ module VCLocal
     nodes = nodes.to_a
     @n = nodes.collect{|k| k.id}
     alledges = alledges.to_a    
-    def build_all_subsets
-      n = @n
-      subsets = [n]
-      m = n - [@id]
-      x = m.length
-      subsets.push(m)
-      (1..x).each do |k|
-        subsets = subsets+(m.combination(k).to_a)
-      end
-      subsets.each_index{|k| if k>1 then subsets[k].push(@id) end}
-      subsets.push([@id])
-      subsets.each_index{|k| subsets[k] = subsets[k].to_set}
-      subsets.to_set
-      return subsets
-    end
-
+    
     def test_cover(edges, cover)
       edges.each{|k| return false if cover-k == cover} 
     end
     @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
     return LdGraph.new(@c, nodes)
-  end  
+  end
+
+  def build_all_subsets
+    n = @n
+    subsets = [n]
+    m = n - [@id]
+    x = m.length
+    subsets.push(m)
+    (1..x).each do |k|
+      subsets = subsets+(m.combination(k).to_a)
+    end
+    subsets.each_index{|k| if k>1 then subsets[k].push(@id) end}
+    subsets.push([@id])
+    subsets.each_index{|k| subsets[k] = subsets[k].to_set}
+    subsets.to_set
+    return subsets
+  end
+
 end
 
 module VCLocalShort
@@ -89,6 +91,14 @@ module VCLocalShort
     end
     nodes = @neighbors.to_set.add(self)
     nodes = nodes.to_a
+    @n = nodes.collect{|k| k.id}
+    alledges = alledges.to_a    
+    
+    def test_cover(edges, cover)
+      edges.each{|k| return false if cover-k == cover} 
+    end
+    @c = build_all_subsets.select{|k| test_cover(alledges, k)}.to_set
+#    puts 'about to make a new shortlifeldgraph'
     return ShortLifeLdGraph.new(@c, nodes)
   end  
 end

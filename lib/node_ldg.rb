@@ -61,6 +61,13 @@ class LDGRedNode < LDGRootNode
   end
 end
 
+class LDGShortRedNode < LDGRedNode
+  include VCLocalShort
+  def init_covers
+    @covers = ShortLifeLdGraph.new(Set[],[])
+  end
+end
+
 class SetNode < LDGNode
   def initialize(x)
     if x.class == Fixnum then

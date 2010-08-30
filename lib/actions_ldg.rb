@@ -42,7 +42,7 @@ module LDG_Standard_Acts
   end
   
   def recieve_status id, status
-    @next = transition id, status unless @now == :out_of_batt
+    @next = transition id, status unless @on != nil
   end  
 end
 
@@ -96,7 +96,7 @@ def do_next
   end
   
   def recieve_status id, status
-    @next = transition id, status unless @now == :out_of_batt
+    @next = transition id, status unless @on != nil
   end  
 end
 

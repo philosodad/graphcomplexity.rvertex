@@ -38,6 +38,7 @@ class TestSim < Test::Unit::TestCase
     @bg = RandomRedSimulator.new(@ig.rg)
     @og = PCDAllSimulatorNoRed.new(@ig.rg)
     @ug = DumbRedSimulator.new(@ig.rg)
+    @vg = RandomShortRedSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
@@ -49,7 +50,7 @@ class TestSim < Test::Unit::TestCase
   end
   def test_giant
     puts 'testing giant'
-    @giant = PCDAllSimulator.new(RandomGraph.new(10000,40000))
+    @giant = PCDAllSimulator.new(RandomGraph.new(100,1000))
     @giant.set
     assert @giant.sim < 500
   end
@@ -59,8 +60,8 @@ class TestSim < Test::Unit::TestCase
     [@pg, @eg, @og, @ug, @dg, @eg, @ng, @bg,@lg,@ag].each do |k|
       assert_equal k.get_total_weight, @ig.get_total_weight
     end
-    [@ng, @ag, @og, @ug].each{|k| k.set}
-    [@bg, @ig].each do |k|
+    [@ng, @ag, @og, @ug, @vg].each{|k| k.set}
+    [@bg, @ig, @vg].each do |k|
       k.set
       k.set_covers
     end
@@ -73,8 +74,8 @@ class TestSim < Test::Unit::TestCase
     assert @bg.sim < 500, "bg > 500"
     assert @ig.sim < 500, "ig > 500"
     assert @og.sim < 500, "og > 500"
-#    assert @ug.sim < 500, "ug > 500"
-    @ug.sim
+    assert @vg.sim < 500, 'vg > 500'
+    assert @ug.sim < 500, "ug > 500"
     assert @ag.rg.covered?, "ag not covered"
     assert @eg.rg.covered?, "eg not covered"
     assert @ug.rg.covered?, "ug not covered"
@@ -99,7 +100,8 @@ class TestSim < Test::Unit::TestCase
     h = @ig.get_total_weight
     k = @og.get_on_weight
     l = @ug.get_on_weight
-    puts "\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} LDG Red\t#{j}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}"
+    v = @vg.get_on_weight
+    puts "\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} LDG Red\t#{j}\n#{@vg.id}: LDG Short \t #{v}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}"
   end
 
   def test_ug
@@ -142,7 +144,7 @@ class TestSim < Test::Unit::TestCase
     puts "a: #{a}"
     @gg.set
     @gg.set_covers
-    assert @gg.sim < 500
+    assert @gg.sim < 500, "grid simulator > 500"
     b = @gg.get_on_weight
     puts "b: #{b}"
     assert_not_equal a,b

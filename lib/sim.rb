@@ -4,6 +4,7 @@ require 'netgen_dumb'
 require 'helpers_sim'
 
 class RandomSimulator
+  include Sim_To_Done
   attr_reader :rg, :id
   @@id = 0
   def initialize(n,e)
@@ -53,7 +54,7 @@ class RandomSimulator
     return t, s, f
   end
         
-  def sim
+=begin  def sim
     g = 0
     until g > 800 or @rg.covered?
       threads = []
@@ -74,7 +75,7 @@ class RandomSimulator
     end
 #    puts "#{@id} g: #{g}"
     return g
-  end
+=end  end
 
   def all_on
     @rg.nodes.each do |k|
@@ -114,6 +115,14 @@ end
 class RandomRedSimulator < RandomSimulator
   def initialize(g)
     @rg = RandomGraphRed.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
+class RandomShortRedSimulator < RandomSimulator
+  def initialize(g)
+    @rg = RandomGraphShort.new(g)
     @id = @@id
     @@id += 1
   end
