@@ -146,11 +146,11 @@ module PCD_All_Acts
           @on = false
           @next = :decided
         end
-      elsif cur.ids.include?(@id)
-        @on = true
-        @next = :decided
       elsif (@neighbors - @onlist.to_a).empty?
         @on = false
+        @next = :decided
+      elsif cur.ids.include?(@id)
+        @on = true
         @next = :decided
       else
         rem = @neighbors - @onlist.to_a

@@ -52,7 +52,7 @@ module DGMM
 
   def check_battery
     e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
-    return 100-(@weight + e)
+    return @weight - e
   end
 
 end
