@@ -7,6 +7,7 @@ module Sim_To_Done
       @rg.nodes.each{|k| k.send_status}
       g+=1
     end
+    $stdout.flush
     puts "#{@id} g: #{g}"
     return g
   end

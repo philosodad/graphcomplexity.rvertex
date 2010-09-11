@@ -24,14 +24,25 @@ class Experiment
           puts "simmed"
           a = @match.get_on_weight
           b = @pcd.get_on_weight
-          if a > 2*b then @count += 1 end
+          if a < b then 
+            over = true
+            20.times do
+              m = MatchSimulator.new(rg)
+              m.set
+              m.sim
+              n = m.get_on_weight
+              if n >= b then over = false end
+              break unless !over
+            end
+            @count += 1 if over
+          end
         end
       end
     end
   end
 
   def print_to_file
-    File.open("exp_2a.tab", 'w') {|x|
+    File.open("exp_2b.tab", 'w') {|x|
       s = @count.to_s
       x.puts(s)
     }

@@ -91,19 +91,15 @@ module DGMM_min
     elsif @edges.to_a.select{|k| k.weight == nil}.empty?
       @on = false
       @next = :done
-    elsif @weight == 0 then
-      @next = :listen
     elsif rand(2) == 1 then
       @next = :invite
     else
       @next = :listen
     end
-    return @next
   end
 
   def choose_edge
     eligible = @edges.to_a.select{|k| k.weight == nil}
-    if eligible.length == 0 then return :empty end
     return eligible[rand(eligible.length)]
   end
 

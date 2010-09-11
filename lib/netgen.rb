@@ -51,7 +51,7 @@ class SimpleGraph
 
   def covered?
     onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
-    @edges.each{|k| return false if k - onlist == k}
+    @edges.each{|k| return false if (k & onlist).empty?}
     return true
   end
 

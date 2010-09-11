@@ -153,19 +153,8 @@ module PCD_All_Acts
         @on = true
         @next = :decided
       else
-        rem = @neighbors - @onlist.to_a
-        ids = [@id] + rem.collect{|k| k.id}
-        covs = []
-        @covers.nodes.each{|k| covs.push(k)}
-        covs.each{|k| if k.ids - ids == k.ids then covs.delete(k) end}
-        covs.sort!
-        if covs[0].ids.include?(@id)
-          @on = true
-          @next = :decided
-        else
-          @cur += 1
-          @cur = @cur%@covers.nodes.length
-        end
+        @cur += 1
+        @cur = @cur%@covers.nodes.length
       end      
     when :decided
       check_finished
@@ -186,7 +175,7 @@ module PCD_All_Acts
     @onlist.add(n) if n.on
     if @on == nil
       if n.on
-        if n.weight = @onlist.to_a.collect{|k| k.weight}.min
+        if n.weight == @onlist.to_a.collect{|k| k.weight}.min
           @covers.nodes.each_index do |k|
             c = @covers.nodes[k].ids
             if c.include?(@id) and c.include?(n.id) then
@@ -253,7 +242,7 @@ module PCD_All_Acts_No_Red
     @onlist.add(n) if n.on
     if @on == nil
       if n.on
-        if n.weight = @onlist.to_a.collect{|k| k.weight}.min
+        if n.weight == @onlist.to_a.collect{|k| k.weight}.min
           @covers.nodes.each_index do |k|
             c = @covers.nodes[k].ids
             if c.include?(@id) and c.include?(n.id) then

@@ -77,7 +77,9 @@ class LdGraph
   end
     
   def burn_cover node, nodes
-    @ldnodes = @ldnodes.select{|k| !k.cover.include?(node.id)}
+    l = @ldnodes.select{|k| !k.cover.include?(node.id)}
+    @ldnodes = []
+    @ldnodes = l
     @edges = []
     set_edges_and_degrees nodes
   end

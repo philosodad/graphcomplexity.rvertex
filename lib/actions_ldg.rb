@@ -29,7 +29,7 @@ module LDG_Standard_Acts
       @currentcover = @currentcover%@covers.ldnodes.length
       @next = :analyze
     when :out_of_batt
-      @next = :out_of_batt
+      @next = :done
     end
     @round += 1
   end
@@ -106,7 +106,13 @@ module LDG_Cover_Acts
   end
 
   def burn_cover node
-    @covers.burn_cover node
+    @onlist = []
+    @offlist = []
+    @on = true
+    @next = :done
+#    @currentcover = 0
+#    remove_neighbor node
+#    @covers.burn_cover node, [self] + @neighbors
   end
 
   def update_covers_on

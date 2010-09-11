@@ -53,6 +53,13 @@ class TestSim < Test::Unit::TestCase
     @giant = PCDAllSimulator.new(RandomGraph.new(100,1000))
     @giant.set
     assert @giant.sim < 500
+    assert @giant.rg.covered?, "giant not covered"
+    #find a random node that is on and turn it off
+    on = @giant.rg.nodes.select{|k| k.on}
+    g = on[rand(on.length)]
+    g.neighbors.each{|k| if k.on then k.on = false end}
+    g.on = false
+    assert !@giant.rg.covered?, "giant is still covered"
   end
 
   def test_pg
@@ -167,7 +174,10 @@ class TestSim < Test::Unit::TestCase
   def test_longsim
     puts "testing long sim"
     @ag.set
+    @ig.set
+    @ig.set_covers
     a,b,c = @ag.long_sim
+    d,e,f = @ig.long_sim
     assert_equal c, 0
 #    @pg.long_sim
   end

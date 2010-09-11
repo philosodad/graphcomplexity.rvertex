@@ -46,3 +46,6 @@ module Redundant
   end
     
 end
+
+module Very_Redundant
+end

@@ -37,15 +37,16 @@ class RandomSimulator
       if i > 500 then f += 1 end
       t += @rg.reduce_by_min
       @rg.nodes.each do |k| 
+        k.on = nil
+        k.set_next(:analyze)
+        k.set_now(:analyze)
+      end
+      @rg.nodes.each do |k|
         if k.weight == 0 then 
           k.on = false
           k.set_next(:out_of_batt)
-          k.set_now(:out_of_batt)
+          #          k.set_now(:out_of_batt)
           k.neighbors.each{|j| j.burn_cover(k)}
-        else
-          k.on = nil
-          k.set_next(:analyze)
-          k.set_now(:analyze)
         end
       end
     end

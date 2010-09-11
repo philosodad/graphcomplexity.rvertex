@@ -23,15 +23,26 @@ module PCDAll
   attr_reader :local_covers
   def build_local_cover
     if @neighbors.empty? then return :empty end
+    node = Object.const_get(pcdnode_type)
     nset = Set.new(@neighbors)
     nnset = Set.new(@neighbors.collect{|k| k.neighbors}.flatten)-nset
-    a = PCD_Graph_Node.new(nset.to_a)
-    b = PCD_Graph_Node.new(nnset.to_a)
+    a = node.new(nset.to_a)
+    b = node.new(nnset.to_a)
     @local_covers = [a,b]
     @local_covers.each{|k| @covers.add_node(k)}
   end
   def get_covers
     @neighbors.each{|k| k.local_covers.each{|j| @covers.add_node(j)}}
+  end
+
+  def pcdnode_type
+    return 'PCD_Graph_Node'
+  end
+end
+
+module PCDBipartite
+  def pcdnode_type
+    return 'PCD_Bipartite_Graph_Node'
   end
 end
 

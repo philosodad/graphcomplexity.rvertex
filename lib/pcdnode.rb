@@ -14,13 +14,13 @@ class PCD_Graph_Node
   end
 
   def <=>(b)
-    if @degree > b.degree then
-      return -1
-    elsif @degree < b.degree then
-      return 1
-    elsif @weight < b.weight then
+    if @weight < b.weight then
       return -1
     elsif @weight > b.weight then 
+      return 1
+    elsif @degree > b.degree then
+      return -1
+    elsif @degree < b.degree then
       return 1
     elsif @id < b.id then
       return -1
@@ -38,4 +38,8 @@ class PCD_Graph_Node
   def zero_out
     @@id = 0
   end
+end
+
+class PCD_Bipartite_Graph_Node < PCD_Graph_Node
+
 end

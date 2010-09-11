@@ -86,6 +86,10 @@ class PCDAllNode < PCDRedundant
     super(*args)
     @cur = 0
   end
+
+  def burn_cover node
+    @covers.nodes.sort!
+  end
 end
 
 class PCDAllNodeNoRed < PCDAllNode

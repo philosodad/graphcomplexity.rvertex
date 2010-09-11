@@ -59,3 +59,6 @@ class PCD_Graph
     set_degrees
   end
 end
+
+class PCD_Bipartite_Graph
+end
