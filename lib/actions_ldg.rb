@@ -2,7 +2,6 @@ module LDG_Standard_Acts
   def do_next
     curcov = @covers.ldnodes[@currentcover]
     if curcov == nil then
-      sort_covers
       @currentcover = 0
     end
     if @covers.ldnodes.length == 0 then
@@ -29,6 +28,7 @@ module LDG_Standard_Acts
       @currentcover = @currentcover%@covers.ldnodes.length
       @next = :analyze
     when :out_of_batt
+      @now = :sendoff
       @next = :done
     end
     @round += 1

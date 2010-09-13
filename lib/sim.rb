@@ -33,22 +33,14 @@ class RandomSimulator
     f = 0
     while @rg.coverable? do
       i = sim
+      if @rg.covered? == false then
+        puts "simmed but not covered!"
+        break
+      end
       s = s + "#{i}, "
       if i > 500 then f += 1 end
       t += @rg.reduce_by_min
-      @rg.nodes.each do |k| 
-        k.on = nil
-        k.set_next(:analyze)
-        k.set_now(:analyze)
-      end
-      @rg.nodes.each do |k|
-        if k.weight == 0 then 
-          k.on = false
-          k.set_next(:out_of_batt)
-          #          k.set_now(:out_of_batt)
-          k.neighbors.each{|j| j.burn_cover(k)}
-        end
-      end
+      @rg.reset
     end
 #    puts "#{@id} t: #{t}"
     s = s + "#{t}"

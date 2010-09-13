@@ -1,6 +1,6 @@
 module Redundant
   include Comparable
-  attr_reader :redundant
+  attr_accessor :redundant
   def check_finished
     if @neighbors.select{|k| k.now == :decided or k.now == :finish}.length == @neighbors.length
       if @on

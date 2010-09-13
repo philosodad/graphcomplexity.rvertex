@@ -13,6 +13,18 @@ class PCDRootGraph < SimpleGraph
   def put_nodes g
   end
 
+  def reset
+    @nodes.each do |k|
+      k.redundant = false
+      if k.weight == 0 then
+        k.on = false
+        k.neighbors.each{|k| k.on = true}
+      end
+      k.set_now(:decided)
+      k.set_next(:decided)
+    end
+  end
+
 end
 
 class PCDAllGraph < PCDRootGraph
