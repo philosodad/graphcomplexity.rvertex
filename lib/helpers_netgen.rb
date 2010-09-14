@@ -36,7 +36,7 @@ module Connectable
     end
     trees.each_index do |i|
       j = i + 1
-      while trees[j] != nil
+      if trees[j] != nil
         u = trees[i][rand(trees[i].length)]
         v = trees[j][rand(trees[j].length)]
         u.neighbors.push(v)
@@ -45,7 +45,7 @@ module Connectable
 #        puts "I just added an edge from #{u.id} to #{v.id}"
 #        puts @nodes.include?(u)
 #        puts @nodes.include?(v)
-        j += 1
+#        j += 1
       end
     end
   end

@@ -62,6 +62,14 @@ class TestSim < Test::Unit::TestCase
     assert !@giant.rg.covered?, "giant is still covered"
   end
 
+  def test_fcd
+    puts 'testing fcd'
+    fcd = FCDRedSimulator.new(RandomGraph.new(10, 15))
+    fcd.set
+    assert fcd.sim < 500, "fcd too large"
+    assert fcd.rg.covered?, "fcd not covered"
+  end
+
   def test_pg
     puts "testing pg"
     [@pg, @eg, @og, @ug, @dg, @eg, @ng, @bg,@lg,@ag].each do |k|
@@ -173,11 +181,14 @@ class TestSim < Test::Unit::TestCase
 
   def test_longsim
     puts "testing long sim"
+    fcd = FCDRedSimulator.new(RandomGraph.new(60,90))
     @ag.set
     @ig.set
     @ig.set_covers
+    fcd.set
     a,b,c = @ag.long_sim
     d,e,f = @ig.long_sim
+    g,h,i = fcd.long_sim
     assert_equal c, 0
 #    @pg.long_sim
   end

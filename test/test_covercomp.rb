@@ -4,6 +4,7 @@ require 'test/unit'
 require 'cover'
 require 'set'
 require 'node'
+require 'node_ldg'
 
 class TestComposer < Test::Unit::TestCase
   include CoverComposer
@@ -43,5 +44,7 @@ class TestComposer < Test::Unit::TestCase
     e = covers_to_set d
     assert e.include?(Set[11,12,13])
     puts e.inspect
+    r = construct_covers @snodes, @snedge
+    puts r.inspect
   end
 end

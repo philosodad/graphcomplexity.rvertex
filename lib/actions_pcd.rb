@@ -134,10 +134,6 @@ module PCD_All_Acts
     case @now
     when :analyze
       cur = @covers.nodes[@cur]
-      while cur == nil and !@covers.nodes.empty?
-        @covers.nodes.shift
-        cur = @covers.nodes[@cur]
-      end
       if @covers.nodes.empty? then 
         if @weight > 0
           @on = true

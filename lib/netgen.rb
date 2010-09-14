@@ -8,6 +8,7 @@ require 'node_match'
 require 'node_star'
 require 'node_pcd'
 require 'node_dumb'
+require 'node_fcd'
 require 'helpers_netgen'
                         
 class SimpleGraph

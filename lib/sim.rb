@@ -1,6 +1,7 @@
 require 'netgen_pcd'
 require 'netgen_star'
 require 'netgen_dumb'
+require 'netgen_fcd'
 require 'helpers_sim'
 
 class RandomSimulator
@@ -143,6 +144,20 @@ class DumbRedSimulator < RandomSimulator
     @rg = DumbRedGraph.new(g)
     @id = @@id
     @@id += 1
+  end
+end
+
+class FCDRedSimulator < RandomSimulator
+  include Sim_To_Done
+  def initialize(g)
+    @rg = FCDRedGraph.new(g)
+    @rg.nodes.each{|k| k.set_edges}
+    @id = @@id
+    @@id +=1
+  end
+
+  def set
+    @rg.nodes.each{|k| k.set_covers}
   end
 end
 

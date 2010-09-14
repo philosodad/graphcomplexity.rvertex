@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'ldgraph'
 require 'pcdgraph'
+require 'dep_graph_fcd'
 require 'inline'
 
 module PCD
@@ -337,8 +338,11 @@ module CoverComposer
   end
 
   def construct_covers nodes, edges
+    puts "building matrix"
     a,b = build_matrix nodes, edges
+    puts "composing covers"
     c = compose_from a,b
+    puts "creating set with #{c.length} covers"
     d = covers_to_set c
     return d
   end

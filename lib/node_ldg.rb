@@ -100,15 +100,21 @@ class CoverNode < LDGNode
     end
   end
   def set_covers
-    n = @neighbors + [self]
-    alledges = Set[]
-    @edges.each{|k| alledges.add(k)}
-    nset = Set.new(@neighbors.collect{|k| k.id})
-    nset.add(@id)
-    @neighbors.each do |k| 
-      k.edges.each do |j| 
-        alledges.add(j) if j.proper_subset?(nset)
+    n = Set[]
+    @neighbors.each do |k|
+      k.neighbors.each do |j|
+        j.neighbors.each do |i|
+          n.add(i)
+        end
+        n.add(j)
       end
+    end
+    alledges = Set[]
+    @neighbors.each do |k|
+      k.neighbors.each do |j|
+        j.edges.each{|i| alledges.add(i)}
+      end
+      k.edges.each{|l| alledges.add(l)}
     end
     c = construct_covers n, alledges
     @covers = LdGraph.new(c, n)
