@@ -5,9 +5,12 @@ require 'cover'
 require 'set'
 require 'node'
 require 'node_ldg'
+require 'netgen'
+require 'benchmark'
 
 class TestComposer < Test::Unit::TestCase
   include CoverComposer
+  include Combinator
   def setup
     @sn10 = SetNode.new(10)
     @sn11 = SetNode.new(11)
@@ -37,14 +40,40 @@ class TestComposer < Test::Unit::TestCase
   end
 
   def test_covercomposer
-    a = compose_from @m, [5,6,2,8,9]
-    b,c = build_matrix @snodes, @snedge
-    d = compose_from b,c
+    a = CoverComposer.compose_from @m, [5,6,2,8,9]
+    b,c = CoverComposer.build_matrix @snodes, @snedge
+    d = CoverComposer.compose_from b,c
     assert d.include?([10,10,10,13,14,13,14])
-    e = covers_to_set d
+    e = CoverComposer.covers_to_set d
     assert e.include?(Set[11,12,13])
     puts e.inspect
-    r = construct_covers @snodes, @snedge
-    puts r.inspect
+    assert Combinator.test_cover?([10,11,12], [[10,12],[10,12], [11,13],[12,14]]), "10,11,12 not a cover"
+    r = CoverComposer::construct_covers @snodes, @snedge
+    s = Combinator.construct_covers @snodes, @snedge
+    puts "r" + r.inspect
+    puts "s" + s.inspect
   end
+
+  def test_speed
+    r = RandomGraph.new(10,15)
+    n = r.nodes[3]
+    x = Set[]
+    y = Set[]
+    n.neighbors.each do |k| 
+      k.neighbors.each{|j| x.add(j)}
+      x.add(k)
+      k.set_edges
+      k.edges.each{|j| y.add(j)}
+    end
+    p "x: " + x.inspect
+    p "y: " + y.inspect
+    r = Benchmark.realtime do 
+      Combinator.construct_covers x, y
+    end
+    s = Benchmark.realtime do 
+      CoverComposer.construct_covers x, y
+    end
+    puts "combinator: #{r}, composer: #{s}"
+  end
+    
 end

@@ -318,9 +318,45 @@ module SimpleVC
   end
 end
 
+module Combinator
+  def self.construct_covers n, e
+    s = get_subsets n.collect{|k| k.id}
+    s = test_covers(s,e)
+    return covers_to_set s
+  end
+
+  def self.get_subsets n
+    subsets = []
+    x = n.length - 1
+    (1..x).each do |k|
+      subsets = subsets+(n.combination(k).to_a)
+    end
+    return subsets
+  end
+
+  def self.test_covers(s, e)
+    e_array = []
+    e.each{|k| e_array.push(k.to_a)}
+    c = []
+    s.each{|k| c.push(k) if test_cover?(k,e_array)}
+    return c
+  end
+
+  def self.test_cover? c, e
+    e.each{|k| return false if (c&k).empty?}
+    return true
+  end    
+
+  def self.covers_to_set covers
+    l = Set[]
+    covers.each{|k| l.add(Set.new(k))}
+    return l
+  end
+
+end
 
 module CoverComposer
-  def build_matrix nodes, edges
+  def self.build_matrix nodes, edges
     m = []
     edges = edges.to_a
     edges.each{|k| m.push([])}
@@ -337,12 +373,12 @@ module CoverComposer
     return m, nlist
   end
 
-  def construct_covers nodes, edges
-    puts "building matrix"
+  def self.construct_covers nodes, edges
+#    puts "building matrix"
     a,b = build_matrix nodes, edges
-    puts "composing covers"
+#    puts "composing covers"
     c = compose_from a,b
-    puts "creating set with #{c.length} covers"
+#    puts "creating set with #{c.length} covers"
     d = covers_to_set c
     return d
   end
@@ -350,13 +386,13 @@ module CoverComposer
   def decompose_matrix matrix
   end
   
-  def covers_to_set covers
+  def self.covers_to_set covers
     l = Set[]
     covers.each{|k| l.add(Set.new(k))}
     return l
   end
 
-  def compose_from matrix, key
+  def self.compose_from matrix, key
     covers = []
     stop = false
     x = 0

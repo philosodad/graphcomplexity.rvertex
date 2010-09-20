@@ -181,7 +181,7 @@ class TestSim < Test::Unit::TestCase
 
   def test_longsim
     puts "testing long sim"
-    fcd = FCDRedSimulator.new(RandomGraph.new(60,90))
+    fcd = FCDRedSimulator.new(RandomGraph.new(40,5))
     @ag.set
     @ig.set
     @ig.set_covers

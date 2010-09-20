@@ -6,7 +6,7 @@ require 'actions_pcd'
 require 'dep_graph_fcd'
 
 class FCDRootNode < PCDRoot
-  include CoverComposer
+  include Combinator
   include PCD_All_Acts
   include FCD_Acts
 
@@ -27,23 +27,18 @@ class FCDRootNode < PCDRoot
     n = Set[]
     @neighbors.each do |k|
       k.neighbors.each do |j|
-        j.neighbors.each do |i|
-          n.add(i)
-        end
         n.add(j)
       end
+      n.add(k)
     end
     alledges = Set[]
     @neighbors.each do |k|
-      k.neighbors.each do |j|
-        j.edges.each{|i| alledges.add(i)}
-      end
       k.edges.each{|l| alledges.add(l)}
     end
     puts "covers will now be constructed for #{n.length} nodes covering #{alledges.length} edges"
-    c = construct_covers n, alledges
+    c = Combinator.construct_covers n, alledges
     @covers = FCD_Graph.new c, n
-    puts "One cover has been created"
+#    puts "One cover has been created"
   end
 end
 
