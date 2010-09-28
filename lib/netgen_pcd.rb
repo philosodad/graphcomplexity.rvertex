@@ -18,7 +18,7 @@ class PCDRootGraph < SimpleGraph
       k.redundant = false
       if k.weight == 0 then
         k.on = false
-        k.neighbors.each{|k| k.on = true}
+        k.neighbors.each{|j| j.on = true}
       end
       k.set_now(:decided)
       k.set_next(:decided)

@@ -2,6 +2,7 @@ require 'netgen_pcd'
 require 'netgen_star'
 require 'netgen_dumb'
 require 'netgen_fcd'
+require 'netgen_eep'
 require 'helpers_sim'
 
 class RandomSimulator
@@ -34,17 +35,18 @@ class RandomSimulator
     f = 0
     while @rg.coverable? do
       i = sim
+      if i > 500 then f += 1 end
       if @rg.covered? == false then
-        puts "simmed but not covered!"
+        puts "#{self.rg.class} simmed but not covered!"
         break
       end
       s = s + "#{i}, "
-      if i > 500 then f += 1 end
       t += @rg.reduce_by_min
       @rg.reset
     end
 #    puts "#{@id} t: #{t}"
     s = s + "#{t}"
+    if f != 0 then t = 0 end
     return t, s, f
   end
         
@@ -147,6 +149,20 @@ class DumbRedSimulator < RandomSimulator
   end
 end
 
+class DeepsSimulator < RandomSimulator
+  include Sim_To_Done
+  def initialize(g)
+    @rg = DeepsGraph.new(g)
+    @id = @@id
+    @@id +=1
+  end
+
+  def set
+    @rg.nodes.each{|k| k.set_edges}
+  end
+    
+end
+  
 class FCDRedSimulator < RandomSimulator
   include Sim_To_Done
   def initialize(g)

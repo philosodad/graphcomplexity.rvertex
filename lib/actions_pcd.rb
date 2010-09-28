@@ -129,7 +129,7 @@ module PCD_Delta_Acts
 end
 
 module PCD_All_Acts
-    def do_next
+  def do_next
     @now = @next
     case @now
     when :analyze

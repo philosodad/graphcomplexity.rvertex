@@ -182,18 +182,31 @@ class TestSim < Test::Unit::TestCase
   def test_longsim
     puts "testing long sim"
     fcd = FCDRedSimulator.new(RandomGraph.new(40,5))
+    dep = DeepsSimulator.new(RandomGraph.new(40,5))
     @ag.set
     @ig.set
     @ig.set_covers
     fcd.set
+    dep.set
     a,b,c = @ag.long_sim
     d,e,f = @ig.long_sim
     g,h,i = fcd.long_sim
+    j,k,l = dep.long_sim
+    assert_equal l, 0, 'deeps failed'
     assert_equal c, 0
 #    @pg.long_sim
   end
 
+  def test_deeps
+    puts "test deeps"
+    dpsim = DeepsSimulator.new(RandomGraph.new(40,5))
+    dpsim.set
+    assert dpsim.sim < 500, "deeps running past 500"
+    assert dpsim.rg.covered?, 'deeps not covering'
+  end
+
   def test_setsim
+    puts "test_setsim"
     @sg.set
     @sg.set_covers
 #    assert @sg.sim < 500

@@ -22,6 +22,18 @@ class SimpleGraph
   def set_neighbors
   end
 
+  def get_lower_bound
+    edgeweights = []
+    keyednodes = {}
+    @nodes.each{|k| keyednodes[k.id] = k.weight}
+    @edges.each do |k|
+      w = 0
+      k.each{|j| w += keyednodes[j]}
+      edgeweights.push(w)
+    end
+    return edgeweights.min
+  end
+
   def get_on_weight
     weight = 0
     @nodes.each{|k| if k.on == true then weight += k.weight end}
@@ -34,8 +46,8 @@ class SimpleGraph
   end
 
   def reduce_by_min
-    min = lowest_weight.weight
     nodes = @nodes.select{|k| k.weight > 0 and k.on}
+    min = nodes.min_by{|k| k.weight}.weight
     nodes.each{|k| k.weight = k.weight - min unless k.weight == 0}
     return min
   end

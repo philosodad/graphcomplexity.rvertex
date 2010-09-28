@@ -3,51 +3,41 @@ require 'actions_eep'
 require 'edge_eep'
 
 class DeepRootNode < BasicNode
+  include DeepsDeciders
   include Comparable
-  attr_reader :poorest
-  def initialize
+  attr_reader :poorest, :offlist
+  attr_accessor :charges
+  def initialize(*args)
+    if args.size == 1 then
+      if args[0].class == LDGNode or SetNode then
+        x = args[0].x
+        y = args[0].y
+        weight = args[0].weight
+        id = args[0].id
+      else 
+        puts "with one argument, you should pass a Node"
+      end
+    elsif args.size == 2 then
+      x = args[0]
+      y = args[1]
+      weight = nil
+      id = nil
+    end
     super()
+    @id = id unless id == nil
+    @x = x
+    @y = y
+    @weight = weight unless weight == nil
     @poorest
     @charges = []
+    @offlist = []
+    @next = :boot
   end
   
   def set_edges
-    @neighbors.each{|k| @edges.add(Set[k.id, @id])}
-    e = @edges.to_a
-    @edges = Set[]
-    e.each{|k| @edges.add(DeepsEdge.new(k))}
+    @neighbors.each{|k| @edges.add(DeepsEdge.new(self, k))}
   end
-
-  def test_hills
-    e = @edges - [@poorest]
-    p = @neighbors.collect{|k| k.poorest}
-    e = e - p
-    e.each do |k|
-      n = @neighbors.select{|j| k.include?(j.id)}[0]
-      if self.poorest > n.poorest
-        @charges.push(k)
-      elsif self.poorest == n.poorest
-        if self > n
-          @charges.push(k)
-        end
-      end
-    end
-  end
-    
-  end
-    
-  def find_poorest_edge
-    n = @neighbors.min
-    @poorest = @edges.select{|k| k.uv.include?(n.id)}[0]
-    if self == n.neighbors.min_by{|k| k.weight} then
-      if self >= n 
-        @charges.push(@poorest)
-      end
-    else
-      @charges.push(@poorest)
-    end
-  end
-
+  
   def <=> other
     if @weight < other.weight
       return -1
@@ -59,8 +49,8 @@ class DeepRootNode < BasicNode
       return 1
     end
   end
-
 end
 
-class DeepRedNode < DeepRootNode
+class DeepsNode < DeepRootNode
+  include DeepsActs
 end
