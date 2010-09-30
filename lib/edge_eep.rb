@@ -8,9 +8,13 @@ class DeepsEdge
     @u = a
     @v = b
     @type = nil
-    @supply = a.weight + b.weight
+    @supply = get_supply
   end
   
+  def get_supply
+    return @u.weight + @v.weight
+  end
+
   def uv
     return @uv
   end

@@ -33,6 +33,7 @@ class TestDeeps < Test::Unit::TestCase
       assert (k.next == :poor), s
     end
     dpsim.rg.nodes.each{|k| k.do_next}
+    dpsim.rg.nodes.each{|k| k.do_next}
     c = 0
     dpsim.rg.nodes.each do |k|
       assert k.poorest != nil, 'this node has no poorest edge'
@@ -51,11 +52,12 @@ class TestDeeps < Test::Unit::TestCase
         assert j.v.poorest.type == :sink, 'poorest is not a sink'
       end
     }
-    dpsim.rg.nodes.each{|k| assert k.next == :sinks, 'next not sinks'}
+    dpsim.rg.nodes.each{|k| assert k.next == :hills, 'next not sinks'}
     dpsim.rg.nodes.each{|k| k.do_next}
     dpsim.rg.nodes.each do |k|
       k.edges.select{|j| j.type == :sink}.each do |l|
         assert (k.charges.include?(l) or l.v.charges.collect{|m| m.uv}.include?(l.uv)), 'no node is in charge of this sink'
+        assert !(k.charges.include?(l) and l.v.charges.collect{|m| m.uv}.include?(l.uv)), 'two nodes are in charge of this sink!'
       end
     end
     dpsim.rg.nodes.each{|k| k.do_next}
@@ -64,7 +66,6 @@ class TestDeeps < Test::Unit::TestCase
       d += k.edges.select{|j| j.type == :hill}.length
     end
     assert d > c, 'sinks + hills should be greater than sinks'
-    dpsim.rg.nodes.each{|k| k.do_next}
     dpsim.rg.nodes.each do |k|
       k.edges.each do |j|
         assert (k.charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv)), 'no node is in charge of this edge!'
@@ -83,8 +84,11 @@ class TestDeeps < Test::Unit::TestCase
     dpsim.rg.nodes.each{|k| k.set_next (:boot)}
     assert dpsim.sim < 500, "deeps running past 500"
     assert dpsim.rg.covered?, 'deeps not covering'
+    dpsim.rg.reduce_by_min
     c = 0
     desim.set
+    12.times.do
+    desim.rg.reduce_by_min
     desim.rg.nodes.each do |k|
       assert k.next == :boot, 'not ready to boot'
       assert k.neighbors.length > 0, 'no neighbors'

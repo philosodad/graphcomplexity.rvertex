@@ -37,6 +37,7 @@ class RandomSimulator
       i = sim
       if i > 500 then f += 1 end
       if @rg.covered? == false then
+        f += 1
         puts "#{self.rg.class} simmed but not covered!"
         break
       end
@@ -151,12 +152,13 @@ end
 
 class DeepsSimulator < RandomSimulator
   include Sim_To_Done
+  include Stepping_Sim
   def initialize(g)
     @rg = DeepsGraph.new(g)
     @id = @@id
     @@id +=1
   end
-
+  
   def set
     @rg.nodes.each{|k| k.set_edges}
   end
@@ -194,6 +196,7 @@ class PCDSimulator < RandomSimulator
 
 end
 
+
 class PCDDeltaSimulator < PCDSimulator
   def initialize(g)
     @rg = PCDDeltaGraph.new(g)
@@ -215,6 +218,10 @@ class PCDAllSimulator < PCDSimulator
     @rg.nodes.each{|k| k.covers.set_edges}
     @rg.nodes.each{|k| k.covers.set_degrees}
   end
+end
+
+class PCDSteppingSimulator < PCDAllSimulator
+  include Stepping_Sim
 end
 
 class PCDAllSimulatorNoRed < PCDAllSimulator

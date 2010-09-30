@@ -5,7 +5,7 @@ class PCD_Graph_Node
   attr_accessor :degree
   def initialize(nodes)
     @ids = nodes.collect{|k| k.id}
-    @weight = nodes.collect{|k| k.weight}.inject(0){|a,b| a + b}
+    @weight = nodes.collect{|k| k.weight}.min
     @keyed_weights = {}
     nodes.each{|k| @keyed_weights[k.id] = k.weight}
     @degree = 0

@@ -15,13 +15,21 @@ class PCDRootGraph < SimpleGraph
 
   def reset
     @nodes.each do |k|
-      k.redundant = false
       if k.weight == 0 then
         k.on = false
         k.neighbors.each{|j| j.on = true}
+        k.set_now(:decided)
+        k.neighbors.each do |j| 
+          j.set_next(:decided)
+          j.redundant = false
+          j.neighbors.each do |l| 
+            l.set_next(:decided)
+            l.redundant = false
+          end
+        end
+        k.redundant = false
+
       end
-      k.set_now(:decided)
-      k.set_next(:decided)
     end
   end
 

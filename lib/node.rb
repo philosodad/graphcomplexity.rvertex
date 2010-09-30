@@ -20,7 +20,7 @@ class BasicNode
     @now
     @onlist = {}
     @keyedweights = {}
-    @weight = rand(9000) + 1000
+    @weight = rand(400) + 600
     update_id
   end
 
@@ -34,6 +34,14 @@ class BasicNode
   def update_id
     @id = @@id
     @@id += 1
+  end
+
+  def off?
+    if @on == false
+      return true
+    else
+      return false
+    end
   end
 
   def set_edges

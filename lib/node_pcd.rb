@@ -7,12 +7,15 @@ class PCDRoot < BasicNode
   include Comparable
   def initialize(*args)
     if args.size == 1 then
-      if args[0].class == LDGNode or args[0].class == SetNode then
+      if args[0].kind_of?(BasicNode) then
         x = args[0].x
         y = args[0].y
         weight = args[0].weight
         id = args[0].id
       else 
+        x = 0
+        y = 0
+        id = 
         puts "with one argument, you should pass a Node"
       end
     elsif args.size == 2 then

@@ -4,23 +4,23 @@ require 'sim'
 class Experiment
 
   def initialize
-    @frequency = [["nodes", "links", "dep", "pcd", "total"]]
-    @average = [["nodes", "links", "dep", "pcd"]]
-    @runs = [["nodes", "links", "dep", "pcd"]]
-    @fails = [["nodes", "links", "dep", "pcd"]]
+    @frequency = [["nodes", "links", "pst", "pcd", "total"]]
+    @average = [["nodes", "links", "pst", "pcd"]]
+    @runs = [["nodes", "links", "pst", "pcd"]]
+    @fails = [["nodes", "links", "pst", "pcd"]]
   end
   
   def experiment x
     [30].each do |i|
       [1, 1.5, 3].each do |k|
-        depwate = 0
+        pstwate = 0
         pcdwate = 0
         totwate = 0
-        depbest = 0
+        pstbest = 0
         pcdbest = 0
-        depfail = 0
+        pstfail = 0
         pcdfail = 0
-        depruns = 0
+        pstruns = 0
         pcdruns = 0
         nodes = 0
         links = 0
@@ -29,48 +29,48 @@ class Experiment
           g = RandomGraph.new(i, (i*k).to_i)
           low = g.get_lower_bound
           links += g.edges.length
-          dep_sim = DeepsSimulator.new(g)
+          pst_sim = PCDSteppingSimulator.new(g)
           pcd_sim = PCDAllSimulator.new(g)
-          [dep_sim, pcd_sim].each do |k|
+          [pst_sim, pcd_sim].each do |k|
             k.set
           end
           def runsim which, long
             life, runs, fails = which.long_sim 
             return life, runs, fails
           end
-          puts "depsim"
-          a,b,q = runsim dep_sim, 500
+          puts "pstsim"
+          a,b,q = runsim pst_sim, 500
           puts "pcdsim"
           c,d,r = runsim pcd_sim, 500
-          depwate += a unless q > 0
-          depfail += q
-          pcdwate += c unless r > 0
+          pstwate += a
+          pstfail += q
+          pcdwate += c 
           pcdfail += r
-          depruns = b
+          pstruns = b
           pcdruns = d
           a == c ? m = 2.1 : m = [a,c].select{|k| k > 0}.max
-          if m == a then depbest += 1 unless a > low end
+          if m == a then pstbest += 1 unless a > low end
           if m == c then pcdbest += 1 unless c > low end
           if m > low then puts "something is wrong deeps best = #{a>c} a:#{a}, c:#{c}, low:#{low}" end
         end
-        depwate = depwate / x-depfail.to_f
-        pcdwate = pcdwate / x-pcdfail.to_f        
-#        depruns = depruns / (x - depfail).to_f
+        pstwate = pstwate / x.to_f
+        pcdwate = pcdwate / x.to_f        
+#        pstruns = pstruns / (x - pstfail).to_f
 #        pcdruns = pcdruns / (x - pcdfail).to_f
 #        mtcruns = mtcruns / (x - mtcfail).to_f
         nodes = i
         links = links / x.to_f
         
-        @average.push([nodes, links, depwate, pcdwate])
-        @frequency.push([nodes, links, depbest, pcdbest,x])
-        @runs.push([nodes, links, depruns, pcdruns])
-        @fails.push([nodes, links, depfail, pcdfail])
+        @average.push([nodes, links, pstwate, pcdwate])
+        @frequency.push([nodes, links, pstbest, pcdbest,x])
+        @runs.push([nodes, links, pstruns, pcdruns])
+        @fails.push([nodes, links, pstfail, pcdfail])
       end
     end
   end
   
   def print_to_file
-    File.open("experiment7c_av.tab", 'w') {|x|
+    File.open("experiment7d_av.tab", 'w') {|x|
       @average.each_index do |k|
         s = String.new
         @average[k].each_index do |i|
@@ -79,7 +79,7 @@ class Experiment
         x.puts(s)
       end
     }
-    File.open("experiment7c_fr.tab", 'w') {|x|
+    File.open("experiment7d_fr.tab", 'w') {|x|
       @frequency.each_index do |k|
         s = String.new
         @frequency[k].each_index do |i|
@@ -88,7 +88,7 @@ class Experiment
         x.puts(s)
       end
     }
-    File.open("experiment7c_rn.tab", 'w') {|x|
+    File.open("experiment7d_rn.tab", 'w') {|x|
       @runs.each_index do |k|
         s = String.new
         @runs[k].each_index do |i|
@@ -97,7 +97,7 @@ class Experiment
         x.puts(s)
       end
     }
-    File.open("experiment7c_fa.tab", 'w') {|x|
+    File.open("experiment7d_fa.tab", 'w') {|x|
       @fails.each_index do |k|
         s = String.new
         @fails[k].each_index do |i|

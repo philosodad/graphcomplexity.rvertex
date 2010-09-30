@@ -3,10 +3,12 @@ module DeepsActs
     @now = @next
     case @now
     when :boot
+      @on = nil
       @charges = []
       @onlist = []
       @offlist = []
       @next = :poor
+      @poorest = nil
     when :poor
       find_poorest_edge
       @next = :sinks
@@ -20,11 +22,14 @@ module DeepsActs
       set_all_hills
       @next = :analyze
     when :analyze
-      if @charges.empty? or charges_covered?
+      if @weight == 0
         @on = false
         @next = :done
       elsif sole_survivor?
         @on = true
+        @next = :done
+      elsif @charges.empty? or charges_covered?
+        @on = false
         @next = :done
       else
         @next = :analyze
@@ -36,7 +41,7 @@ module DeepsActs
 
   def send_status
     case @now
-    when :boot, :poor, :hills, :sinks
+    when :boot, :poor, :hills, :sinks, :charge
       @now = @now
     else
       @neighbors.each{|k| k.recieve_status(@id, @on)}
@@ -55,9 +60,11 @@ end
 
 module DeepsDeciders
   def set_all_sinks
-    @edges.each do |k|
-      if k.v.poorest.eql? k       
-        @charges.push(k) unless (k.v.charges.collect{|j| j.uv}.include?(k.uv) or @charges.include?(k)) 
+    if @weight > 0 then
+      if @poorest.v.poorest.eql? @poorest       
+        @charges.push @poorest if self > @poorest.v
+      else
+        @charges.push(@poorest)
       end
     end
   end
@@ -69,18 +76,20 @@ module DeepsDeciders
   def set_all_hills
 #    puts 'setting all hills'
     @edges.select{|k| k.type == :hill}.each do |j|
-      if @poorest.supply > j.v.poorest.supply then
+      if j.v.weight == 0
+        @charges.push j unless @charges.include?(j)
+        j.v.charges = []
+      elsif @poorest.supply > j.v.poorest.supply then
         @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv))
 #        puts 'j added to charges'
+      elsif @poorest.supply == j.v.poorest.supply then
+        @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv) or j.v > self)
       end
     end
   end
     
   def find_poorest_edge
     @poorest = @edges.min
-    if @poorest.supply - @weight <= @weight
-      @charges.push(@poorest) unless @poorest.v.charges.collect{|k| k.uv}.include?(@poorest.uv)
-    end
     @poorest.type = :sink
   end
 
@@ -89,7 +98,16 @@ module DeepsDeciders
       if !@onlist.include? k.v.id then return false end
       if @offlist.include? k.v.id then return false end
     end
-    return true
+    ret = nil
+    @charges.each do |k|
+      ret = false
+      if k.v.on then 
+        ret = true
+      else 
+        return false
+      end
+    end
+    return ret
   end
   
   def sole_survivor?

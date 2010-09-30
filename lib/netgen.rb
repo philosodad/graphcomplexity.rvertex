@@ -69,8 +69,7 @@ class SimpleGraph
   end
 
   def coverable?
-    zerolist = Set.new(@nodes.collect{|k| k.id if k.weight == 0})
-    @edges.each{|k| return false if (k - zerolist).empty?}
+    return false if get_lower_bound == 0
     return true
   end
 

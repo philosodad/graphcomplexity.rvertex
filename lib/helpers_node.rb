@@ -2,7 +2,7 @@ module Redundant
   include Comparable
   attr_accessor :redundant
   def check_finished
-    if @neighbors.select{|k| k.now == :decided or k.now == :finish}.length == @neighbors.length
+    if @neighbors.select{|k| k.now == :decided or k.now == :finish or k.now == :done}.length == @neighbors.length
       if @on
         if @neighbors.select{|k| !k.on}.empty?
           @redundant = true
@@ -21,7 +21,7 @@ module Redundant
           @on = false
         else
           a = @neighbors.select{|k| k.redundant} + [self]
-          if a.max == self
+          if a.min == self
             @on = false
           end
         end
