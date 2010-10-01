@@ -7,7 +7,10 @@ class TestDeeps < Test::Unit::TestCase
   def test_deeps
     puts "test deeps"
     dpsim = DeepsSimulator.new(RandomGraph.new(40,5))
-    desim = DeepsSimulator.new(RandomGraph.new(40,5))
+    desim = DeepsRedMinSimulator.new(RandomGraph.new(40,5))
+    dnsim = DeepsMinMinSimulator.new(RandomGraph.new(40,5))
+    dxsim = DeepsMaxMaxSimulator.new(RandomGraph.new(40,5))
+    dasim = DeepsMinMaxSimulator.new(RandomGraph.new(40,5))
     dpsim.set
     dpsim.rg.nodes.each do |k|
       assert k.neighbors.length > 0, 'this node has no neighbors'
@@ -87,13 +90,14 @@ class TestDeeps < Test::Unit::TestCase
     dpsim.rg.reduce_by_min
     c = 0
     desim.set
-    12.times.do
-    desim.rg.reduce_by_min
-    desim.rg.nodes.each do |k|
-      assert k.next == :boot, 'not ready to boot'
-      assert k.neighbors.length > 0, 'no neighbors'
-      assert k.neighbors.length == k.edges.length, 'no edges'
-    end
+    dxsim.set
+    dnsim.set
+    dasim.set 
+    assert dxsim.sim < 500
+    assert dnsim.sim < 500
+    assert dasim.sim < 500
     assert desim.sim < 500, 'other deeps overruns'
+    desim.rg.nodes.each{|k| if k.now == :decided then assert_not_nil k.on end}
+    desim.rg.nodes.each{|k| if k.now == :analyze then assert_nil k.on end}
   end
 end

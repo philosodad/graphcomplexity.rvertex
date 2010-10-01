@@ -7,6 +7,7 @@ require 'helpers_sim'
 
 class RandomSimulator
   include Sim_To_Done
+  include Running_Sim
   attr_reader :rg, :id
   @@id = 0
   def initialize(n,e)
@@ -27,28 +28,6 @@ class RandomSimulator
       end
     end
     threads.each{|t| t.join}
-  end
-
-  def long_sim
-    t = 0
-    s = ""
-    f = 0
-    while @rg.coverable? do
-      i = sim
-      if i > 500 then f += 1 end
-      if @rg.covered? == false then
-        f += 1
-        puts "#{self.rg.class} simmed but not covered!"
-        break
-      end
-      s = s + "#{i}, "
-      t += @rg.reduce_by_min
-      @rg.reset
-    end
-#    puts "#{@id} t: #{t}"
-    s = s + "#{t}"
-    if f != 0 then t = 0 end
-    return t, s, f
   end
         
 =begin  def sim
@@ -155,16 +134,49 @@ class DeepsSimulator < RandomSimulator
   include Stepping_Sim
   def initialize(g)
     @rg = DeepsGraph.new(g)
+    set_id
+  end
+  
+  def set_id
     @id = @@id
     @@id +=1
   end
-  
+
   def set
     @rg.nodes.each{|k| k.set_edges}
   end
     
 end
   
+class DeepsRedMinSimulator < RandomSimulator
+  def initialize(g)
+    @rg = DeepsRedMinGraph.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
+class DeepsMinMinSimulator < DeepsSimulator
+  def initialize(g)
+    @rg = DeepsMinMinGraph.new(g)
+    set_id
+  end
+end
+
+class DeepsMaxMaxSimulator < DeepsSimulator
+  def initialize(g)
+    @rg = DeepsMinMinGraph.new(g)
+    set_id
+  end
+end
+
+class DeepsMinMaxSimulator < DeepsSimulator
+  def initialize(g)
+    @rg = DeepsMinMinGraph.new(g)
+    set_id
+  end
+end
+
 class FCDRedSimulator < RandomSimulator
   include Sim_To_Done
   def initialize(g)
@@ -220,6 +232,22 @@ class PCDAllSimulator < PCDSimulator
   end
 end
 
+class PCDSumSimulator < PCDAllSimulator
+  def initialize(g)
+    @rg = PCDAllGraphSum.new(g)
+    @id = @@id
+    @@id += 1
+  end
+end
+
+class PCDMinRedSimulator < PCDAllSimulator
+  def initialize(g)
+    @rg = PCDMinRedGraph.new(g)
+    @id = @@id
+    @@id +=1
+  end
+end
+
 class PCDSteppingSimulator < PCDAllSimulator
   include Stepping_Sim
 end
@@ -240,7 +268,7 @@ class MatchSimulator < RandomSimulator
     @@id += 1
   end
 
-  def long_sim
+=begin  def long_sim
     t = 0
     while @rg.coverable?
       sim
@@ -251,11 +279,15 @@ class MatchSimulator < RandomSimulator
     end
     puts "#{@id} t: #{t}"
     return t
-  end
+=end  end
 
   def set
     @rg.nodes.each{|k| k.set_edges}
   end
+end
+
+class MatchStepSimulator < MatchSimulator
+  include Stepping_Sim
 end
 
 class MatchMaxSimulator < MatchSimulator
@@ -289,11 +321,6 @@ class StarSimulator < MatchSimulator
     @id = @@id
     @@id += 1
   end
-
-  def sim
-    super(20000)
-  end
-
 end
 
 class StarRedSimulator < StarSimulator

@@ -53,7 +53,7 @@ module StarMachine
           b = beta(r)
           osat += b/r.weight
           msat += b/@weight
-          if msat.round(5) == 1.0
+          if msat.round(5) >= 1.0
             on = true
           end
           final = k

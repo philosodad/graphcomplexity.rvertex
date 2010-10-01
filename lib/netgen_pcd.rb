@@ -41,6 +41,18 @@ class PCDAllGraph < PCDRootGraph
   end
 end
 
+class PCDAllGraphSum < PCDRootGraph
+  def put_nodes g
+    g.nodes.each{|k| @nodes.push(PCDNodeSum.new(k))}
+  end
+end
+
+class PCDMinRedGraph < PCDRootGraph
+  def put_nodes g
+    g.nodes.each{|k| @nodes.push(PCDNodeMinRed.new(k))}
+  end
+end
+
 class PCDAllGraphNoRed < PCDRootGraph
   def put_nodes g
     g.nodes.each{|k| @nodes.push(PCDAllNodeNoRed.new(k))}

@@ -112,6 +112,10 @@ class MatchGraph < SimpleGraph
     set_neighbors
   end
 
+  def reset
+    @nodes.each{|k| k.reset}
+  end
+
   def invert_weight
   end
 end
@@ -122,6 +126,8 @@ class MatchMaxGraph < MatchGraph
     n = []
     g.nodes.each{|k| n.push(MatchMaxNode.new(k))}
     @nodes = n
+    g.edges.each{|k| @edges.add(k)}
+    set_neighbors
   end
 end
 

@@ -57,12 +57,6 @@ module DGMM
 
 end
 
-module DGMM_max
-  def check_battery
-    e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
-    return 100-(@weight + e)
-  end
-end
 
 module DGMM_mwm
   def choose_role
@@ -131,6 +125,22 @@ module DGMM_min
     if @weight == 0 then return 1.0/0 end
     e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
     return @weight - e
+  end
+
+end
+
+module DGMM_max
+  def check_battery
+    if @weight == 0 then return 1.0/0 end
+    e = @edges.collect{|k| k.weight}.compact.inject(0){|u,v| u+v}
+    return (-1 * @weight) + e
+  end
+
+  def update_weight
+    if @subtract == 0 then return true end
+    edge = @edges.select{|k| k.uv.include?(@rp.id)}.first
+    edge.weight = -1 * @subtract
+    if check_battery == 0 then @on = true end
   end
 
 end

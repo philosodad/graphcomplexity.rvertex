@@ -1,15 +1,22 @@
+require 'Globals'
+
 module Sim_To_Done
   def sim *args
     args.length == 0 ? m = 500 : m = args[0]
     g = 0
+    f = 0
+    w = 0
     until all_done or g > m
       @rg.nodes.each{|k| k.do_next}
       @rg.nodes.each{|k| k.send_status}
       g+=1
     end
+    if g > m then f = 1 end
+    w = @rg.get_on_weight
+    if f == 1 then g = 0 end
     $stdout.flush
     puts "S_T_DONE! #{@id} g: #{g}"
-    return g
+    return w, g, f 
   end
 
   def all_done
@@ -18,6 +25,30 @@ module Sim_To_Done
 
   def all_decided
     return @rg.nodes.select{|k| (k.now != :decided) and (k.now != :finish) and (k.now != :done)}.empty?
+  end
+end
+
+module Running_Sim
+  def long_sim
+    t = 0
+    s = ""
+    f = 0
+    while @rg.coverable? do
+      i = sim
+      if i > 500 then f += 1 end
+      if @rg.covered? == false then
+        f += 1 if f == 0
+        puts "#{self.rg.class} simmed but not covered!"
+        break
+      end
+      s = s + "#{i}, "
+      t += @rg.reduce_by_min
+      @rg.reset
+    end
+#    puts "#{@id} t: #{t}"
+    s = s + "#{t}"
+    if f != 0 then t = 0 end
+    return t, s, f
   end
 end
 
@@ -37,7 +68,7 @@ module Stepping_Sim
         break
       end
       s = s + "#{i}, "      
-      if @counter == 2 then
+      if @counter == $step_up then
         @counter = 0
         @rg.nodes.each{|k| k.weight -= 1}
       end

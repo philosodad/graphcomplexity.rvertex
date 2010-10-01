@@ -2,9 +2,11 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
 require 'sim'
+require 'globals'
 
 class TestSim < Test::Unit::TestCase
   def setup
+    Globals.new()
     @sn10 = SetNode.new(0)
     @sn11 = SetNode.new(1)
     @sn12 = SetNode.new(2)
@@ -23,22 +25,26 @@ class TestSim < Test::Unit::TestCase
     @udg = UDGSimulator.new(80, 1000, 120)
  #   @rg = RandomSimulator.new(50, @udg.rg.edges.length)
     @rg = RandomSimulator.new(17, 70)
-    @ig = RandomSimulator.new(50, 150)
+    @ig = RandomSimulator.new(40, 15)
     @gg = GridSimulator.new(5,2)
     @wg = TotalWeightSimulator.new(5,2)
     @mg = MatchSimulator.new(@gg.rg)
     @tg = StarSimulator.new(@gg.rg)
-    @pg = PCDSimulator.new(@ig.rg)
+    @pg = PCDMinRedSimulator.new(@ig.rg)
     @dg = MatchRedSimulator.new(@ig.rg)
-    @eg = PCDDeltaSimulator.new(@ig.rg)
+    @qg = MatchMaxSimulator.new(@ig.rg)
+    @eg = PCDSumSimulator.new(@ig.rg)
     @ng = MatchSimulator.new(@ig.rg)
     @ag = PCDAllSimulator.new(@ig.rg)
     @lg = StarRedSimulator.new(@ig.rg)
     @kg = StarSimulator.new(@ig.rg)
-    @bg = RandomRedSimulator.new(@ig.rg)
+    @bg = DeepsRedMinSimulator.new(@ig.rg)
     @og = PCDAllSimulatorNoRed.new(@ig.rg)
     @ug = DumbRedSimulator.new(@ig.rg)
-    @vg = RandomShortRedSimulator.new(@ig.rg)
+    @vg = DeepsSimulator.new(@ig.rg)
+    @xg = DeepsMaxMaxSimulator.new(@ig.rg)
+    @zg = DeepsMinMaxSimulator.new(@ig.rg)
+    @yg = DeepsMinMinSimulator.new(@ig.rg)
     @rg.set
     @sg.set
     @mg.set
@@ -72,35 +78,42 @@ class TestSim < Test::Unit::TestCase
 
   def test_pg
     puts "testing pg"
-    [@pg, @eg, @og, @ug, @dg, @eg, @ng, @bg,@lg,@ag].each do |k|
+    [@pg, @eg, @og, @ug, @dg, @eg, @ng, @bg,@lg,@ag, @qg].each do |k|
       assert_equal k.get_total_weight, @ig.get_total_weight
     end
-    [@ng, @ag, @og, @ug, @vg].each{|k| k.set}
-    [@bg, @ig, @vg].each do |k|
+    [@ng, @ag, @og, @ug, @vg, @bg, @xg, @zg, @yg, @qg].each{|k| k.set}
+    [@ig].each do |k|
       k.set
       k.set_covers
     end
     assert @pg.rg.coverable?
-#    assert @pg.sim < 500, "pg > 500"
- #   assert @eg.sim < 500, "eg > 500"
-    assert @dg.sim < 500, "dg > 500"
-    assert @ng.sim < 500, "ng > 500"
-    assert @ag.sim < 500, "ag > 500"
-    assert @bg.sim < 500, "bg > 500"
-    assert @ig.sim < 500, "ig > 500"
-    assert @og.sim < 500, "og > 500"
-    assert @vg.sim < 500, 'vg > 500'
-    assert @ug.sim < 500, "ug > 500"
+
+    assert @pg.sim[1] < 500, "pg > 500"
+    assert @xg.sim[1] < 500, "xg > 500"
+    assert @zg.sim[1] < 500, "zg > 500"
+    assert @yg.sim[1] < 500, "yg > 500"
+    assert @eg.sim[1] < 500, "eg > 500"
+    assert @dg.sim[1] < 500, "dg > 500"
+    assert @ng.sim[1] < 500, "ng > 500"
+    assert @ag.sim[1] < 500, "ag > 500"
+    assert @bg.sim[1] < 500, "bg > 500"
+    assert @qg.sim[1] < 500, "qg > 500"
+    #assert @ig.sim < 500, "ig > 500"
+    assert @og.sim[1] < 500, "og > 500"
+    assert @vg.sim[1] < 500, 'vg > 500'
+    assert @ug.sim[1] < 500, "ug > 500"
     assert @ag.rg.covered?, "ag not covered"
     assert @eg.rg.covered?, "eg not covered"
     assert @ug.rg.covered?, "ug not covered"
     assert @og.rg.covered?, "og not covered"
-    if @lg.sim < 20000 then
+    assert @dg.rg.covered?, "dg not covered"
+    assert @qg.rg.covered?, "qg not covered"
+    if @lg.sim[1] < 20000 then
       f = @lg.get_on_weight
     else
       f = @lg.get_total_weight
     end
-    if @kg.sim < 20000 then
+    if @kg.sim[1] < 20000 then
       g = @kg.get_on_weight
     else
       g = @kg.get_total_weight
@@ -116,7 +129,11 @@ class TestSim < Test::Unit::TestCase
     k = @og.get_on_weight
     l = @ug.get_on_weight
     v = @vg.get_on_weight
-    puts "\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} LDG Red\t#{j}\n#{@vg.id}: LDG Short \t #{v}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}"
+    z = @zg.get_on_weight
+    y = @yg.get_on_weight
+    x = @xg.get_on_weight
+    q = @qg.get_on_weight
+    puts "\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\t#{@qg.id} Match Max: \t #{q}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} Deeps Red\t#{j}\n#{@xg.id}: MaxMax \t #{x}\t#{@yg.id} MinMin \t#{y}\t #{@zg.id} MinMax\t#{z}\n#{@vg.id}: Deeps \t #{v}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}"
   end
 
   def test_ug
@@ -185,16 +202,16 @@ class TestSim < Test::Unit::TestCase
     dep = DeepsSimulator.new(RandomGraph.new(40,5))
     @ag.set
     @ig.set
-    @ig.set_covers
+    @ng.set
     fcd.set
     dep.set
     a,b,c = @ag.long_sim
-    d,e,f = @ig.long_sim
+#    d,e,f = @ig.long_sim
     g,h,i = fcd.long_sim
     j,k,l = dep.long_sim
+    @ng.long_sim
     assert_equal l, 0, 'deeps failed'
     assert_equal c, 0
-#    @pg.long_sim
   end
 
   def test_deeps

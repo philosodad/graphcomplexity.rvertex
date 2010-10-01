@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'ldgraph'
-require 'pcdgraph'
+require 'dep_graph_pcd'
 require 'dep_graph_fcd'
 require 'inline'
 
@@ -38,6 +38,12 @@ module PCDAll
 
   def pcdnode_type
     return 'PCD_Graph_Node'
+  end
+end
+
+module PCD_All_Sum
+  def pcdnode_type
+    return 'PCD_Graph_Node_Sum'
   end
 end
 

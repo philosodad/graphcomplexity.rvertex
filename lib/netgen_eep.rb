@@ -67,7 +67,48 @@ class DeepsGraph < DeepsRootGraph
     @edges.each{|k| return false if (k & onlist).empty?}
     return true
   end
+end
 
+class DeepsRedMinGraph < DeepsGraph
+  def put_nodes(g)
+    g.nodes.each{|k| @nodes.push(DeepsRedMinNode.new(k))}
+  end
 
-      
+  def reset
+    @nodes.each do |k|
+      if k.weight == 0 then
+        k.on = false
+        k.neighbors.each{|j| j.on = true}
+        k.set_now(:decided)
+        k.neighbors.each do |j| 
+          j.set_next(:decided)
+          j.redundant = false
+          j.neighbors.each do |l| 
+            l.set_next(:decided)
+            l.redundant = false
+          end
+        end
+        k.redundant = false
+      end
+    end
+  end
+
+end
+
+class DeepsMaxMaxGraph < DeepsGraph
+  def put_nodes(g)
+    g.nodes.each{|k| @nodes.push(DeepsMaxMaxNode.new(k))}
+  end
+end
+
+class DeepsMinMaxGraph < DeepsGraph
+  def put_nodes(g)
+    g.nodes.each{|k| @nodes.push(DeepsMinMaxNode.new(k))}
+  end
+end
+
+class DeepsMinMinGraph < DeepsGraph
+  def put_nodes(g)
+    g.nodes.each{|k| @nodes.push(DeepsMinMinNode.new(k))}
+  end
 end
