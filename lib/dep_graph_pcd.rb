@@ -1,4 +1,4 @@
-require 'pcdnode'
+require 'dep_node_pcd'
 require 'set'
 
 class PCD_Graph

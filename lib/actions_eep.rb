@@ -57,8 +57,53 @@ module DeepsActs
   end
 end
 
+module DeepsRedActs
+  def do_next
+    @now = @next
+    case @now
+    when :boot
+      @on = nil
+      @charges = []
+      @onlist = []
+      @offlist = []
+      @next = :poor
+      @poorest = nil
+    when :poor
+      find_poorest_edge
+      @next = :sinks
+    when :sinks
+      set_all_sinks
+      @next = :hills
+    when :hills
+      find_hills
+      @next = :charge
+    when :charge
+      set_all_hills
+      @next = :analyze
+    when :analyze
+      if @weight == 0
+        @on = false
+        @next = :decided
+      elsif sole_survivor?
+        @on = true
+        @next = :decided
+      elsif @charges.empty? or charges_covered?
+        @on = false
+        @next = :decided
+      else
+        @next = :analyze
+      end
+    when :decided
+      check_finished
+    when :finish
+      check_redundant
+    when :done
+      @next = :done
+    end
+  end
+end
 
-module DeepsDeciders
+module Deeps_Deciders
   def set_all_sinks
     if @weight > 0 then
       if @poorest.v.poorest.eql? @poorest       
@@ -94,11 +139,7 @@ module DeepsDeciders
   end
 
   def charges_covered?
-    @charges.each do |k|
-      if !@onlist.include? k.v.id then return false end
-      if @offlist.include? k.v.id then return false end
-    end
-    ret = nil
+    ret = false
     @charges.each do |k|
       ret = false
       if k.v.on then 
@@ -111,7 +152,51 @@ module DeepsDeciders
   end
   
   def sole_survivor?
-    if @offlist.empty? then return false end
-    return true
+    return !(@neighbors.select{|k| k.off?}.empty?)
   end
 end
+
+module Deeps_Deciders_Maximize_Max
+  include Deeps_Deciders
+  def find_poorest_edge
+    @poorest = @edges.max
+    @poorest.type = :sink
+  end
+end
+
+module Deeps_Deciders_Minimize_Max
+  include Deeps_Deciders_Maximize_Max
+  def set_all_sinks
+    if @weight > 0 then
+      if @poorest.v.poorest.eql? @poorest       
+        @charges.push @poorest if self < @poorest.v
+      else
+        @charges.push(@poorest)
+      end
+    end
+  end
+
+ def set_all_hills
+#    puts 'setting all hills'
+    @edges.select{|k| k.type == :hill}.each do |j|
+      if j.v.weight == 0
+        @charges.push j unless @charges.include?(j)
+        j.v.charges = []
+      elsif @poorest.supply < j.v.poorest.supply then
+        @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv))
+#        puts 'j added to charges'
+      elsif @poorest.supply == j.v.poorest.supply then
+        @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv) or j.v < self)
+      end
+    end
+  end
+end
+
+module Deeps_Deciders_Minimize_Min
+  include Deeps_Deciders_Minimize_Max
+  def find_poorest_edge
+    @poorest = @edges.min
+    @poorest.type = :sink
+  end
+end
+

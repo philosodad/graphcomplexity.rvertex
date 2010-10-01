@@ -1,16 +1,21 @@
-class PCD_Graph_Node
+require 'helpers_dep_node'
+
+class PCD_Graph_Node_Root
   @@id = 0
   include Comparable
   attr_reader :ids, :weight, :id, :keyed_weights
   attr_accessor :degree
   def initialize(nodes)
     @ids = nodes.collect{|k| k.id}
-    @weight = nodes.collect{|k| k.weight}.min
+    @weight = set_weight(nodes)
     @keyed_weights = {}
     nodes.each{|k| @keyed_weights[k.id] = k.weight}
     @degree = 0
     @id = @@id
     @@id += 1
+  end
+
+  def set_weight(nodes)
   end
 
   def <=>(b)
@@ -38,6 +43,14 @@ class PCD_Graph_Node
   def zero_out
     @@id = 0
   end
+end
+
+class PCD_Graph_Node < PCD_Graph_Node_Root
+  include Minimum_Weight
+end
+
+class PCD_Graph_Node_Sum < PCD_Graph_Node_Root
+  include Cumulative_Weight
 end
 
 class PCD_Bipartite_Graph_Node < PCD_Graph_Node

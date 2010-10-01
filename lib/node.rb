@@ -6,6 +6,7 @@ require 'gmm'
 require 'weighted_edge'
 require 'helpers_node'
 require 'actions_ldg'
+require 'globals.rb'
 
 class BasicNode
   attr_reader :x, :y, :id, :edges, :covers, :onlist, :currentcover, :neighbors, :booted, :next, :now
@@ -20,7 +21,7 @@ class BasicNode
     @now
     @onlist = {}
     @keyedweights = {}
-    @weight = rand(400) + 600
+    @weight = rand($init_weight) + $init_range
     update_id
   end
 

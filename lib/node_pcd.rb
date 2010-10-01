@@ -95,6 +95,14 @@ class PCDAllNode < PCDRedundant
   end
 end
 
+class PCDNodeSum < PCDAllNode
+  include PCD_All_Sum
+end
+
+class PCDNodeMinRed < PCDAllNode
+  include Redundant_Min
+end
+
 class PCDAllNodeNoRed < PCDAllNode
   include PCD_All_Acts_No_Red
 end

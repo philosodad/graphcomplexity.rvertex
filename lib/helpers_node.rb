@@ -21,7 +21,7 @@ module Redundant
           @on = false
         else
           a = @neighbors.select{|k| k.redundant} + [self]
-          if a.min == self
+          if most_valued a
             @on = false
           end
         end
@@ -30,6 +30,10 @@ module Redundant
     else
       @next = :finish
     end  
+  end
+  
+  def most_valued a
+    return a.max == self
   end
 
   def <=>(other)
@@ -45,6 +49,13 @@ module Redundant
     end
   end
     
+end
+
+module Redundant_Min
+  include Redundant
+  def most_valued a
+    return a.min == self
+  end
 end
 
 module Very_Redundant
