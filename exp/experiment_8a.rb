@@ -12,7 +12,7 @@ class Experiment
   end
   
   def experiment x
-    [40, 120].each do |y|
+    [40, 120, 240].each do |y|
       [1.5,3,6,12].each do |z|
         mat_reg_wate = 0
         mat_reg_best = 0
@@ -64,7 +64,7 @@ class Experiment
           mat_reg_runs += b/5
           mat_reg_fail += c
           mat_red_wate += d
-          mat_red_runs += e/8
+          mat_red_runs += (e/5)+3
           mat_red_fail += f
           pcd_red_wate += g
           pcd_red_runs += h/5
@@ -73,7 +73,7 @@ class Experiment
           sta_reg_runs += k/5
           sta_reg_fail += l
           sta_red_wate += m
-          sta_red_runs += n/8
+          sta_red_runs += (n/5)+3
           sta_red_fail += o
           dep_min_wate += p
           dep_min_runs += q/5
@@ -162,5 +162,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 5
+x.experiment 50
 x.print_to_file

@@ -1,4 +1,4 @@
-require 'Globals'
+require 'globals'
 
 module Sim_To_Done
   def sim *args

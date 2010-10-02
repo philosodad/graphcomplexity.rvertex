@@ -10,7 +10,7 @@ class Experiment
   end
   
   def experiment x
-    [30].each do |i|
+    [15, 30].each do |i|
       [1, 1.5].each do |k|
         fcdwate = 0
         pcdwate = 0

@@ -10,7 +10,7 @@ class Experiment
   end
   
   def experiment x
-    [20,40].each do |i|
+    [20,40,80].each do |i|
       [1.5, 3].each do |k|
         ldgwate = 0
         pcdwate = 0
@@ -126,5 +126,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 10
+x.experiment 100
 x.print_to_file
