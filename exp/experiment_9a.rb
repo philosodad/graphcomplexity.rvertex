@@ -9,10 +9,8 @@ class Experiment
   end
   
   def experiment x
-    [30].each do |y|
-      [1, 1.5].each do |z|
-        matwate = 0
-        matfail = 0
+    [20,40,80].each do |y|
+      [1.5,3,6].each do |z|
         pcdwate = 0
         pcdfail = 0
         depwate = 0
@@ -21,35 +19,26 @@ class Experiment
         links = 0
         x.times do
           $stdout.flush
-          g = RandomGraph.new(y, (y*z).to_i)
-          low = g.get_lower_bound
-          links += g.edges.length
-          mat_sim = MatchStepSimulator.new(g)
-          pcd_sim = PCDSteppingSimulator.new(g)
-          dep_sim = DeepsSimulator.new(g)
-          [mat_sim, pcd_sim, dep_sim].each do |k|
+          w = RandomGraph.new(y, (y*z).to_i)
+          low = w.get_lower_bound
+          links += w.edges.length
+          pcd_sim = PCDSteppingSimulator.new(w)
+          dep_sim = DeepsSimulator.new(w)
+          [pcd_sim, dep_sim].each do |k|
             k.set
           end
-          def runsim which
-            life, runs, fails = which.long_sim 
-            return life, runs, fails
-          end
-          a,b,c = mat_sim.long_sim
           d,e,f = pcd_sim.long_sim
           g,h,i = dep_sim.long_sim
-          matwate += a
-          matfail += c
           pcdwate += d
           pcdfail += f
           depwate += g
           depfail += i
         end
-        matwate = (matwate / (x-matfail).to_f).round(1)
         pcdwate = (pcdwate / (x-pcdfail).to_f).round(1)
         depwate = (depwate / (x-depfail).to_f).round(1)
         nodes = y
         links = z*2
-        @average.push([nodes, links, pcdwate, depwate, matwate])
+        @average.push([nodes, links, pcdwate, depwate])
       end
     end
   end
@@ -68,5 +57,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 5
+x.experiment 25
 x.print_to_file
