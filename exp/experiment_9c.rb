@@ -9,8 +9,8 @@ class Experiment
   end
   
   def experiment x
-    [20].each do |y|
-      [1, 1.5].each do |z|
+    [20,40,80].each do |y|
+      [1, 1.5,3].each do |z|
         [1000, 2, 1].each do |w|
           mat_run_wate = 0
           mat_run_fail = 0
@@ -88,5 +88,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 2
+x.experiment 25
 x.print_to_file
