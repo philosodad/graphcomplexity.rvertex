@@ -30,12 +30,13 @@ end
 
 module Running_Sim
   def long_sim
+    puts 'running sim!'
     t = 0
     s = ""
     f = 0
     while @rg.coverable? do
       i = sim
-      if i > 500 then f += 1 end
+      if i[1] > 500 or i[2] > 0 then f += 1 end
       if @rg.covered? == false then
         f += 1 if f == 0
         puts "#{self.rg.class} simmed but not covered!"
@@ -53,7 +54,9 @@ module Running_Sim
 end
 
 module Stepping_Sim
-  def long_sim
+  def long_sim *args
+    puts 'stepping sim!'
+    args.empty? ? step = $step_up : step = args[0]
     t = 0
     s = ""
     f = 0
@@ -62,13 +65,13 @@ module Stepping_Sim
       i = sim
       @rg.nodes.each{|k| if k.now != :done then puts '#{k.id} not done' end}
       @rg.coverable? ? @counter += 1 : raise
-      if i > 500 or !@rg.covered? then f += 1 end
+      if i[1] > 500 or i[2] > 0 or !@rg.covered? then f += 1 end
       if @rg.covered? == false then
         puts "#{self.rg.class} simmed but not covered!"
         break
       end
       s = s + "#{i}, "      
-      if @counter == $step_up then
+      if @counter == step then
         @counter = 0
         @rg.nodes.each{|k| k.weight -= 1}
       end
@@ -77,13 +80,14 @@ module Stepping_Sim
           k.weight -= 1
         end
       end
-      t += 1 
+      t += 1
       @rg.nodes.each{|k| if k.weight < 0 then k.weight = 0 end}
       @rg = @rg.class.new(@rg)
       set
     end
 #    puts "#{@id} t: #{t}"
     s = s + "#{t}"
+    if f > 0 then t = 0 end
     return t, s, f
   end
 end
