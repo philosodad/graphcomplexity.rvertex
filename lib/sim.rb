@@ -7,7 +7,6 @@ require 'helpers_sim'
 
 class RandomSimulator
   include Sim_To_Done
-  include Running_Sim
   attr_reader :rg, :id
   @@id = 0
   def initialize(n,e)
@@ -30,29 +29,6 @@ class RandomSimulator
     threads.each{|t| t.join}
   end
         
-=begin  def sim
-    g = 0
-    until g > 800 or @rg.covered?
-      threads = []
-      @rg.nodes.each do |k|
-        threads << Thread.new(k) do |j|
-          j.do_next
-        end
-      end
-      threads.each{|t| t.join}
-      threads = []
-      @rg.nodes.each do |k|
-        threads << Thread.new(k) do |j|
-          j.send_status
-        end
-      end
-      threads.each{|t| t.join}
-      g += 1
-    end
-#    puts "#{@id} g: #{g}"
-    return g
-=end  end
-
   def all_on
     @rg.nodes.each do |k|
       if k.on == nil
@@ -81,6 +57,9 @@ class RandomSimulator
 
   def get_total_weight
     return @rg.get_total_weight
+  end
+
+  def long_sim
   end
 
   def zero_out
@@ -147,6 +126,10 @@ class DeepsSimulator < RandomSimulator
   end
     
 end
+
+class DeepsRunningSimulator < DeepsSimulator
+  include Running_Sim
+end
   
 class DeepsRedMinSimulator < RandomSimulator
   def initialize(g)
@@ -192,6 +175,7 @@ class FCDRedSimulator < RandomSimulator
 end
 
 class PCDSimulator < RandomSimulator
+  include Running_Sim
   include Sim_To_Done
   def initialize(g)
     @rg = PCDGraph.new(g)
@@ -262,6 +246,7 @@ end
 
 class MatchSimulator < RandomSimulator
   include Sim_To_Done
+  include Running_Sim
   def initialize(g)
     @rg = MatchGraph.new(g)
     @id = @@id
