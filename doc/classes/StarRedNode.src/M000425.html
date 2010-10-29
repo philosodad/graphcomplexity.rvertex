@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>do_next (StarRedNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/node_star.rb, line 86</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">do_next</span>
+    <span class="ruby-ivar">@now</span> = <span class="ruby-ivar">@next</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-ivar">@now</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:choose</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">choose_nodetype</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:notleaf</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:pause</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:pause</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:root</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:root</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:choose</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:notroot</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:leaf</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:leaf</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:wait</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:wait</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:choose</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:decided</span>
+      <span class="ruby-identifier">check_finished</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:finish</span>
+      <span class="ruby-identifier">check_redundant</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:done</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:done</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

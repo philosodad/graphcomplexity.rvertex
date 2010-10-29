@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>set_neighbors (NotaGraph)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/notagraph.rb, line 28</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_neighbors</span>
+    <span class="ruby-identifier">distance</span> = <span class="ruby-value">8</span>
+    <span class="ruby-identifier">byx</span> = <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">sort_by</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">x</span>}
+    <span class="ruby-identifier">byy</span> = <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">sort_by</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">y</span><span class="ruby-operator">|</span> <span class="ruby-identifier">y</span>.<span class="ruby-identifier">y</span>}
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">id</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">id</span><span class="ruby-operator">%</span><span class="ruby-value">100</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+      <span class="ruby-identifier">possibles</span> = []
+      <span class="ruby-identifier">xpossibles</span> = []
+      <span class="ruby-identifier">ypossibles</span> = []
+      <span class="ruby-identifier">xindex</span> = <span class="ruby-identifier">byx</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">k</span>)
+      <span class="ruby-identifier">yindex</span> = <span class="ruby-identifier">byy</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">k</span>)
+      <span class="ruby-identifier">up</span> = <span class="ruby-value">1</span>
+      <span class="ruby-identifier">down</span> = <span class="ruby-value">-1</span>
+      <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">byx</span>[<span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>] <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">or</span> (<span class="ruby-identifier">byx</span>[<span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>].<span class="ruby-identifier">x</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">x</span>).<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">distance</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-identifier">xpossibles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">byx</span>[<span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>])
+        <span class="ruby-identifier">up</span> <span class="ruby-operator">+=</span><span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">or</span> (<span class="ruby-identifier">byx</span>[<span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span>].<span class="ruby-identifier">x</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">x</span>).<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">distance</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-identifier">xpossibles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">byx</span>[<span class="ruby-identifier">xindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span>])
+        <span class="ruby-identifier">down</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">up</span> = <span class="ruby-value">1</span>
+      <span class="ruby-identifier">down</span> = <span class="ruby-value">-1</span>
+      <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">byy</span>[<span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>] <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">or</span> (<span class="ruby-identifier">byy</span>[<span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>].<span class="ruby-identifier">y</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">y</span>).<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">distance</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-identifier">ypossibles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">byy</span>[<span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">up</span>])
+        <span class="ruby-identifier">up</span> <span class="ruby-operator">+=</span><span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">or</span> (<span class="ruby-identifier">byy</span>[<span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span>].<span class="ruby-identifier">x</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">y</span>).<span class="ruby-identifier">abs</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">distance</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-identifier">ypossibles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">byy</span>[<span class="ruby-identifier">yindex</span><span class="ruby-operator">+</span><span class="ruby-identifier">down</span>])
+        <span class="ruby-identifier">down</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">end</span>
+ <span class="ruby-comment cmt">#     puts &quot;length of possibles: #{possibles.length}&quot;</span>
+      <span class="ruby-identifier">possibles</span> = <span class="ruby-identifier">ypossibles</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">xpossibles</span>
+  <span class="ruby-comment cmt">#    puts &quot;length of possibles: #{possibles.length}&quot;</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">concat</span>(<span class="ruby-identifier">possibles</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">planar_distance</span>(<span class="ruby-identifier">k</span>,<span class="ruby-identifier">i</span>) <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">distance</span>})        
+    <span class="ruby-keyword kw">end</span>    
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

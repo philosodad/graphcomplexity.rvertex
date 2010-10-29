@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>setup (TestSim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_sim.rb, line 8</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span>
+    <span class="ruby-constant">Globals</span>.<span class="ruby-identifier">new</span>()
+    <span class="ruby-ivar">@sn10</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0</span>)
+    <span class="ruby-ivar">@sn11</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">1</span>)
+    <span class="ruby-ivar">@sn12</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">2</span>)
+    <span class="ruby-ivar">@sn13</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">3</span>)
+    <span class="ruby-ivar">@sn14</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">4</span>)
+    <span class="ruby-ivar">@sn15</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">5</span>)
+    <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">100</span>
+    <span class="ruby-ivar">@sn11</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">45</span>
+    <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">45</span>
+    <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">50</span>
+    <span class="ruby-ivar">@sn14</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">100</span>
+    <span class="ruby-identifier">snodes2</span> = [<span class="ruby-ivar">@sn10</span>, <span class="ruby-ivar">@sn11</span>, <span class="ruby-ivar">@sn12</span>, <span class="ruby-ivar">@sn13</span>, <span class="ruby-ivar">@sn14</span>, <span class="ruby-ivar">@sn15</span>]
+    <span class="ruby-identifier">edges</span> = <span class="ruby-constant">Set</span>.<span class="ruby-identifier">new</span>([<span class="ruby-constant">Set</span>[<span class="ruby-value">0</span>,<span class="ruby-value">1</span>],<span class="ruby-constant">Set</span>[<span class="ruby-value">0</span>,<span class="ruby-value">2</span>],<span class="ruby-constant">Set</span>[<span class="ruby-value">0</span>,<span class="ruby-value">3</span>],<span class="ruby-constant">Set</span>[<span class="ruby-value">1</span>,<span class="ruby-value">4</span>], <span class="ruby-constant">Set</span>[<span class="ruby-value">1</span>,<span class="ruby-value">3</span>], <span class="ruby-constant">Set</span>[<span class="ruby-value">2</span>,<span class="ruby-value">3</span>], <span class="ruby-constant">Set</span>[<span class="ruby-value">2</span>,<span class="ruby-value">4</span>]])
+    <span class="ruby-identifier">g</span> = <span class="ruby-constant">SetGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">snodes2</span>, <span class="ruby-identifier">edges</span>)
+    <span class="ruby-ivar">@sg</span> = <span class="ruby-constant">SetSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">g</span>)
+    <span class="ruby-ivar">@udg</span> = <span class="ruby-constant">UDGSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">80</span>, <span class="ruby-value">1000</span>, <span class="ruby-value">120</span>)
+ <span class="ruby-comment cmt">#   @rg = RandomSimulator.new(50, @udg.rg.edges.length)</span>
+    <span class="ruby-ivar">@rg</span> = <span class="ruby-constant">RandomSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">17</span>, <span class="ruby-value">70</span>)
+    <span class="ruby-ivar">@ig</span> = <span class="ruby-constant">RandomSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">40</span>, <span class="ruby-value">15</span>)
+    <span class="ruby-ivar">@gg</span> = <span class="ruby-constant">GridSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">5</span>,<span class="ruby-value">2</span>)
+    <span class="ruby-ivar">@wg</span> = <span class="ruby-constant">TotalWeightSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">5</span>,<span class="ruby-value">2</span>)
+    <span class="ruby-ivar">@mg</span> = <span class="ruby-constant">MatchSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@tg</span> = <span class="ruby-constant">StarSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@pg</span> = <span class="ruby-constant">PCDMinRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@dg</span> = <span class="ruby-constant">MatchRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@qg</span> = <span class="ruby-constant">MatchMaxSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@eg</span> = <span class="ruby-constant">PCDSumSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@ng</span> = <span class="ruby-constant">MatchSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@ag</span> = <span class="ruby-constant">PCDAllSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@lg</span> = <span class="ruby-constant">StarRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@kg</span> = <span class="ruby-constant">StarSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@bg</span> = <span class="ruby-constant">DeepsRedMinSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@og</span> = <span class="ruby-constant">PCDAllSimulatorNoRed</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@ug</span> = <span class="ruby-constant">DumbRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@vg</span> = <span class="ruby-constant">DeepsSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@xg</span> = <span class="ruby-constant">DeepsMaxMaxSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@zg</span> = <span class="ruby-constant">DeepsMinMaxSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@yg</span> = <span class="ruby-constant">DeepsMinMinSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">rg</span>)
+    <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@sg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@mg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@pg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@dg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@eg</span>.<span class="ruby-identifier">set</span>
+<span class="ruby-comment cmt">#    @rg.rg.nodes.each{|k| puts k.covers.inspect}</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;initialized&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_sim (TestModSim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_modifiedsim.rb, line 30</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_sim</span>
+    <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@mg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@xg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@wg</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">set_covers</span>
+    <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_not_nil</span> <span class="ruby-identifier">k</span>}
+    <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">class</span>, <span class="ruby-constant">Node</span>}
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;sim mg&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@mg</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>,  <span class="ruby-value str">&quot;matchsim didn't terminate&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;sim gg&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;sim didn't terminate&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;sim xg&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@xg</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;xsim didn't terminate&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;sim wg&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@wg</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;wsim didn't terminate&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@mg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;matchgrid not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;auto didn't cover&quot;</span>
+<span class="ruby-comment cmt">#    assert @xg.rg.covered?, &quot;xg didn't cover&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@wg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;wg didn't cover&quot;</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;gg:#{@gg.get_on_weight}, mg:#{@mg.get_on_weight}, wg:#{@wg.get_on_weight}, tw:#{@gg.get_total_weight}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

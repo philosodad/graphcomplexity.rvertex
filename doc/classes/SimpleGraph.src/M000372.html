@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>reset (SimpleGraph)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/netgen.rb, line 81</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset</span>
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_next</span>(<span class="ruby-identifier">:analyze</span>)
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_now</span>(<span class="ruby-identifier">:analyze</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_ons</span>}
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">then</span> 
+        <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_next</span>(<span class="ruby-identifier">:out_of_batt</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

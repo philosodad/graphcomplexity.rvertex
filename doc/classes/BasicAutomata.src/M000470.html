@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>transition (BasicAutomata)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/automata.rb, line 4</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">transition</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">status</span>)
+    <span class="ruby-ivar">@onlist</span>[<span class="ruby-identifier">id</span>] = <span class="ruby-identifier">status</span>
+    <span class="ruby-identifier">update_covers_on</span>
+    <span class="ruby-identifier">curcov</span> = <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@currentcover</span>]
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">curcov</span>.<span class="ruby-identifier">has?</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">status</span>
+<span class="ruby-comment cmt">#      @currentcover = (@currentcover+1)%(@covers.ldnodes.length)</span>
+<span class="ruby-comment cmt">#      return transition(id, status)</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:change_cover</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-operator">!</span><span class="ruby-identifier">curcov</span>.<span class="ruby-identifier">has?</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">status</span>
+<span class="ruby-comment cmt">#      @currentcover = (@currentcover+1)%(@covers.ldnodes.length)</span>
+<span class="ruby-comment cmt">#      return transition(id, status)</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:change_cover</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:analyze</span>    
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

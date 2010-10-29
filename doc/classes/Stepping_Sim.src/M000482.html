@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>long_sim (Stepping_Sim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/helpers_sim.rb, line 57</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">long_sim</span> <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">'stepping sim!'</span>
+    <span class="ruby-identifier">args</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-value">? </span><span class="ruby-identifier">step</span> = <span class="ruby-identifier">$step_up</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">step</span> = <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>]
+    <span class="ruby-identifier">t</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">s</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-identifier">f</span> = <span class="ruby-value">0</span>
+    <span class="ruby-ivar">@counter</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">while</span> <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">coverable?</span> <span class="ruby-keyword kw">do</span>
+      <span class="ruby-identifier">i</span> = <span class="ruby-identifier">sim</span>
+      <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">:done</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">puts</span> <span class="ruby-value str">'#{k.id} not done'</span> <span class="ruby-keyword kw">end</span>}
+      <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">coverable?</span> <span class="ruby-value">? </span><span class="ruby-ivar">@counter</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">raise</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">i</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&gt;</span> <span class="ruby-value">500</span> <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">i</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">or</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">covered?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">covered?</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{self.rg.class} simmed but not covered!&quot;</span>
+        <span class="ruby-keyword kw">break</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">s</span> = <span class="ruby-identifier">s</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{i}, &quot;</span>      
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@counter</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">step</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-ivar">@counter</span> = <span class="ruby-value">0</span>
+        <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>}
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> 
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+          <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">t</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">0</span> <span class="ruby-keyword kw">end</span>}
+      <span class="ruby-ivar">@rg</span> = <span class="ruby-ivar">@rg</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@rg</span>)
+      <span class="ruby-identifier">set</span>
+    <span class="ruby-keyword kw">end</span>
+<span class="ruby-comment cmt">#    puts &quot;#{@id} t: #{t}&quot;</span>
+    <span class="ruby-identifier">s</span> = <span class="ruby-identifier">s</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{t}&quot;</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">t</span> = <span class="ruby-value">0</span> <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">t</span>, <span class="ruby-identifier">s</span>, <span class="ruby-identifier">f</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

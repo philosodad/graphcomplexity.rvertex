@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>experiment (Experiment)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File exp/experiment_9a.rb, line 11</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">experiment</span> <span class="ruby-identifier">x</span>
+    [<span class="ruby-value">20</span>,<span class="ruby-value">40</span>,<span class="ruby-value">80</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">y</span><span class="ruby-operator">|</span>
+      [<span class="ruby-value">1.5</span>,<span class="ruby-value">3</span>,<span class="ruby-value">6</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">z</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">pcdwate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcdfail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">depwate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">depfail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">x</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span>
+          <span class="ruby-identifier">$stdout</span>.<span class="ruby-identifier">flush</span>
+          <span class="ruby-identifier">w</span> = <span class="ruby-constant">RandomGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">y</span>, (<span class="ruby-identifier">y</span><span class="ruby-operator">*</span><span class="ruby-identifier">z</span>).<span class="ruby-identifier">to_i</span>)
+          <span class="ruby-identifier">low</span> = <span class="ruby-identifier">w</span>.<span class="ruby-identifier">get_lower_bound</span>
+          <span class="ruby-identifier">links</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">w</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">length</span>
+          <span class="ruby-identifier">pcd_sim</span> = <span class="ruby-constant">PCDSteppingSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">w</span>)
+          <span class="ruby-identifier">dep_sim</span> = <span class="ruby-constant">DeepsSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">w</span>)
+          [<span class="ruby-identifier">pcd_sim</span>, <span class="ruby-identifier">dep_sim</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">d</span>,<span class="ruby-identifier">e</span>,<span class="ruby-identifier">f</span> = <span class="ruby-identifier">pcd_sim</span>.<span class="ruby-identifier">long_sim</span>
+          <span class="ruby-identifier">g</span>,<span class="ruby-identifier">h</span>,<span class="ruby-identifier">i</span> = <span class="ruby-identifier">dep_sim</span>.<span class="ruby-identifier">long_sim</span>
+          <span class="ruby-identifier">pcdwate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">d</span>
+          <span class="ruby-identifier">pcdfail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">f</span>
+          <span class="ruby-identifier">depwate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">g</span>
+          <span class="ruby-identifier">depfail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">pcdwate</span> = (<span class="ruby-identifier">pcdwate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">pcdfail</span>).<span class="ruby-identifier">to_f</span>).<span class="ruby-identifier">round</span>(<span class="ruby-value">1</span>)
+        <span class="ruby-identifier">depwate</span> = (<span class="ruby-identifier">depwate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">depfail</span>).<span class="ruby-identifier">to_f</span>).<span class="ruby-identifier">round</span>(<span class="ruby-value">1</span>)
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-identifier">y</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-identifier">z</span><span class="ruby-operator">*</span><span class="ruby-value">2</span>
+        <span class="ruby-ivar">@average</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">pcdwate</span>, <span class="ruby-identifier">depwate</span>])
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

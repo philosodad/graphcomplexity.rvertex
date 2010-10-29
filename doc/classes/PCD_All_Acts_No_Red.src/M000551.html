@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>recieve_status (PCD_All_Acts_No_Red)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/actions_pcd.rb, line 237</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">recieve_status</span> <span class="ruby-identifier">n</span>
+    <span class="ruby-ivar">@onlist</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">n</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">on</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">on</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">==</span> <span class="ruby-ivar">@onlist</span>.<span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span>}.<span class="ruby-identifier">min</span>
+          <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">c</span> = <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">k</span>].<span class="ruby-identifier">ids</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@id</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">n</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword kw">then</span>
+              <span class="ruby-ivar">@cur</span> = <span class="ruby-identifier">k</span>
+              <span class="ruby-keyword kw">break</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-operator">!</span><span class="ruby-identifier">n</span>.<span class="ruby-identifier">on</span>
+        <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:analyze</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

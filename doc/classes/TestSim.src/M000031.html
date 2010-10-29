@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_deeps (TestSim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_sim.rb, line 217</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_deeps</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;test deeps&quot;</span>
+    <span class="ruby-identifier">dpsim</span> = <span class="ruby-constant">DeepsSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">RandomGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">40</span>,<span class="ruby-value">5</span>))
+    <span class="ruby-identifier">dpsim</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">dpsim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;deeps running past 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">dpsim</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">'deeps not covering'</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

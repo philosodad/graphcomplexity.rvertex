@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>update_on_off (PCD_One_Acts)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/actions_pcd.rb, line 46</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update_on_off</span>
+    <span class="ruby-identifier">s</span> = <span class="ruby-constant">Set</span>[]
+    <span class="ruby-identifier">o</span> = <span class="ruby-constant">Set</span>[]
+    <span class="ruby-identifier">c</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@neighbors</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> 
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">k</span>) <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">on</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">j</span>) <span class="ruby-keyword kw">end</span>}
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">off?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">k</span>) <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">off?</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">o</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">j</span>) <span class="ruby-keyword kw">end</span>}
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">s</span> = <span class="ruby-identifier">s</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@onlist</span> <span class="ruby-operator">-</span> <span class="ruby-constant">Set</span>[<span class="ruby-keyword kw">self</span>]
+    <span class="ruby-identifier">s</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">reduce_weight</span>(<span class="ruby-identifier">k</span>)}
+    <span class="ruby-ivar">@onlist</span> = <span class="ruby-ivar">@onlist</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">s</span>
+    <span class="ruby-identifier">o</span> = <span class="ruby-identifier">o</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@offlist</span> <span class="ruby-operator">-</span> <span class="ruby-constant">Set</span>[<span class="ruby-keyword kw">self</span>]
+    <span class="ruby-identifier">o</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">remove_node</span>(<span class="ruby-identifier">k</span>)}
+    <span class="ruby-ivar">@offlist</span> = <span class="ruby-ivar">@offlist</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">o</span>
+    <span class="ruby-keyword kw">return</span> (<span class="ruby-identifier">o</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">empty?</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

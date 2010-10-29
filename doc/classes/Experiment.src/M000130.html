@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>experiment (Experiment)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File exp/experiment_7f.rb, line 13</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">experiment</span> <span class="ruby-identifier">x</span>
+    [<span class="ruby-value">30</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      [<span class="ruby-value">1</span>, <span class="ruby-value">1.5</span>, <span class="ruby-value">3</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">pmnwate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcdwate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">totwate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pmnbest</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcdbest</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pmnfail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcdfail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pmnruns</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcdruns</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">x</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span>
+          <span class="ruby-identifier">$stdout</span>.<span class="ruby-identifier">flush</span>
+          <span class="ruby-identifier">g</span> = <span class="ruby-constant">RandomGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">i</span>, (<span class="ruby-identifier">i</span><span class="ruby-operator">*</span><span class="ruby-identifier">k</span>).<span class="ruby-identifier">to_i</span>)
+          <span class="ruby-identifier">low</span> = <span class="ruby-identifier">g</span>.<span class="ruby-identifier">get_lower_bound</span>
+          <span class="ruby-identifier">links</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">g</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">length</span>
+          <span class="ruby-identifier">pmn_sim</span> = <span class="ruby-constant">PCDMinRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">g</span>)
+          <span class="ruby-identifier">pcd_sim</span> = <span class="ruby-constant">PCDAllSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">g</span>)
+          [<span class="ruby-identifier">pmn_sim</span>, <span class="ruby-identifier">pcd_sim</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">runsim</span> <span class="ruby-identifier">which</span>, <span class="ruby-identifier">long</span>
+            <span class="ruby-identifier">life</span>, <span class="ruby-identifier">runs</span>, <span class="ruby-identifier">fails</span> = <span class="ruby-identifier">which</span>.<span class="ruby-identifier">long_sim</span> 
+            <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">life</span>, <span class="ruby-identifier">runs</span>, <span class="ruby-identifier">fails</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;pmnsim&quot;</span>
+          <span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">q</span> = <span class="ruby-identifier">runsim</span> <span class="ruby-identifier">pmn_sim</span>, <span class="ruby-value">500</span>
+          <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;pcdsim&quot;</span>
+          <span class="ruby-identifier">c</span>,<span class="ruby-identifier">d</span>,<span class="ruby-identifier">r</span> = <span class="ruby-identifier">runsim</span> <span class="ruby-identifier">pcd_sim</span>, <span class="ruby-value">500</span>
+          <span class="ruby-identifier">pmnwate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">a</span>
+          <span class="ruby-identifier">pmnfail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">q</span>
+          <span class="ruby-identifier">pcdwate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">c</span> 
+          <span class="ruby-identifier">pcdfail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">r</span>
+          <span class="ruby-identifier">pmnruns</span> = <span class="ruby-identifier">b</span>
+          <span class="ruby-identifier">pcdruns</span> = <span class="ruby-identifier">d</span>
+          <span class="ruby-identifier">a</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">c</span> <span class="ruby-value">? </span><span class="ruby-identifier">m</span> = <span class="ruby-value">2.1</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">m</span> = [<span class="ruby-identifier">a</span>,<span class="ruby-identifier">c</span>].<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>}.<span class="ruby-identifier">max</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">m</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">a</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">pmnbest</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">low</span> <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">m</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">c</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">pcdbest</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">c</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">low</span> <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">m</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">low</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;something is wrong deeps best = #{a&gt;c} a:#{a}, c:#{c}, low:#{low}&quot;</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">pmnwate</span> = <span class="ruby-identifier">pmnwate</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">pcdwate</span> = <span class="ruby-identifier">pcdwate</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">to_f</span>        
+<span class="ruby-comment cmt">#        pmnruns = pmnruns / (x - pmnfail).to_f</span>
+<span class="ruby-comment cmt">#        pcdruns = pcdruns / (x - pcdfail).to_f</span>
+<span class="ruby-comment cmt">#        mtcruns = mtcruns / (x - mtcfail).to_f</span>
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-identifier">i</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-identifier">links</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">to_f</span>
+        
+        <span class="ruby-ivar">@average</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">pmnwate</span>, <span class="ruby-identifier">pcdwate</span>])
+        <span class="ruby-ivar">@frequency</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">pmnbest</span>, <span class="ruby-identifier">pcdbest</span>,<span class="ruby-identifier">x</span>])
+        <span class="ruby-ivar">@runs</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">pmnruns</span>, <span class="ruby-identifier">pcdruns</span>])
+        <span class="ruby-ivar">@fails</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">pmnfail</span>, <span class="ruby-identifier">pcdfail</span>])
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
