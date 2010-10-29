@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_sim (TestStar)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_starfiles.rb, line 77</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_sim</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sg</span>.<span class="ruby-identifier">coverable?</span>, <span class="ruby-value str">&quot;sg is not coverable&quot;</span>
+    <span class="ruby-identifier">simu</span> = <span class="ruby-constant">StarSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@sg</span>)
+    <span class="ruby-identifier">simm</span> = <span class="ruby-constant">MatchSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@cg</span>)
+    <span class="ruby-identifier">simd</span> = <span class="ruby-constant">MatchRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@dg</span>)
+    <span class="ruby-identifier">sima</span> = <span class="ruby-constant">SetSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@mg</span>)
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">coverable?</span>, <span class="ruby-value str">&quot;simu.rg is not coverable&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simd</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">coverable?</span>, <span class="ruby-value str">&quot;simd.rg is not coverable&quot;</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">class</span>, <span class="ruby-constant">StarGraph</span>
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">class</span>, <span class="ruby-constant">StarNode</span>}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">class</span>, <span class="ruby-constant">StarNode</span>}}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">next</span>, <span class="ruby-identifier">:choose</span>}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">next</span>, <span class="ruby-identifier">:choose</span>}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">sim</span>
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{k.id}-next: #{k.next}&quot;</span>}
+    <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{k.id}-sat:  #{k.satlevel}&quot;</span>}
+    <span class="ruby-identifier">simm</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">simm</span>.<span class="ruby-identifier">sim</span>
+    <span class="ruby-identifier">simd</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simd</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;simd is larger than 500&quot;</span>
+    <span class="ruby-identifier">sima</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">sima</span>.<span class="ruby-identifier">set_covers</span>
+    <span class="ruby-identifier">sima</span>.<span class="ruby-identifier">sim</span>
+    <span class="ruby-identifier">simd</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{k.id}-next: #{k.next}&quot;</span>}    
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simd</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;simd.rg is not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simm</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;simm.rg is not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">simu</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;simu.rg is not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">sima</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;sima.rg is not covered&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

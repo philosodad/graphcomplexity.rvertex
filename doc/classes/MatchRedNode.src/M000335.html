@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>do_next (MatchRedNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/node_match.rb, line 148</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">do_next</span>
+    <span class="ruby-ivar">@now</span> = <span class="ruby-ivar">@next</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-ivar">@now</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:invite</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:wait</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:respond</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:update</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:listen</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:respond</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:wait</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:update</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:update</span>
+      <span class="ruby-identifier">update_weight</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:exchange</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:exchange</span>
+      <span class="ruby-identifier">update_edges</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:choose</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:choose</span>
+      <span class="ruby-identifier">choose_role</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:decided</span>
+      <span class="ruby-identifier">check_finished</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:finish</span>
+      <span class="ruby-identifier">check_redundant</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:done</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:done</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

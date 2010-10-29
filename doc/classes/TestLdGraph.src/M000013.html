@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_delta (TestLdGraph)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_pcdgraph.rb, line 55</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_delta</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;test delta&quot;</span>
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">build_first_cover</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">get_covers</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">set_edges</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">do_next</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">onlist</span>.<span class="ruby-identifier">empty?</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_status</span>}
+    <span class="ruby-ivar">@delta</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert</span> <span class="ruby-operator">!</span><span class="ruby-identifier">k</span>.<span class="ruby-identifier">onlist</span>.<span class="ruby-identifier">empty?</span>}
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;\ndelta: #{@delta.nodes[0].covers.inspect}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

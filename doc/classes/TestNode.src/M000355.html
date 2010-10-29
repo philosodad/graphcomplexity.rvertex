@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_transition (TestNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_node.rb, line 203</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_transition</span>
+    <span class="ruby-ivar">@snodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_not_nil</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>}
+    <span class="ruby-ivar">@snodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_kind_of</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>, <span class="ruby-constant">LdGraph</span>}
+    <span class="ruby-ivar">@snodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert_nothing_raised</span>{<span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_initial</span>}}
+    <span class="ruby-ivar">@sn11</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-ivar">@sn14</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">cover</span>, <span class="ruby-constant">Set</span>[<span class="ruby-value">11</span>,<span class="ruby-value">12</span>,<span class="ruby-value">13</span>]
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn11</span>.<span class="ruby-identifier">on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span> <span class="ruby-operator">==</span> <span class="ruby-value">12</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">has?</span>(<span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">id</span>)
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">has?</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>)
+    <span class="ruby-identifier">assert</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">on</span>
+    <span class="ruby-identifier">assert_equal</span> ([<span class="ruby-ivar">@sn13</span>]<span class="ruby-operator">+</span><span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">neighbors</span>).<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">cover</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">k</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> <span class="ruby-operator">!=</span><span class="ruby-keyword kw">true</span>}.<span class="ruby-identifier">length</span>, <span class="ruby-value">1</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">true</span>), <span class="ruby-identifier">:sendon</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn14</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">false</span>), <span class="ruby-identifier">:continue</span>
+    <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">has?</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>)
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">true</span>), <span class="ruby-identifier">:continue</span>
+    <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">true</span>), <span class="ruby-identifier">:sendoff</span>
+<span class="ruby-comment cmt">#    assert_equal @sn20.covers.ldnodes[@sn20.currentcover].cover, Set[20]</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn21</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@sn21</span>.<span class="ruby-identifier">currentcover</span>].<span class="ruby-identifier">cover</span>, <span class="ruby-constant">Set</span>[<span class="ruby-value">20</span>]
+    <span class="ruby-ivar">@sn20</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn21</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn20</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">true</span>), <span class="ruby-identifier">:sendoff</span>
+    <span class="ruby-ivar">@sn20</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@sn21</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@sn20</span>.<span class="ruby-identifier">transition</span>(<span class="ruby-ivar">@sn21</span>.<span class="ruby-identifier">id</span>, <span class="ruby-keyword kw">true</span>), <span class="ruby-identifier">:sendoff</span>
+<span class="ruby-comment cmt">#    puts &quot;SN10 covers: #{@sn10.covers.ldnodes.collect{|k| k.cover}}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

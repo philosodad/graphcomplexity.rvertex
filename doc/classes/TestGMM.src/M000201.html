@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_run (TestGMM)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_gmm.rb, line 138</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_run</span>
+    <span class="ruby-ivar">@nod3</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_edges</span>}
+    <span class="ruby-keyword kw">until</span> <span class="ruby-ivar">@mn0</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:done</span> <span class="ruby-keyword kw">and</span> <span class="ruby-ivar">@mn1</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:done</span> <span class="ruby-keyword kw">and</span> <span class="ruby-ivar">@mn2</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:done</span>
+      <span class="ruby-ivar">@nod3</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">do_next</span>}
+      <span class="ruby-ivar">@nod3</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_status</span>}
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@nod3</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>, <span class="ruby-value str">&quot;nod3 nodes not all on&quot;</span>}
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

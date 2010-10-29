@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_sendstatus (TestGMM)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_gmm.rb, line 69</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_sendstatus</span>
+    <span class="ruby-ivar">@nod2</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_edges</span>}
+    <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">set_now</span> <span class="ruby-identifier">:invite</span>
+    <span class="ruby-ivar">@mn7</span>.<span class="ruby-identifier">set_now</span> <span class="ruby-identifier">:listen</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">send_status</span>, <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">rp</span>, <span class="ruby-ivar">@mn7</span>
+    <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">20</span>}
+    <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">send_status</span>
+    <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-keyword kw">nil</span>}
+    <span class="ruby-ivar">@mn7</span>.<span class="ruby-identifier">set_now</span> <span class="ruby-identifier">:respond</span>
+    <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">50</span>
+    <span class="ruby-ivar">@mn7</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">40</span>
+    <span class="ruby-ivar">@mn7</span>.<span class="ruby-identifier">send_status</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@mn7</span>.<span class="ruby-identifier">rp</span>, <span class="ruby-ivar">@mn6</span>
+    <span class="ruby-identifier">assert_equal</span> <span class="ruby-ivar">@mn6</span>.<span class="ruby-identifier">subtract</span>, <span class="ruby-value">40</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

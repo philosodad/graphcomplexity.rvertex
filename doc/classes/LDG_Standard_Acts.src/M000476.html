@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>do_next (LDG_Standard_Acts)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/actions_ldg.rb, line 2</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">do_next</span>
+    <span class="ruby-identifier">curcov</span> = <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">ldnodes</span>[<span class="ruby-ivar">@currentcover</span>]
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">curcov</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">then</span>
+      <span class="ruby-ivar">@currentcover</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">ldnodes</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-keyword kw">then</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{@id} has no remaining covers&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@now</span> = <span class="ruby-ivar">@next</span>
+    <span class="ruby-keyword kw">case</span> <span class="ruby-ivar">@now</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:analyze</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">highest_priority?</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-ivar">@on</span> = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-ivar">@onlist</span>[<span class="ruby-ivar">@id</span>] = <span class="ruby-keyword kw">true</span>
+        <span class="ruby-ivar">@now</span> = <span class="ruby-identifier">:sendon</span>
+        <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:done</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">out_of_cover?</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">covered?</span> <span class="ruby-keyword kw">and</span> <span class="ruby-ivar">@on</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-ivar">@on</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-ivar">@onlist</span>[<span class="ruby-ivar">@id</span>] = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-ivar">@now</span> = <span class="ruby-identifier">:sendoff</span>
+        <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:done</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@on</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:analyze</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:change_cover</span>
+      <span class="ruby-ivar">@currentcover</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-ivar">@currentcover</span> = <span class="ruby-ivar">@currentcover</span><span class="ruby-operator">%</span><span class="ruby-ivar">@covers</span>.<span class="ruby-identifier">ldnodes</span>.<span class="ruby-identifier">length</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:analyze</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:out_of_batt</span>
+      <span class="ruby-ivar">@now</span> = <span class="ruby-identifier">:sendoff</span>
+      <span class="ruby-ivar">@next</span> = <span class="ruby-identifier">:done</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@round</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

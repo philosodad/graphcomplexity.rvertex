@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_all (TestLdGraph)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_pcdgraph.rb, line 67</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_all</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;test_all&quot;</span>
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">build_local_cover</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">get_covers</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">set_edges</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">assert</span> <span class="ruby-operator">!</span><span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">empty?</span>, <span class="ruby-value str">&quot;this cover has no edges&quot;</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">set_degrees</span>}
+    <span class="ruby-identifier">assert</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@all</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;why is all covered?&quot;</span>
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">do_next</span>}
+    <span class="ruby-identifier">w</span> = <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">w</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>, <span class="ruby-value str">&quot;weight too low&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">coverable?</span>, <span class="ruby-value str">&quot;all not coverable&quot;</span>
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_status</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">do_next</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">puts</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">now</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_status</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">do_next</span>}
+    <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">send_status</span>}
+    <span class="ruby-identifier">e</span> = <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">get_on_weight</span>    
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;all not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-identifier">w</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">e</span>, <span class="ruby-value str">&quot;weights did not change&quot;</span>
+    <span class="ruby-identifier">a</span> = <span class="ruby-ivar">@all</span>.<span class="ruby-identifier">nodes</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">covers</span>.<span class="ruby-identifier">inspect</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;\nall: #{a}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
