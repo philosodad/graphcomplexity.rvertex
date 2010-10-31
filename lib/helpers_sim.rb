@@ -12,11 +12,15 @@ module Sim_To_Done
       g+=1
     end
     if g > m then f = 1 end
-    w = @rg.get_on_weight
+    w = get_the_metric
     if f == 1 then g = 0 end
     $stdout.flush
     puts "S_T_DONE! #{@id} g: #{g}"
     return w, g, f 
+  end
+
+  def get_the_metric
+    return @rg.get_on_weight
   end
 
   def all_done
