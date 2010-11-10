@@ -15,8 +15,12 @@ class FCDRootNode < PCDRoot
     @cur = 0
   end
 
-  def init_covers
-    return FCD_Graph.new([],[])
+  def init_covers *args
+    return get_dep_graph_type.new([],[])
+  end
+    
+  def get_dep_graph_type
+    return Object.const_get('FCD_Graph')
   end
 
   def set_edges
@@ -36,12 +40,12 @@ class FCDRootNode < PCDRoot
       k.edges.each{|l| alledges.add(l)}
     end
     puts "covers will now be constructed for #{n.length} nodes covering #{alledges.length} edges"
-    c = Combinator.construct_covers n, alledges
-    @covers = FCD_Graph.new c, n
+    c = construct_covers n, alledges
+    @covers = get_dep_graph_type.new c, n
 #    puts "One cover has been created"
   end
 end
 
 class FCDRedNode < FCDRootNode
   include Redundant
-end
+end    

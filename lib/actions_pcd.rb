@@ -254,6 +254,7 @@ module PCD_All_Acts_No_Red
   end
 end
 
+
 module PCD_All_Acts_Naive
   def do_next
     @now = @next
@@ -314,6 +315,7 @@ module PCD_All_Acts_Naive
     end
   end
 end
+
 
 module PCDMachine
  def do_next

@@ -325,13 +325,13 @@ module SimpleVC
 end
 
 module Combinator
-  def self.construct_covers n, e
+  def construct_covers n, e
     s = get_subsets n.collect{|k| k.id}
     s = test_covers(s,e)
     return covers_to_set s
   end
 
-  def self.get_subsets n
+  def get_subsets n
     subsets = []
     x = n.length - 1
     (1..x).each do |k|
@@ -340,7 +340,7 @@ module Combinator
     return subsets
   end
 
-  def self.test_covers(s, e)
+  def test_covers(s, e)
     e_array = []
     e.each{|k| e_array.push(k.to_a)}
     c = []
@@ -348,17 +348,25 @@ module Combinator
     return c
   end
 
-  def self.test_cover? c, e
+  def test_cover? c, e
     e.each{|k| return false if (c&k).empty?}
     return true
   end    
 
-  def self.covers_to_set covers
+  def covers_to_set covers
     l = Set[]
     covers.each{|k| l.add(Set.new(k))}
     return l
   end
 
+end
+
+module IS_Combinator
+  include Combinator
+  def test_cover? c,e
+    e.each{|k| return false if (k-c).empty?}
+    return true
+  end
 end
 
 module CoverComposer
