@@ -15,7 +15,7 @@ class PCDRoot < BasicNode
       else 
         x = 0
         y = 0
-        id = 
+        id = nil
         puts "with one argument, you should pass a Node"
       end
     elsif args.size == 2 then
@@ -36,6 +36,7 @@ class PCDRoot < BasicNode
     @redundant = false
     @on = nil
   end
+
   def off?
     if @on == true or @on == nil
       return false
@@ -51,7 +52,6 @@ class PCDRoot < BasicNode
   def burn_cover node
     @covers.burn_cover node
   end
-  
 
   def <=>(other)
     return nil unless other.instance_of? self.class
@@ -68,9 +68,11 @@ class PCDRoot < BasicNode
 
 end
 
+
 class PCDRedundant < PCDRoot
   include Redundant
 end
+
 
 class PCDNode < PCDRedundant
   include PCD
@@ -81,6 +83,7 @@ end
 class PCDDeltaNode < PCDNode
   include PCD_Delta_Acts
 end
+
 
 class PCDAllNode < PCDRedundant
   include PCDAll
@@ -95,13 +98,16 @@ class PCDAllNode < PCDRedundant
   end
 end
 
+
 class PCDNodeSum < PCDAllNode
   include PCD_All_Sum
 end
 
+
 class PCDNodeMinRed < PCDAllNode
   include Redundant_Min
 end
+
 
 class PCDAllNodeNoRed < PCDAllNode
   include PCD_All_Acts_No_Red

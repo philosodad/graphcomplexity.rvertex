@@ -22,6 +22,9 @@ class SimpleGraph
   def set_neighbors
   end
 
+  def add_nodes
+  end
+
   def get_lower_bound
     edgeweights = []
     keyednodes = {}

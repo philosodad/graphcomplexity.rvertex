@@ -1,9 +1,11 @@
 require 'dep_node_fcd'
 require 'helpers_netgen'
+require 'helpers_dep_node'
 require 'set'
 
 class FCD_Graph
   include Neighborly
+  include Cleanable
   attr_reader :nodes, :edges
   def initialize c, n
     @nodes = []
@@ -30,13 +32,4 @@ class FCD_Graph
     end
     @edges = e.to_a
   end  
-
-  def kill_redundant coverset
-    coverset.each do |a|
-      coverset.each do |b|
-        coverset.delete(b) if a.proper_subset?(b) unless a == b
-      end
-    end
-    return coverset
-  end
 end

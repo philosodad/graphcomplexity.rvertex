@@ -1,7 +1,9 @@
 require 'ldnode'
 require 'set'
+require 'helpers_dep_node.rb'
 
 class LdGraph
+  include Cleanable
   attr_reader :ldnodes, :edges
   def initialize(coverset, nodes)
     @ldnodes = []
@@ -60,15 +62,6 @@ class LdGraph
     end
     return true
   end      
-
-  def kill_redundant coverset
-    coverset.each do |a|
-      coverset.each do |b|
-        coverset.delete(b) if a.proper_subset?(b) unless a == b
-      end
-    end
-    return coverset
-  end
 
   def set_edge_weight(nodes)
     @edges.each do |k|
