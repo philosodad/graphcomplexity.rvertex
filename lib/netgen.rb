@@ -65,6 +65,18 @@ class SimpleGraph
     @nodes.collect{|k| k.weight}.inject(0){|i, j| i+j}
   end
 
+  def get_max_degree
+    @nodes.collect{|k| k.neighbors.length}.max
+  end
+
+  def get_min_degree
+    @nodes.collect{|k| k.neighbors.length}.min
+  end
+
+  def get_avg_degree
+    (@nodes.collect{|k| k.neighbors.length}.inject(0){|i,j| i+j})/@nodes.length
+  end
+
   def covered?
     onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
     @edges.each{|k| return false if (k & onlist).empty?}
@@ -106,6 +118,7 @@ end
     
 class MatchGraph < SimpleGraph
   include Neighborly
+  include Connectable
   def initialize g
     super()
     n = []
@@ -222,24 +235,42 @@ end
 
 class UnitDiskGraph < SimpleGraph
   include PlanarMath
+  include Connectable
   def initialize(size, space, distance)
     @nodes = []
     @edges = Set[]
-    size.times{@nodes.push(LDGNode.new(rand(space), rand(space)))}
-    @nodes.each{|k| set_neighbors(k, distance)}
+    size.times{@nodes.push(SimpleNode.new(rand(space), rand(space)))}
+    set_neighbors distance
     set_edges
   end
-
+        
   def set_edges
     @nodes.each{|k| k.neighbors.each{|j| @edges.add(Set[k.id, j.id])}}
   end
   
-  def set_neighbors(node, distance)
-    possibles = @nodes - [node]
-    possibles = possibles.select{|k| (k.x - node.x).abs <= distance}
-    possibles = possibles.select{|k| (k.y - node.y).abs <= distance}
-    node.neighbors.concat(possibles.select{|k| planar_distance(k, node) <= distance})
+  def set_neighbors d
+    def add_by dim, d
+      nods = @nodes.sort_by{|k| k.send(dim)}
+      dict = {}
+      @nodes.each{|k| dict[k] = []}
+      nods.each_index do |k|
+        up = k+1
+        while up < @nodes.length and ((nods[k].send dim.to_sym) - (nods[up].send dim.to_sym)).abs <= d
+          dict[nods[k]].push(nods[up])
+          dict[nods[up]].push(nods[k])
+          up += 1
+        end
+      end
+      return dict
+    end
+    exis = add_by('x', d)
+    whys = add_by('y', d)
+    @nodes.each do |k|
+      nebs = (exis[k])&(whys[k])
+      k.neighbors = nebs.select{|j| planar_distance(j,k) <= d}
+    end
   end
+
 end
 
 class SetGraph < SimpleGraph

@@ -11,18 +11,18 @@ module Neighborly
 end
 
 module Connectable
-  def connect!
+  def make_trees
     trees = []
     tree = []
     nebs = []
     nods = []
     @nodes.each{|k| nods.push(k)}
-    while !nods.empty?
-      i = nods[0]
+    until nods.empty?
+      i = nods.shift
       tree.push(i)
-      nebs = i.neighbors
+      i.neighbors.each{|k| nebs.push k}
       x = nebs.length
-#      if x == 0 then puts "#{i.id} has no neighbors and this is the tree: #{tree.class}, #{tree.length}" end
+ #     if x == 0 then puts "#{i.id} has no neighbors and this is the tree: #{tree.class}, #{tree.length}" end
       while !nebs.empty?
         j = nebs.slice!(rand(x))
         tree.push(j)
@@ -34,6 +34,21 @@ module Connectable
       nods.compact!
       tree = []
     end
+#    puts "there are #{trees.length} trees"
+    return trees
+  end
+
+  def connect?
+    make_trees.length > 1
+  end
+    
+  def connect!
+    trees = []
+    tree = []
+    nebs = []
+    nods = []
+    @nodes.each{|k| nods.push(k)}
+    trees = make_trees
     trees.each_index do |i|
       j = i + 1
       if trees[j] != nil

@@ -12,8 +12,8 @@ class Experiment
   end
   
   def experiment x
-    [120, 240,480,960].each do |y|
-      [1.5,3,6,12,24,48].each do |z|
+    [120, 240,480].each do |y|
+      [1.5,3,6,12].each do |z|
         mat_reg_wate = 0
         mat_reg_best = 0
         mat_reg_runs = 0
@@ -136,5 +136,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 50
+x.experiment 10
 x.print_to_file
