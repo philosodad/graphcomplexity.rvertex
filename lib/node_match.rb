@@ -7,7 +7,7 @@ class MatchNode < BasicNode
   include Match_Acts
   def initialize(*args)
     if args.size == 1 then
-      if args[0].class == LDGNode or SetNode then
+      if args[0].kind_of?(BasicNode) then
         x = args[0].x
         y = args[0].y
         weight = args[0].weight

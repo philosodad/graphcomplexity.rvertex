@@ -3,6 +3,7 @@ require 'netgen_star'
 require 'netgen_dumb'
 require 'netgen_fcd'
 require 'netgen_eep'
+require 'netgen_udg'
 require 'helpers_sim'
 
 class RandomSimulator
