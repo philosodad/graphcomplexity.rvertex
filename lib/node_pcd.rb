@@ -46,9 +46,13 @@ class PCDRoot < BasicNode
   end
 
   def init_covers
-    return PCD_Graph.new
+    return get_dep_graph_type.new
   end
   
+  def get_dep_graph_type
+    return Object.const_get('PCD_Graph')
+  end
+
   def burn_cover node
     @covers.burn_cover node
   end

@@ -325,6 +325,22 @@ module SimpleVC
 end
 
 module Combinator
+  def set_covers
+    n = Set[]
+    @neighbors.each do |k|
+      k.neighbors.each do |j|
+        n.add(j)
+      end
+      n.add(k)
+    end
+    alledges = Set[]
+    @neighbors.each do |k|
+      k.edges.each{|l| alledges.add(l)}
+    end
+    c = construct_covers n, alledges
+    @covers = get_dep_graph_type.new c, n
+  end
+
   def construct_covers n, e
     s = get_subsets n.collect{|k| k.id}
     s = test_covers(s,e)
