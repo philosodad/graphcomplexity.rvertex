@@ -324,13 +324,10 @@ module SimpleVC
   end
 end
 
-module Combinator
+module Two_Hop_Star
   def set_covers
     n = Set[]
-    @neighbors.each do |k|
-      k.neighbors.each do |j|
-        n.add(j)
-      end
+    @neighborhood.each do |k|
       n.add(k)
     end
     alledges = Set[]
@@ -340,7 +337,10 @@ module Combinator
     c = construct_covers n, alledges
     @covers = get_dep_graph_type.new c, n
   end
+end
 
+module Combinator
+  include Two_Hop_Star
   def construct_covers n, e
     s = get_subsets n.collect{|k| k.id}
     s = test_covers(s,e)
@@ -377,8 +377,29 @@ module Combinator
 
 end
 
+module Two_Hop_Complete
+  def set_covers
+    n = Set[]
+    @neighborhood.each do |k|
+      n.add(k)
+    end
+    alledges = Set[]
+    nids = n.collect{|k| k.id}.to_set
+    n.each do |k|
+      n.edges.each do |j|
+        if (j - nids).empty?
+          alledges.add(j)
+        end
+      end
+    end
+    c = construct_covers n, alledges
+    @covers = get_dep_graph_type.new c, n
+  end
+end
+
 module IS_Combinator
   include Combinator
+  include Two_Hop_Complete
   def test_cover? c,e
     e.each{|k| return false if (k-c).empty?}
     return true

@@ -9,10 +9,11 @@ class FCDRootNode < PCDRoot
   include Combinator
   include PCD_All_Acts
   include FCD_Acts
-
+  attr_accessor :neighborhood
   def initialize *args
     super(*args)
     @cur = 0
+    @neighborhood = []
   end
 
   def init_covers *args

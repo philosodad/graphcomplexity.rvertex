@@ -6,6 +6,7 @@ class Globals
       $step_up = 1000
       $distance = 1000
       $space = 5000000
+      $sensor_range = ($distance/2)
     else
       $init_weight = args[0]
       $init_range = args[1]
