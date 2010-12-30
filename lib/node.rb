@@ -85,7 +85,7 @@ class SimpleNode < BasicNode
     @x = x
     @y = y
     @covers = init_covers
-    @weight = rand(50)+50
+    @weight = rand($init_weight) + ($init_range)
     @currentcover = 0
   end
 
