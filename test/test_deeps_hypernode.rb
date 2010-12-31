@@ -40,4 +40,10 @@ class TestHyperNode < Test::Unit::TestCase
     assert @s2.edges.length == 2, "s2 has wrong number of edges"
   end
 
+  def test_hypernodes
+    g = SetTargetGraph.new(@n, @t)
+    g.nodes.each{|k| k.set_edges}
+    @s1.edges.each{|k| p k.supply}
+  end
+
 end

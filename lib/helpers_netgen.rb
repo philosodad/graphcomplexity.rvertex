@@ -9,6 +9,10 @@ module Neighborly
         a.each do |k|
           kn[b].neighbors.push(kn[k])
           kn[k].neighbors.push(kn[b])
+          [kn[b].neighbors, kn[k].neighbors].each do |j|
+            j.uniq!
+            j.compact!
+          end
         end
       end
     end
