@@ -13,6 +13,7 @@ class Globals
       $step_up = args[2]
       $distance = args[3]
       $space = args[4]
+      $sensor_range = ($distance/2)
     end
   end
   
