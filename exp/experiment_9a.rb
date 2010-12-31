@@ -57,5 +57,5 @@ class Experiment
 end    
 
 x = Experiment.new
-x.experiment 25
+x.experiment 2
 x.print_to_file

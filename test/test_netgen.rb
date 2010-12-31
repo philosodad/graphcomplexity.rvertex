@@ -6,10 +6,11 @@ require 'netgen_star'
 require 'node_pcd'
 require 'node_star'
 require 'benchmark'
-
+require 'globals'
 class TestGraphs < Test::Unit::TestCase
 
   def setup #always required for a test case
+    Globals.new()
     @n0 = SetNode.new(0)
     @n1 = SetNode.new(1)
     @n2 = SetNode.new(2)

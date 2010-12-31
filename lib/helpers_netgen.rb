@@ -4,8 +4,15 @@ module Neighborly
     @nodes.each{|k| kn[k.id] = k}
     @edges.each do |s|
       a = s.to_a
-      kn[a[0]].neighbors.push(kn[a[1]])
-      kn[a[1]].neighbors.push(kn[a[0]])
+      (a.length - 1).times do 
+        b = a.shift
+        a.each do |k|
+          kn[b].neighbors.push(kn[k])
+          kn[k].neighbors.push(kn[b])
+        end
+      end
+#      kn[a[0]].neighbors.push(kn[a[1]])
+#      kn[a[1]].neighbors.push(kn[a[0]])
     end
   end      
 
@@ -36,21 +43,22 @@ module UnitDiskNeighborly
     puts "nodes built!"
   end
 
-  def set_neighbors
-    def add_by dim
-      nods = @nodes.sort_by{|k| k.send(dim)}
-      dict = {}
-      @nodes.each{|k| dict[k] = []}
-      nods.each_index do |k|
-        up = k+1
-        while up < @nodes.length and ((nods[k].send dim.to_sym) - (nods[up].send dim.to_sym)).abs <= $distance
-          dict[nods[k]].push(nods[up])
-          dict[nods[up]].push(nods[k])
-          up += 1
-        end
+  def add_by dim
+    nods = @nodes.sort_by{|k| k.send(dim)}
+    dict = {}
+    @nodes.each{|k| dict[k] = []}
+    nods.each_index do |k|
+      up = k+1
+      while up < @nodes.length and ((nods[k].send dim.to_sym) - (nods[up].send dim.to_sym)).abs <= $distance
+        dict[nods[k]].push(nods[up])
+        dict[nods[up]].push(nods[k])
+        up += 1
       end
-      return dict
     end
+    return dict
+  end
+
+  def set_neighbors
     exis = add_by('x')
     whys = add_by('y')
     @nodes.each do |k|
@@ -60,6 +68,31 @@ module UnitDiskNeighborly
     puts "neighbors added!"
   end
 
+end
+
+module Targetable
+  def add_from_to_by from, into, by
+    nto = into.sort_by{|k| k.send(by)}
+    fronto = (from + nto).sort_by{|k| k.send(by)}
+    dict = {}
+    nto.each{|k| dict[k] = []}
+    nto.each do |k|
+      pin = fronto.index(k)
+      up = pin+1
+      down = pin-1
+      while up < fronto.length and ((fronto[pin].send(by)) - (fronto[up].send(by))).abs <= $sensor_range
+        if fronto[up].kind_of?(BasicNode) then dict[k].push(fronto[up]) end
+        up += 1
+      end
+      while down >= 0 and ((fronto[pin].send(by)) - (fronto[down].send(by))).abs <= $sensor_range
+        if fronto[down].kind_of?(BasicNode)
+          dict[k].push(fronto[down])
+        end
+        down -= 1
+      end
+    end
+    return dict
+  end  
 end
 
 module Connectable

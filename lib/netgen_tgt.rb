@@ -1,14 +1,15 @@
 require 'netgen'
-require 'target'
 
 class TargetGraph < SimpleGraph
   include PlanarMath
-  attr_reader :targets
+  include Targetable
+  include Neighborly
+
   def initialize(n, t)
     super()
-    @targets = []
     add_nodes(n)
-    add_targets(t)
+    add_edges t
+    set_neighbors
     set_edges
   end
 
@@ -19,17 +20,43 @@ class TargetGraph < SimpleGraph
   end
 
   def get_node_type
-    return Object.const_get('SimpleNode')
-  end
-
-  def add_targets t
-    t.times do
-      @targets.push(Target.new(rand($space), rand($space)))
-    end
+    return Object.const_get('HyperNode')
   end
 
   def set_edges
-    @nodes = @nodes.sort_by{|k| k.x}
-    @targets = @targets.sort_by{|k| k.x}
+    @edges.each do |k|
+      @nodes.each do |j|
+        if k.include? j.id then
+          j.edges.add(k)
+        end
+      end
+    end
+  end
+
+  def add_targets t
+    targets = []
+    t.times do
+      targets.push(Target.new(rand($space), rand($space)))
+    end
+    return targets
+  end
+
+  def add_edges t
+    @edges = build_edges t
+    while @edges.length < t
+      @edges += build_edges 1
+    end
+  end
+  
+  def build_edges t
+    eggs = Set[]
+    targets = add_targets t
+    exis = add_from_to_by @nodes, targets, 'x'
+    whys = add_from_to_by @nodes, targets, 'y'
+    targets.each do |k|
+      eds = (exis[k]&whys[k])
+      eggs.add( eds.select{|j| planar_distance(j, k) <= $sensor_range}.collect{|k| k.id}.to_set)
+    end
+    return eggs
   end
 end
