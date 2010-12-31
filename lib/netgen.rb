@@ -10,6 +10,8 @@ require 'node_pcd'
 require 'node_dumb'
 require 'node_fcd'
 require 'node_isg'
+require 'node_hyper'
+require 'target'
 require 'helpers_netgen'
                         
 class SimpleGraph

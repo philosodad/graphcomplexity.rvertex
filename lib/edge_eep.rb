@@ -15,10 +15,6 @@ class DeepsEdge
     return @u.weight + @v.weight
   end
 
-  def uv
-    return @uv
-  end
-
   def <=> other
     if @supply > other.supply
       return 1
@@ -33,13 +29,34 @@ class DeepsEdge
     end
   end
   
+  def == other
+    @uv == other.uv
+  rescue
+    false
+  end
+
   def eql? other
     if @uv == other.uv
       return true
     end
   end
-
+  
   def hash
     @uv.hash
+  end
+end
+
+class DeepsHyperEdge
+  include Comparable
+  attr_accessor :type, :supply, :nodes
+  def initialize nlist
+    @ids = nlist.collect{|k| k.id}.to_set
+    @nodes = nlist
+    @type = nil
+    @supply = get_supply
+  end
+
+  def get_supply
+    return @nodes.collect{|k| k.weight}.reduce(:+)
   end
 end
