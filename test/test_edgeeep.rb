@@ -30,6 +30,20 @@ class TestDeepsEdge < Test::Unit::TestCase
     assert x-y == [a]
   end
 
+  def test_hyperedge
+    @a.weight = 5
+    @b.weight = 9
+    @c.weight = 15
+    a = DeepsHyperEdge.new [@a,@b,@c]
+    assert_equal 29, a.supply, "a has wrong supply"
+    b = DeepsHyperEdge.new [@a,@c,@b]
+
+    assert_equal a,b, "a should equal b"
+    assert_not_same a, b, "a should be different than b"
+    @c.weight = 1
+    assert_equal 15, a.supply, "a has constant supply?"
+  end
+
   def teardown
     [@a, @b, @c, @d].each{|k| k == nil}
   end

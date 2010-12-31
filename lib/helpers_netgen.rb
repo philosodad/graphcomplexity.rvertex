@@ -11,8 +11,6 @@ module Neighborly
           kn[k].neighbors.push(kn[b])
         end
       end
-#      kn[a[0]].neighbors.push(kn[a[1]])
-#      kn[a[1]].neighbors.push(kn[a[0]])
     end
   end      
 

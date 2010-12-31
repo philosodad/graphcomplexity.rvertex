@@ -60,3 +60,23 @@ class TargetGraph < SimpleGraph
     return eggs
   end
 end
+
+class SetTargetGraph < TargetGraph
+
+  def initialize n,t
+    super(n,t)
+  end
+
+  def add_nodes n
+    n.each{|k| @nodes.push(k)}
+  end
+
+  def add_targets t
+    return t
+  end
+
+  def add_edges t
+    @edges = build_edges t
+  end
+end
+  
