@@ -7,4 +7,8 @@ class Target
     @id = @@id
     @@id += 1
   end
+
+  def zero_out
+    @@id = 0
+  end
 end

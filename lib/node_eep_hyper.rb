@@ -1,6 +1,8 @@
 require 'node_eep'
 
 class DeepsHyperNode < DeepRootNode
+  include Hyper_Deeps_Deciders
+  include DeepsActs
   def set_edges
     kn = {}
     kn[id] = self
