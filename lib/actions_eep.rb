@@ -54,6 +54,8 @@ module DeepsActs
     elsif on == false
       @offlist.push(id)
     end
+    @onlist.uniq!
+    @offlist.uniq!
   end
 end
 
@@ -115,7 +117,10 @@ module Deeps_Deciders
   end
 
   def find_hills
-    @edges.each{|k| if k.type == nil then k.type = :hill end}
+    @edges.each do |k| 
+      if k.type == nil then k.type = :hill end
+      k.nodes.each{|j| if j.poorest == k then k.type = :sink end}
+    end
   end
 
   def set_all_hills
@@ -176,7 +181,11 @@ module Deeps_Deciders_Minimize_Max
     end
   end
 
- def set_all_hills
+  def find_hills
+    @edges.each{|k| if k.type == nil then k.type = :hill end}
+  end
+
+  def set_all_hills
 #    puts 'setting all hills'
     @edges.select{|k| k.type == :hill}.each do |j|
       if j.v.weight == 0
@@ -184,7 +193,7 @@ module Deeps_Deciders_Minimize_Max
         j.v.charges = []
       elsif @poorest.supply < j.v.poorest.supply then
         @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv))
-#        puts 'j added to charges'
+        #        puts 'j added to charges'
       elsif @poorest.supply == j.v.poorest.supply then
         @charges.push j unless (@charges.include?(j) or j.v.charges.collect{|l| l.uv}.include?(j.uv) or j.v < self)
       end
@@ -200,3 +209,40 @@ module Deeps_Deciders_Minimize_Min
   end
 end
 
+module Hyper_Deeps_Deciders
+  include Deeps_Deciders
+
+  def set_all_sinks
+    if @weight > 0 then
+      nebs = @poorest.nodes - [self]
+      nebs.each do |k|
+        if k.poorest == @poorest and k > self
+          return false
+        end
+      end
+      @charges.push(@poorest)
+    end
+  end
+
+  def set_all_hills
+    @edges.select{|k| k.type == :hill}.each do |j|
+      nebs = j.nodes - [self]
+      if nebs.collect{|k| k.weight}.reduce(:+) == 0 then
+        @charges.push j unless @charges.include?(j)
+        nebs.each{|i| i.charges = []}
+      elsif nebs.collect{|k| k.poorest.supply}.flatten.max < @poorest.supply
+        @charges.push j unless @charges.include?(j)
+      elsif @poorest.supply == nebs.collect{|k| k.poorest.supply}.flatten.max
+        @charges.push j unless @charges.include?(j) or nebs.max > self
+      end
+    end
+  end
+
+  def sole_survivor?
+    @edges.each do |j|
+      if (j.ids.to_a - offlist) == [id] then return true end
+    end
+    false
+  end
+  
+end

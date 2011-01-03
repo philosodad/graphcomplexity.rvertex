@@ -55,6 +55,18 @@ class DeepsHyperEdge
     return @nodes.collect{|k| k.weight}.reduce(:+)
   end
 
+  def <=> other
+    if supply > other.supply
+      return 1
+    elsif supply < other.supply
+      return -1
+    elsif hash > other.hash
+      return 1
+    elsif hash < hash
+      return -1
+    end
+  end
+
   def == other
     @ids == other.ids
   rescue
@@ -63,6 +75,8 @@ class DeepsHyperEdge
   alias eql? ==
 
   def hash
-    @ids.hash
+    code = 17
+    @ids.each{|k| code = 37*code + k.hash}
+    code
   end
 end
