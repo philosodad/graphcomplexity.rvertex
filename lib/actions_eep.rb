@@ -245,4 +245,16 @@ module Hyper_Deeps_Deciders
     false
   end
   
+  def charges_covered?
+    ret = false
+    @charges.each do |k|
+      ret = false
+      if (k.nodes - [self]).select{|k| k.on}.length > 0
+        ret = true
+      else 
+        return false
+      end
+    end
+    return ret
+  end
 end

@@ -75,6 +75,12 @@ class TestHyperNode < Test::Unit::TestCase
     g.nodes.each{|k| k.send_status}
     assert @s1.sole_survivor?, "s1 is not the sole survivor!"
     assert !@s5.sole_survivor?, "s5 is a sole survivor"
+    @s0.on = true
+    assert !@s1.charges_covered?, "s1 charges covered"
+    @s4.on = true
+    assert @s1.charges_covered?, "s1 charges not covered"
+    @s0.on = false
+    assert @s1.charges_covered?, "s1 charges not covered"
   end
 
   def teardown
