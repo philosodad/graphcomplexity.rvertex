@@ -3,6 +3,7 @@ require 'netgen_star'
 require 'netgen_dumb'
 require 'netgen_fcd'
 require 'netgen_eep'
+require 'netgen_eep_hyper'
 require 'netgen_udg'
 require 'helpers_sim'
 
@@ -113,10 +114,14 @@ class DeepsSimulator < RandomSimulator
   include Sim_To_Done
   include Stepping_Sim
   def initialize(g)
-    @rg = DeepsGraph.new(g)
+    @rg = get_graph_type.new(g)
     set_id
   end
   
+  def get_graph_type
+    return Object.const_get "DeepsGraph"
+  end
+
   def set_id
     @id = @@id
     @@id +=1
@@ -158,6 +163,12 @@ class DeepsMinMaxSimulator < DeepsSimulator
   def initialize(g)
     @rg = DeepsMinMinGraph.new(g)
     set_id
+  end
+end
+
+class DeepsHyperSimulator < DeepsSimulator
+  def get_graph_type
+    return Object.const_get "DeepsHyperGraph"
   end
 end
 
