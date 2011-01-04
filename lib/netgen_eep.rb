@@ -1,5 +1,6 @@
 require 'netgen_pcd'
 require 'node_eep'
+require 'netgen_tgt'
 
 class DeepsRootGraph < PCDRootGraph
   def reset
