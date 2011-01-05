@@ -7,4 +7,13 @@ class WeightedEdge
     @weight = nil
   end
 end
+
+class ColoredEdge
+  attr_reader :uv
+  attr_accessor :color
+  def initialize e
+    @uv = e
+    @color = nil
+  end
+end
     

@@ -5,6 +5,10 @@ require 'sim'
 require 'netgen'
 
 class TestMatch < Test::Unit::TestCase
+  def setup
+    Globals.new()
+  end
+
   def test_rand
     gs = GridSimulator.new(5,2)
     gs.set

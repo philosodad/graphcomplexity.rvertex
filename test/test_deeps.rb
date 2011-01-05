@@ -4,6 +4,18 @@ require 'test/unit'
 require 'sim'
 
 class TestDeeps < Test::Unit::TestCase
+  def setup
+    Globals.new()
+  end
+  def test_init
+    dpsim = DeepsSimulator.new(RandomGraph.new(40,5))
+    dpsim.set
+    dpsim.rg.nodes.each{|k| k.edges.each{|j| assert j.class == DeepsEdge}}
+    dpsim.rg.nodes.each{|k| puts k.edges.to_a.collect{|j| j.supply}}
+      
+    dpsim.rg.nodes.each{|k| k.do_next}
+ #   dpsim.rg.nodes.each{|k| k.do_next}
+  end
   def test_deeps
     puts "test deeps"
     dpsim = DeepsSimulator.new(RandomGraph.new(40,5))
@@ -13,10 +25,12 @@ class TestDeeps < Test::Unit::TestCase
     dasim = DeepsMinMaxSimulator.new(RandomGraph.new(40,5))
     dpsim.set
     dpsim.rg.nodes.each do |k|
+      assert k.weight > 0, 'this node weighs nothing!'
       assert k.neighbors.length > 0, 'this node has no neighbors'
       k.edges.select{|e| e.uv.include?(843)}
       assert k.edges.length > 0, 'this node has no edges'
       k.edges.each do |j|
+        assert j.supply > 0, "this edge hGas no supply!"
         assert j.class == DeepsEdge, 'That aint a DeepsEdge'
         assert j.uv.class == Set, 'That aint a set'
         assert j.uv.length == 2, 'That set is two long'
@@ -85,7 +99,7 @@ class TestDeeps < Test::Unit::TestCase
     dpsim.rg.nodes.each{|k| assert k.next == :analyze, 'state is not analyze'}
     dpsim.rg.nodes.each{|k| assert k.onlist == [], 'onlist changed'}
     dpsim.rg.nodes.each{|k| k.set_next (:boot)}
-    assert dpsim.sim < 500, "deeps running past 500"
+    assert dpsim.sim[1] < 500, "deeps running past 500"
     assert dpsim.rg.covered?, 'deeps not covering'
     dpsim.rg.reduce_by_min
     c = 0
@@ -93,10 +107,10 @@ class TestDeeps < Test::Unit::TestCase
     dxsim.set
     dnsim.set
     dasim.set 
-    assert dxsim.sim < 500
-    assert dnsim.sim < 500
-    assert dasim.sim < 500
-    assert desim.sim < 500, 'other deeps overruns'
+    assert dxsim.sim[1] < 500
+    assert dnsim.sim[1] < 500
+    assert dasim.sim[1] < 500
+    assert desim.sim[1] < 500, 'other deeps overruns'
     desim.rg.nodes.each{|k| if k.now == :decided then assert_not_nil k.on end}
     desim.rg.nodes.each{|k| if k.now == :analyze then assert_nil k.on end}
   end

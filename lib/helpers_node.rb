@@ -60,3 +60,34 @@ end
 
 module Very_Redundant
 end
+
+module OnOffAble
+  attr_accessor :on, :onlist
+  def init_onoff
+    @on = nil
+    @onlist = {}
+  end
+
+  def off?
+    if @on == false
+      return true
+    else
+      return false
+    end
+  end
+
+  def set_ons
+    @neighbors.each{|k| @onlist[k.id] = k.on}
+    @onlist[@id] = @on
+    @neighbors.each{|k| @keyedweights[k.id] = k.weight}
+    @keyedweights[@id] = @weight
+  end
+end
+
+module Weighted
+  attr_accessor :weight
+  def init_weight
+    @keyedweights = {}
+    @weight = rand($init_weight) + $init_range
+  end
+end

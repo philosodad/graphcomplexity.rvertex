@@ -139,8 +139,12 @@ module Deeps_Deciders
   end
     
   def find_poorest_edge
-    @poorest = @edges.min
-    @poorest.type = :sink
+    begin
+      @poorest = @edges.min
+      @poorest.type = :sink
+    rescue => ex
+      p '#{ex.class}: cannot find the poorest edge'
+    end
   end
 
   def charges_covered?

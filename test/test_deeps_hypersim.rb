@@ -7,7 +7,7 @@ require 'netgen_eep_hyper'
 
 class TestHyperSim < Test::Unit::TestCase
   def setup
-    Globals.new 15,15,2,40, 22
+    Globals.new 15,15,2,22, 40
     @tg = TargetGraph.new 15, 5
   end
 
@@ -22,9 +22,10 @@ class TestHyperSim < Test::Unit::TestCase
     assert_not_equal d.nodes.collect{|k| k.id} - g.nodes.collect{|k| k.id}, [] #just making sure
     assert d.coverable?, "d cannot be covered"
     failtrack = false
+    num = 0
     until failtrack == true 
       begin
-        u = DeepsHyperGraph.new(TargetGraph.new(3, 5))
+        u = DeepsHyperGraph.new(TargetGraph.new(3, 6))
         u.nodes.each{|k| assert k.weight > 0, "weight of 0"}
         u.edges.each{|k| p k}
         u.edges.each{|k| assert !k.empty?, "empty edge"}
@@ -33,7 +34,9 @@ class TestHyperSim < Test::Unit::TestCase
       rescue ArgumentError => ex
         puts "#{ex.class}:#{ex.message}"
         failtrack = true
-      rescue StandardError
+      rescue StandardError => ex
+        num += 1
+        puts "#{num} - #{ex.class}:#{ex.message}"
         failtrack = false
       end
     end

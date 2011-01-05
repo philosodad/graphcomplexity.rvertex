@@ -6,10 +6,16 @@ class TargetGraph < SimpleGraph
   include Neighborly
 
   def initialize *args
-    if args.length == 2
+    if args.length == 2 
       n = args[0]
       t = args[1]
-      raise ArgumentError, "#{t} must be less than #{n}!" unless args[1] <= (1..n).inject(:*)
+      if args[0].class == Fixnum
+        raise ArgumentError, "#{t} must be less than #{n}!" unless args[1] <= (1..n).inject(:*)
+      elsif args[0].class == Array
+        ns = args[0].length
+        ts = args[1].length
+        raise ArgumentError, "#{ts} must be less than #{ns}!" unless ts <= (1..ns).inject(:*)
+      end
       super()
       add_nodes(n)
       add_edges t
@@ -62,7 +68,7 @@ class TargetGraph < SimpleGraph
     @edges = build_edges t 
     attempts = 0
     while @edges == nil or @edges.length < t
-      raise StandardError, "Target requirement unfulfilled" unless attempts < $space**2
+      raise StandardError, "Target requirement unfulfilled in #{$space**2} attempts" unless attempts < $space**2
       @edges += build_edges 1
       attempts += 1
     end
