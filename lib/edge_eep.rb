@@ -2,9 +2,10 @@ require 'set'
 
 class DeepsEdge
   include Comparable
-  attr_accessor :type, :supply,  :uv, :u, :v
+  attr_accessor :type, :supply,  :uv, :u, :v, :nodes
   def initialize a, b
     @uv = Set[a.id, b.id]
+    @nodes = Set[a,b]
     @u = a
     @v = b
     @type = nil
@@ -15,9 +16,9 @@ class DeepsEdge
   end
 
   def <=> other
-    if @supply > other.supply
+    if supply > other.supply
       return 1
-    elsif @supply < other.supply
+    elsif supply < other.supply
       return -1
     elsif u.id > other.u.id
       return 1
