@@ -19,6 +19,8 @@ class BaseNode
     @id
     @next
     @now
+    @x
+    @y
     update_id
   end
 

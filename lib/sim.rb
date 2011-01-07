@@ -4,6 +4,7 @@ require 'netgen_dumb'
 require 'netgen_fcd'
 require 'netgen_eep'
 require 'netgen_eep_hyper'
+require 'netgen_ec'
 require 'netgen_udg'
 require 'helpers_sim'
 
@@ -146,16 +147,14 @@ class DeepsRedMinSimulator < RandomSimulator
 end
 
 class DeepsMinMinSimulator < DeepsSimulator
-  def initialize(g)
-    @rg = DeepsMinMinGraph.new(g)
-    set_id
+  def get_graph_type
+    Object.const_get('DeepsMinMinGraph')
   end
 end
 
 class DeepsMaxMaxSimulator < DeepsSimulator
-  def initialize(g)
-    @rg = DeepsMinMinGraph.new(g)
-    set_id
+  def get_graph_type
+    Object.const_get('DeepsMinMinGraph')
   end
 end
 
@@ -260,11 +259,18 @@ class MatchSimulator < RandomSimulator
   include Sim_To_Done
   include Running_Sim
   def initialize(g)
-    @rg = MatchGraph.new(g)
+    @rg = get_graph_type.new(g)
+    set_id
+  end
+
+  def get_graph_type
+    Object.const_get('MatchGraph')
+  end
+
+  def set_id
     @id = @@id
     @@id += 1
   end
-
 =begin  def long_sim
     t = 0
     while @rg.coverable?
@@ -288,43 +294,43 @@ class MatchStepSimulator < MatchSimulator
 end
 
 class MatchMaxSimulator < MatchSimulator
-  def initialize(g)
-    @rg = MatchMaxGraph.new(g)
-    @id = @@id
-    @@id +=1
+  def get_graph_type
+    Object.const_get('MatchMaxGraph')
   end
 end
 
 class MatchMWMSimulator < MatchSimulator
-  def initialize(g)
-    @rg = MatchMWMGraph.new(g)
-    @id = @@id
-    @@id +=1
+  def get_graph_type
+    Object.const_get('MatchMWMGraph')
   end
 end
 
 class MatchRedSimulator < MatchSimulator
-  def initialize(g)
-    @rg = MatchRedGraph.new(g)
-    @id = @@id
-    @@id += 1
+  def get_graph_type
+    Object.const_get('MatchRedGraph')
   end
 end
-  
+
+class EdgeColorSimulator < MatchSimulator
+  def get_graph_type
+    Object.const_get('EdgeColorGraph')
+  end
+
+  def get_the_metric
+    return "I am a man of constant Sorrow!"
+  end
+
+end
 
 class StarSimulator < MatchSimulator
-  def initialize(g)
-    @rg = StarGraph.new(g)
-    @id = @@id
-    @@id += 1
+  def get_graph_type
+    Object.const_get('StarGraph')
   end
 end
 
 class StarRedSimulator < StarSimulator
-  def initialize(g)
-    @rg = StarRedGraph.new(g)
-    @id = @@id
-    @@id += 1
+  def get_graph_type
+    Object.const_get('StarRedGraph')
   end
 end
 
