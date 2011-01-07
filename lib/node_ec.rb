@@ -1,32 +1,40 @@
 require 'node_match'
+require 'actions_ec'
 
-class EdgeColorRootNode < MatchNode
+class EdgeColorRootNode < MatchRootNode
+  include Colorable
   def initialize *args
     case args.length
     when 1
       begin
-        args[0] = n
-        raise TypeError unless n.kind_of?(BasicNode)
-        id = n.id
+        n = args[0]
+        raise TypeError unless n.kind_of?(BaseNode)
       rescue => ex
         puts "#{ex.class}: With one argument, you must pass a node"
+      ensure
+        id = n.id
+        x = n.x
+        y = n.y
       end         
     when 2
       id = nil
+      x = args[0]
+      y = args[1]
     end
-    super
+    super()
+    @x = x
+    @y = y
     @id = id unless id == nil
-    @weight = nil
-    @next = :something
-    @colors = []
-    build_color_list
+    @next = :choose
+    init_colors(12)
   end
 
-  def build_color_list
-    (0..2**12).each{|k| @colors.push k}
-  end
-
-  def get_node_type
+  def get_edge_type
     Object.const_get("ColoredEdge")
   end
+end
+
+class EdgeColorNode < EdgeColorRootNode
+  include EcActs
+  include Ec_Deciders
 end

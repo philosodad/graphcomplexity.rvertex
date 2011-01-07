@@ -58,7 +58,7 @@ class TestSim < Test::Unit::TestCase
     puts 'testing giant'
     @giant = PCDAllSimulator.new(RandomGraph.new(100,1000))
     @giant.set
-    assert @giant.sim < 500
+    assert @giant.sim[1] < 500
     assert @giant.rg.covered?, "giant not covered"
     #find a random node that is on and turn it off
     on = @giant.rg.nodes.select{|k| k.on}
@@ -72,7 +72,7 @@ class TestSim < Test::Unit::TestCase
     puts 'testing fcd'
     fcd = FCDRedSimulator.new(RandomGraph.new(10, 15))
     fcd.set
-    assert fcd.sim < 500, "fcd too large"
+    assert fcd.sim[1] < 500, "fcd too large"
     assert fcd.rg.covered?, "fcd not covered"
   end
 
@@ -98,7 +98,7 @@ class TestSim < Test::Unit::TestCase
     assert @ag.sim[1] < 500, "ag > 500"
     assert @bg.sim[1] < 500, "bg > 500"
     assert @qg.sim[1] < 500, "qg > 500"
-    #assert @ig.sim < 500, "ig > 500"
+    #assert @ig.sim[1] < 500, "ig > 500"
     assert @og.sim[1] < 500, "og > 500"
     assert @vg.sim[1] < 500, 'vg > 500'
     assert @ug.sim[1] < 500, "ug > 500"
@@ -150,13 +150,13 @@ class TestSim < Test::Unit::TestCase
     puts "testing starsim"
     @tg.set
 #    @tg.set_covers
-    assert @tg.sim < 500, "tg > 500"
+    assert @tg.sim[1] < 500, "tg > 500"
   end
 
   def test_mg
     puts "testing matchsim"
     assert_equal @mg.rg.covered?, false
-    assert @mg.sim < 500
+    assert @mg.sim[1] < 500
     assert_equal @mg.rg.covered?, true
     @gg.set
     @gg.set_covers
@@ -176,7 +176,7 @@ class TestSim < Test::Unit::TestCase
     puts "a: #{a}"
     @gg.set
     @gg.set_covers
-    assert @gg.sim < 500, "grid simulator > 500"
+    assert @gg.sim[1] < 500, "grid simulator > 500"
     b = @gg.get_on_weight
     puts "b: #{b}"
     assert_not_equal a,b
@@ -187,12 +187,12 @@ class TestSim < Test::Unit::TestCase
   def test_udg
 #    @udg.set
 #    @udg.set_covers
-#    assert @udg.sim < 500
+#    assert @udg.sim[1] < 500
   end
 
   def test_randomsim
     @rg.set_covers
-    assert @rg.sim < 500
+    assert @rg.sim[1] < 500
 #    @rg.rg.nodes.each{|k| puts k.covers.inspect}
   end
 
@@ -218,7 +218,7 @@ class TestSim < Test::Unit::TestCase
     puts "test deeps"
     dpsim = DeepsSimulator.new(RandomGraph.new(40,5))
     dpsim.set
-    assert dpsim.sim < 500, "deeps running past 500"
+    assert dpsim.sim[1] < 500, "deeps running past 500"
     assert dpsim.rg.covered?, 'deeps not covering'
   end
 
@@ -226,7 +226,7 @@ class TestSim < Test::Unit::TestCase
     puts "test_setsim"
     @sg.set
     @sg.set_covers
-#    assert @sg.sim < 500
+#    assert @sg.sim[1] < 500
 #    [@sn11,@sn12,@sn13].each{|k| assert_equal k.on, true}
 #    [@sn10, @sn14].each{|k| assert_equal k.on, false}
   end

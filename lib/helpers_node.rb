@@ -91,3 +91,11 @@ module Weighted
     @weight = rand($init_weight) + $init_range
   end
 end
+
+module Colorable
+  attr_reader :colors
+  def init_colors x
+    @colors = []
+    (0...2**x).each{|k| @colors.push k}
+  end
+end
