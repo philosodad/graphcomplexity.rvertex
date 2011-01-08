@@ -94,8 +94,14 @@ end
 
 module Colorable
   attr_reader :colors
+  attr_writer :deadcolors
   def init_colors x
     @colors = []
     (0...2**x).each{|k| @colors.push k}
+    @deadcolors = []
+  end
+
+  def get_dead
+    @deadcolors
   end
 end

@@ -1,7 +1,8 @@
 require 'set'
 class WeightedEdge
-  attr_reader :uv
+  attr_reader :uv, :criteria
   attr_accessor :weight
+  alias :criteria :weight
   def initialize e
     @uv = e
     @weight = nil
@@ -9,8 +10,9 @@ class WeightedEdge
 end
 
 class ColoredEdge
-  attr_reader :uv
+  attr_reader :uv, :criteria
   attr_accessor :color
+  alias :criteria :color
   def initialize e
     @uv = e
     @color = nil
