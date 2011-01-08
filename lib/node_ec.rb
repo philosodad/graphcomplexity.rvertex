@@ -22,6 +22,7 @@ class EdgeColorRootNode < MatchRootNode
       y = args[1]
     end
     super()
+    @invites = {}
     @x = x
     @y = y
     @id = id unless id == nil

@@ -37,6 +37,7 @@ class MatchNode < MatchRootNode
       id = nil
     end
     super()
+    @invites = []
     init_onoff
     @id = id unless id == nil
     @x = x
@@ -44,7 +45,6 @@ class MatchNode < MatchRootNode
     @weight = weight unless weight == nil
     @next = :choose
     @rp = nil
-    @invites = []
     @subtract = 0
   end
 
