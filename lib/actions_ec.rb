@@ -34,11 +34,10 @@ module EcActs
     when :choose
       @rp = nil
       @invites = {}
-      @deadcolors = []
     when :listen, :wait
       return true
     when :update
-      @neighbors.each{|k| k.recieve_status 0,0,@edges.collect{|k| k.color}}
+      @neighbors.each{|k| k.recieve_status id,0,@edges.collect{|k| k.color}}
     end
   end
 
@@ -55,13 +54,18 @@ module EcActs
         end
       end
     when :update
-      @deadcolors.push(criteria)
+      @deadcolors[id] = criteria
     end
   end
 end
 
 module Ec_Deciders
   def choose_role
+    if @deadcolors == nil or @deadcolors == {}
+      @deadcolors = {}
+      @neighbors.each{|k| @deadcolors[k.id] = []}
+    end
+
     if criteria_fulfilled then 
       @next = :done
     else
@@ -95,11 +99,11 @@ module Ec_Deciders
   end
 
   def get_criteria 
-    return colors[0].to_i
+    (@colors - @deadcolors[@rp.id]).sort![0]
   end
 
   def update_colors
-    @colors = @colors - @deadcolors.flatten
+    @colors = @colors - @edges.collect{|k| k.color}
   end
 
   def update_edges

@@ -98,7 +98,7 @@ module Colorable
   def init_colors x
     @colors = []
     (0...2**x).each{|k| @colors.push k}
-    @deadcolors = []
+    @deadcolors = {}
   end
 
   def get_dead
