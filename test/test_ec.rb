@@ -10,7 +10,7 @@ class TestEC < Test::Unit::TestCase
   def setup
     Globals.new()
     @a = BaseNode.new
-    @b = RandomGraph.new(200, 800)
+    @b = RandomGraph.new(200, 2400)
   end
 
   def test_init
@@ -28,7 +28,10 @@ class TestEC < Test::Unit::TestCase
     c.rg.nodes.each{|k| k.edges.each{|j| assert j.class == ColoredEdge, 'that is not a colored edge, its a #{j.class}'}}
     assert c.sim[2] == 0, 'c failed'
     c.rg.nodes.each do |k|
-      assert k.edges.collect{|j| j.color}.length == k.edges.collect{|j| j.color}.uniq.length
+      u = k.edges.collect{|j| j.color}
+      u.uniq!
+      assert_not_nil u
+      assert_equal u.length, k.edges.length, "#{u.length} colors for #{k.edges.length} edges"
       k.edges.each do |j|
         if j.color != nil
           assert k.neighbors.select{|i| j.uv.include?(i.id)}.length == 1
@@ -39,7 +42,8 @@ class TestEC < Test::Unit::TestCase
       end
       assert k.edges.select{|j| j.color == nil}.length == 0, "some edges are still nil"
     end
-    p c.rg.nodes.collect{|k| k.edges.to_a}.flatten.collect{|k| k.color}.max
+    p c.rg.nodes.collect{|k| k.edges.to_a}.flatten.collect{|k| k.color}.max + 1
+
     p c.rg.nodes.collect{|k| k.edges.length}.max
   end
 
@@ -83,7 +87,6 @@ class TestEC < Test::Unit::TestCase
     c.nodes.each do |k|
       assert k.invites == {}
       assert k.rp == nil
-      assert k.get_dead == []
     end
 
     nextdo c
