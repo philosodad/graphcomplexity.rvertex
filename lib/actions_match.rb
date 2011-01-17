@@ -100,3 +100,30 @@ module Match_Red_Acts
     end
   end
 end
+
+module Match_Deciders
+  def choose_edge
+    @edges.select{|k| k.criteria == nil}.sample
+  end
+
+  def criteria_fulfilled
+    !@edges.collect{|k| k.criteria}.include?(nil)
+  end
+
+  def choose_round_partner
+    case @now
+    when :invite
+      e = choose_edge
+      begin
+        i = (e.uv - Set[@id]).first
+        @rp = @neighbors.select{|k| k.id == i}.first
+      end unless e == nil
+    when :respond
+      if not @invites.empty? then
+        n = @invites.keys.sample
+        @rp = @neighbors.select{|k| k.id == n}.first
+      end
+    end
+  end
+
+end

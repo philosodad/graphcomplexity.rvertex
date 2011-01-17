@@ -90,6 +90,12 @@ module Weighted
     @keyedweights = {}
     @weight = rand($init_weight) + $init_range
   end
+
+  def update_neighbor_state id, data
+    if data == :done
+      @edges.select{|k| k.uv.include?(id)}.first.weight = 0
+    end
+  end
 end
 
 module Colorable

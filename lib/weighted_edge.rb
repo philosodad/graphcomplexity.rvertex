@@ -19,3 +19,9 @@ class ColoredEdge
   end
 end
     
+class DirectedColoredEdge < ColoredEdge
+  def initialize e
+    @uv = e
+    @color = {:in=>nil, :out=>nil}
+  end
+end 
