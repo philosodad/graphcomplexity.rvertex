@@ -2,6 +2,7 @@ require 'node'
 require 'actions_match'
 
 class MatchRootNode < BaseNode
+  include Match_Deciders
   attr_reader :rp, :invites
   def set_edges
     @neighbors.each{|k| @edges.add(Set[k.id, @id])}
