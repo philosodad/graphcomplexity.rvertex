@@ -19,9 +19,21 @@ class ColoredEdge
   end
 end
     
-class DirectedColoredEdge < ColoredEdge
+class DirectedColorEdge < ColoredEdge
   def initialize e
     @uv = e
-    @color = {:in=>nil, :out=>nil}
+    @color = {:in => nil, :out => nil}
+  end
+
+  def + other
+    self.to_i + other.to_i
+  end
+
+  def coerce(other)
+    return Integer(self), other
+  end
+
+  def to_i
+    @color.values.select{|k| k == nil}.length
   end
 end 

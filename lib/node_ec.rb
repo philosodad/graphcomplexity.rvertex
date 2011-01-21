@@ -1,5 +1,6 @@
 require 'node_match'
 require 'actions_ec'
+require 'actions_dec'
 
 class EdgeColorRootNode < MatchRootNode
   include Colorable
@@ -38,4 +39,20 @@ end
 class EdgeColorNode < EdgeColorRootNode
   include EcActs
   include Ec_Deciders
+end
+
+class DirectedEdgeColorNode < EdgeColorRootNode
+  include Dec_Acts
+  include Dec_Deciders
+  include Compare_by_Edge
+  include Message_Passer
+  def initialize *args
+    super
+    @invites = []
+    @next_message = nil
+  end
+    
+  def get_edge_type
+    Object.const_get("DirectedColorEdge")
+  end
 end

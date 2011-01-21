@@ -125,7 +125,8 @@ class MatchGraph < SimpleGraph
   def initialize g
     super()
     n = []
-    g.nodes.each{|k| n.push(get_node_type.new(k))}
+    ntype = get_node_type
+    g.nodes.each{|k| n.push(ntype.new(k))}
     @nodes = n
     g.edges.each{|k| @edges.add(k)}
     set_neighbors
