@@ -8,7 +8,8 @@ class MatchRootNode < BaseNode
     @neighbors.each{|k| @edges.add(Set[k.id, @id])}
     e = @edges.to_a
     @edges = Set[]
-    e.each{|k| @edges.add(get_edge_type.new(k))}
+    etype = get_edge_type
+    e.each{|k| @edges.add(etype.new(k))}
   end
 
   def get_edge_type

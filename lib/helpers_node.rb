@@ -111,3 +111,32 @@ module Colorable
     @deadcolors
   end
 end
+
+module Compare_by_Edge
+  include Comparable
+  def <=> other
+    if @edges.reduce(:+) > other.edges.reduce(:+)
+      return 1
+    elsif @edges.reduce(:+) < other.edges.reduce(:+)
+      return -1
+    elsif @id > other.id
+      return 1
+    elsif @id < other.id
+      return -1
+    else
+      return 0
+    end
+  end
+end
+
+module Message_Passer
+  class Message
+    attr_reader :from, :to, :data
+    def initialize f,t,d
+      @from = f
+      @to = t
+      @data = d
+    end
+  end
+end
+    
