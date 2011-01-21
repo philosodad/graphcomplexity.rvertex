@@ -53,6 +53,12 @@ class TestEC < Test::Unit::TestCase
     test_next b, :choose
   end
 
+  def test_criteria
+    a = DirectedEdgeColorNode.new(@a)
+    (1..10).each{|k| a.edges.push(DirectedColorEdge.new(k))}
+    assert !a.criteria_fulfilled?, "criteria should not be fulfilled!"
+  end
+
   def test_comparison
     b = DirectedEdgeColorGraph.new(@b)
     b.nodes.each{|k| k.set_edges}
