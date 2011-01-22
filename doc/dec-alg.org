@@ -1,0 +1,25 @@
+* Sim Object
+* Network Object
+  - [ ] Initializes
+  - [ ] Tests
+* Node Object
+** DONE Intializes
+   - State "DONE"       from ""           [2011-01-21 Fri 14:19]
+** do next
+   - [X] test fsm
+     - [X] walks through states
+     - [X] subfunctions correct
+       - [X] choose_round_partner
+       - [X] evaluate_invites 
+       - [X] choose_role
+       - [X] criteria_fulfilled?
+       - [X] update_edges
+	 - In order to update edges
+	 - must know whether in or out
+	 - must know what color to choose
+	   - choose using @next_message variable
+       - [X] update_colors 
+	  - [X] test send functions
+** send status
+* Edge Object
+* Message Object

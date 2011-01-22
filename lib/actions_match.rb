@@ -106,7 +106,7 @@ module Match_Deciders
     @edges.select{|k| k.criteria == nil}.sample
   end
 
-  def criteria_fulfilled
+  def criteria_fulfilled?
     !@edges.collect{|k| k.criteria}.include?(nil)
   end
 

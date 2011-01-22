@@ -112,6 +112,16 @@ module Colorable
   end
 end
 
+module Directional_Colorable
+  attr_reader :legal_in, :legal_out
+  def init_colors x
+    @colors = []
+    (0...2**x).each{|k| @colors.push k}
+    @legal_in = @colors
+    @legal_out = @colors
+  end
+end
+
 module Compare_by_Edge
   include Comparable
   def <=> other
@@ -130,6 +140,7 @@ module Compare_by_Edge
 end
 
 module Message_Passer
+  attr_writer :next_message
   class Message
     attr_reader :from, :to, :data
     def initialize f,t,d
@@ -138,5 +149,13 @@ module Message_Passer
       @data = d
     end
   end
+  
+  def test_next_message
+    return !@next_message.nil?
+  end
+
+  def get_next_message
+    p "#{@next_message.from}, #{@next_message.to}, #{@next_message.data}"
+  end      
 end
     
