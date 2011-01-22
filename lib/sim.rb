@@ -322,6 +322,16 @@ class EdgeColorSimulator < MatchSimulator
 
 end
 
+class DirectedEdgeColorSimulator < MatchSimulator
+  def get_graph_type
+    Object.const_get('DirectedEdgeColorGraph')
+  end
+
+  def get_the_metric
+    return "how many colors am I holding up?"
+  end
+end
+
 class StarSimulator < MatchSimulator
   def get_graph_type
     Object.const_get('StarGraph')

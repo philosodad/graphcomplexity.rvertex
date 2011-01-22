@@ -66,7 +66,7 @@ module Ec_Deciders
       @neighbors.each{|k| @deadcolors[k.id] = []}
     end
 
-    if criteria_fulfilled then 
+    if criteria_fulfilled? then 
       @next = :done
     else
       @next = [:invite, :listen].sample

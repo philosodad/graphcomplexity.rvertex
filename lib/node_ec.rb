@@ -46,6 +46,8 @@ class DirectedEdgeColorNode < EdgeColorRootNode
   include Dec_Deciders
   include Compare_by_Edge
   include Message_Passer
+  include Directional_Colorable
+
   def initialize *args
     super
     @invites = []
