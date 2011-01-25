@@ -69,9 +69,9 @@ module Dec_Deciders
 
   def choose_round_partner
     e = open_edges.sample
-    delta = @neighbors.length
+    delta = open_edges.length
     @rp = @neighbors.select{|k| e.uv.include?(k.id)}.first
-    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out - @deadcolors[@rp.id])[rand(delta)])
+    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out & @rp.legal_in)[[rand(delta), 10].max])
   end
 
   def reset_variables
@@ -93,7 +93,7 @@ module Dec_Deciders
     elsif incoming.length == 0
       @next = :invite
     else
-      @next = [:invite, :listen].sample
+      @next = [:invite, :listen, :listen].sample
     end
   end
 

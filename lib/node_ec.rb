@@ -28,7 +28,7 @@ class EdgeColorRootNode < MatchRootNode
     @y = y
     @id = id unless id == nil
     @next = :choose
-    init_colors(12)
+    init_colors(11)
   end
 
   def get_edge_type

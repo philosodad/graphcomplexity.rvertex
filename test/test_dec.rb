@@ -10,7 +10,7 @@ class TestEC < Test::Unit::TestCase
   def setup
     Globals.new()
     @a = BaseNode.new
-    @b = RandomGraph.new(200, 1000)
+    @b = RandomGraph.new(500, 7400)
   end
 
   def test_init
@@ -153,7 +153,7 @@ class TestEC < Test::Unit::TestCase
     a.set_now(:update_in)
     a.update_edges
     ae = a.edges.select{|k| k.uv.include?(a.rp.id)}.first
-    assert_equal ae.color[:in], 0
+    assert_equal ae.color[:in], 5
     assert a.colors.include?(0), "a does not have 0"
     a.update_colors
     assert !a.colors.include?(0), "a has 0!"
