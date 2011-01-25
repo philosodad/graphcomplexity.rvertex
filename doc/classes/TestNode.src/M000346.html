@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>setup (TestNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_modifiedauto.rb, line 9</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span> <span class="ruby-comment cmt">#always required for a test case</span>
+    <span class="ruby-ivar">@sn10</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">10</span>)
+    <span class="ruby-ivar">@sn11</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">11</span>)
+    <span class="ruby-ivar">@sn12</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">12</span>)
+    <span class="ruby-ivar">@sn13</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">13</span>)
+    <span class="ruby-ivar">@sn14</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">14</span>)
+    <span class="ruby-ivar">@sn15</span> = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">15</span>)
+    <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">neighbors</span> = [<span class="ruby-ivar">@sn11</span>, <span class="ruby-ivar">@sn12</span>, <span class="ruby-ivar">@sn13</span>]
+    <span class="ruby-ivar">@sn11</span>.<span class="ruby-identifier">neighbors</span> = [<span class="ruby-ivar">@sn14</span>, <span class="ruby-ivar">@sn13</span>, <span class="ruby-ivar">@sn10</span>]
+    <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">neighbors</span> = [<span class="ruby-ivar">@sn10</span>, <span class="ruby-ivar">@sn13</span>, <span class="ruby-ivar">@sn14</span>]
+    <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">neighbors</span> = [<span class="ruby-ivar">@sn10</span>, <span class="ruby-ivar">@sn11</span>, <span class="ruby-ivar">@sn12</span>]
+    <span class="ruby-ivar">@sn14</span>.<span class="ruby-identifier">neighbors</span> = [<span class="ruby-ivar">@sn11</span>, <span class="ruby-ivar">@sn12</span>]
+    <span class="ruby-ivar">@sn10</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">100</span>
+    <span class="ruby-ivar">@sn11</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">45</span>
+    <span class="ruby-ivar">@sn12</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">45</span>
+    <span class="ruby-ivar">@sn13</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">50</span>
+    <span class="ruby-ivar">@sn14</span>.<span class="ruby-identifier">weight</span> = <span class="ruby-value">100</span>
+    <span class="ruby-ivar">@snodes2</span> = [<span class="ruby-ivar">@sn10</span>, <span class="ruby-ivar">@sn11</span>, <span class="ruby-ivar">@sn12</span>, <span class="ruby-ivar">@sn13</span>, <span class="ruby-ivar">@sn14</span>]
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

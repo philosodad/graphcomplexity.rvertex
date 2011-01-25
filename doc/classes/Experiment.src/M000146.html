@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>experiment (Experiment)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File exp/experiment_8a.rb, line 14</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">experiment</span> <span class="ruby-identifier">x</span>
+    [<span class="ruby-value">40</span>, <span class="ruby-value">120</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">y</span><span class="ruby-operator">|</span>
+      [<span class="ruby-value">1.5</span>,<span class="ruby-value">3</span>,<span class="ruby-value">6</span>,<span class="ruby-value">12</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">z</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">mat_reg_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_reg_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_reg_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_reg_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_red_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_red_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_red_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">mat_red_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcd_red_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcd_red_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcd_red_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">pcd_red_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_reg_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_reg_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_reg_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_reg_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_red_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_red_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_red_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">sta_red_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">dep_min_wate</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">dep_min_best</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">dep_min_runs</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">dep_min_fail</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">x</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span>
+          <span class="ruby-identifier">$stdout</span>.<span class="ruby-identifier">flush</span>
+          <span class="ruby-identifier">u</span> = <span class="ruby-constant">RandomGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">y</span>, (<span class="ruby-identifier">y</span><span class="ruby-operator">*</span><span class="ruby-identifier">z</span>).<span class="ruby-identifier">to_i</span>)
+          <span class="ruby-identifier">low</span> = <span class="ruby-identifier">u</span>.<span class="ruby-identifier">get_lower_bound</span>
+          <span class="ruby-identifier">links</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">u</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">length</span>
+          <span class="ruby-identifier">mat_reg_sim</span> = <span class="ruby-constant">MatchSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          <span class="ruby-identifier">mat_red_sim</span> = <span class="ruby-constant">MatchRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          <span class="ruby-identifier">pcd_red_sim</span> = <span class="ruby-constant">PCDMinRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          <span class="ruby-identifier">sta_reg_sim</span> = <span class="ruby-constant">StarSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          <span class="ruby-identifier">sta_red_sim</span> = <span class="ruby-constant">StarRedSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          <span class="ruby-identifier">dep_min_sim</span> = <span class="ruby-constant">DeepsMinMinSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">u</span>)
+          [<span class="ruby-identifier">mat_reg_sim</span>, <span class="ruby-identifier">mat_red_sim</span>, <span class="ruby-identifier">pcd_red_sim</span>, <span class="ruby-identifier">sta_reg_sim</span>, <span class="ruby-identifier">sta_red_sim</span>, <span class="ruby-identifier">dep_min_sim</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">w</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">w</span>.<span class="ruby-identifier">set</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span>,<span class="ruby-identifier">c</span> = <span class="ruby-identifier">mat_reg_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">500</span>
+          <span class="ruby-identifier">d</span>,<span class="ruby-identifier">e</span>,<span class="ruby-identifier">f</span> = <span class="ruby-identifier">mat_red_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">500</span>
+          <span class="ruby-identifier">g</span>,<span class="ruby-identifier">h</span>,<span class="ruby-identifier">i</span> = <span class="ruby-identifier">pcd_red_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">500</span>
+          <span class="ruby-identifier">j</span>,<span class="ruby-identifier">k</span>,<span class="ruby-identifier">l</span> = <span class="ruby-identifier">sta_reg_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">20000</span>
+          <span class="ruby-identifier">m</span>,<span class="ruby-identifier">n</span>,<span class="ruby-identifier">o</span> = <span class="ruby-identifier">sta_red_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">20000</span>
+          <span class="ruby-identifier">p</span>,<span class="ruby-identifier">q</span>,<span class="ruby-identifier">r</span> = <span class="ruby-identifier">dep_min_sim</span>.<span class="ruby-identifier">sim</span> <span class="ruby-value">500</span>
+          <span class="ruby-identifier">mat_reg_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">a</span>
+          <span class="ruby-identifier">mat_reg_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">b</span><span class="ruby-operator">/</span><span class="ruby-value">5</span>
+          <span class="ruby-identifier">mat_reg_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">c</span>
+          <span class="ruby-identifier">mat_red_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">d</span>
+          <span class="ruby-identifier">mat_red_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">e</span><span class="ruby-operator">/</span><span class="ruby-value">8</span>
+          <span class="ruby-identifier">mat_red_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">f</span>
+          <span class="ruby-identifier">pcd_red_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">g</span>
+          <span class="ruby-identifier">pcd_red_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">h</span><span class="ruby-operator">/</span><span class="ruby-value">5</span>
+          <span class="ruby-identifier">pcd_red_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">i</span>
+          <span class="ruby-identifier">sta_reg_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">j</span>
+          <span class="ruby-identifier">sta_reg_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">k</span><span class="ruby-operator">/</span><span class="ruby-value">5</span>
+          <span class="ruby-identifier">sta_reg_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">l</span>
+          <span class="ruby-identifier">sta_red_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">m</span>
+          <span class="ruby-identifier">sta_red_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">n</span><span class="ruby-operator">/</span><span class="ruby-value">8</span>
+          <span class="ruby-identifier">sta_red_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">o</span>
+          <span class="ruby-identifier">dep_min_wate</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">p</span>
+          <span class="ruby-identifier">dep_min_runs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">q</span><span class="ruby-operator">/</span><span class="ruby-value">5</span>
+          <span class="ruby-identifier">dep_min_fail</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">r</span>
+          <span class="ruby-identifier">best</span> = [<span class="ruby-identifier">a</span>, <span class="ruby-identifier">d</span>, <span class="ruby-identifier">g</span>, <span class="ruby-identifier">j</span>, <span class="ruby-identifier">m</span>, <span class="ruby-identifier">p</span>].<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>}.<span class="ruby-identifier">min</span>
+          <span class="ruby-identifier">bestcount</span> = <span class="ruby-value">0</span>
+          [<span class="ruby-identifier">a</span>,<span class="ruby-identifier">d</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">j</span>,<span class="ruby-identifier">m</span>,<span class="ruby-identifier">p</span>].<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span>  <span class="ruby-identifier">v</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">bestcount</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">end</span>}
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">bestcount</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">then</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">a</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span> 
+              <span class="ruby-identifier">mat_reg_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">d</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span>
+              <span class="ruby-identifier">mat_red_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">g</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span>
+              <span class="ruby-identifier">pcd_red_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">j</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span>
+              <span class="ruby-identifier">sta_reg_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">m</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span>
+              <span class="ruby-identifier">sta_red_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">p</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">best</span>
+              <span class="ruby-identifier">dep_min_best</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+          
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">mat_reg_wate</span> = <span class="ruby-identifier">mat_reg_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">mat_reg_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">mat_red_wate</span> = <span class="ruby-identifier">mat_red_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">mat_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">pcd_red_wate</span> = <span class="ruby-identifier">pcd_red_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">pcd_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">sta_reg_wate</span> = <span class="ruby-identifier">sta_reg_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">sta_reg_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">sta_red_wate</span> = <span class="ruby-identifier">sta_red_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">sta_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">dep_min_wate</span> = <span class="ruby-identifier">dep_min_wate</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">dep_min_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">mat_reg_runs</span> = <span class="ruby-identifier">mat_reg_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">mat_reg_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">mat_red_runs</span> = <span class="ruby-identifier">mat_red_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">mat_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">pcd_red_runs</span> = <span class="ruby-identifier">pcd_red_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">pcd_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">sta_reg_runs</span> = <span class="ruby-identifier">sta_reg_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">sta_reg_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">sta_red_runs</span> = <span class="ruby-identifier">sta_red_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">sta_red_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">dep_min_runs</span> = <span class="ruby-identifier">dep_min_runs</span> <span class="ruby-operator">/</span> (<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-identifier">dep_min_fail</span>).<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">nodes</span> = <span class="ruby-identifier">y</span>
+        <span class="ruby-identifier">links</span> = <span class="ruby-identifier">z</span><span class="ruby-operator">*</span><span class="ruby-value">2</span>
+        <span class="ruby-ivar">@average</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">mat_reg_wate</span>, <span class="ruby-identifier">mat_red_wate</span>, <span class="ruby-identifier">pcd_red_wate</span>, <span class="ruby-identifier">sta_reg_wate</span>, <span class="ruby-identifier">sta_red_wate</span>, <span class="ruby-identifier">dep_min_wate</span>])
+        <span class="ruby-ivar">@frequency</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">mat_reg_best</span>, <span class="ruby-identifier">mat_red_best</span>, <span class="ruby-identifier">pcd_red_best</span>, <span class="ruby-identifier">sta_reg_best</span>, <span class="ruby-identifier">sta_red_best</span>, <span class="ruby-identifier">dep_min_best</span>,<span class="ruby-identifier">x</span>])
+        <span class="ruby-ivar">@runs</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">mat_reg_runs</span>, <span class="ruby-identifier">mat_red_runs</span>, <span class="ruby-identifier">pcd_red_runs</span>, <span class="ruby-identifier">sta_reg_runs</span>, <span class="ruby-identifier">sta_red_runs</span>, <span class="ruby-identifier">dep_min_runs</span>])
+        <span class="ruby-ivar">@fails</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">nodes</span>, <span class="ruby-identifier">links</span>, <span class="ruby-identifier">mat_reg_fail</span>, <span class="ruby-identifier">mat_red_fail</span>, <span class="ruby-identifier">pcd_red_fail</span>, <span class="ruby-identifier">sta_reg_fail</span>, <span class="ruby-identifier">sta_red_fail</span>, <span class="ruby-identifier">dep_min_fail</span>])
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

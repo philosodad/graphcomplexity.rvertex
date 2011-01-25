@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>experiment (Experiment)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File exp/experiment_3a.rb, line 12</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">experiment</span>
+    [<span class="ruby-value">10</span>,<span class="ruby-value">20</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> 
+      <span class="ruby-identifier">glife</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">mlife</span> = <span class="ruby-value">0</span>
+      <span class="ruby-value">10</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-ivar">@gg</span> = <span class="ruby-constant">GridSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">i</span>, <span class="ruby-value">2</span>)
+        <span class="ruby-ivar">@mg</span> = <span class="ruby-constant">MatchSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">rg</span>)
+        [<span class="ruby-ivar">@gg</span>, <span class="ruby-ivar">@mg</span>].<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set</span>}
+        <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">set_covers</span>
+        <span class="ruby-identifier">glife</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@gg</span>.<span class="ruby-identifier">long_sim</span>
+        <span class="ruby-identifier">mlife</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@mg</span>.<span class="ruby-identifier">long_sim</span>
+        <span class="ruby-ivar">@gg</span> = <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-ivar">@mg</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">glife</span> = <span class="ruby-identifier">glife</span><span class="ruby-operator">/</span><span class="ruby-value">10.0</span>
+      <span class="ruby-identifier">mlife</span> = <span class="ruby-identifier">mlife</span><span class="ruby-operator">/</span><span class="ruby-value">10.0</span>
+      <span class="ruby-ivar">@table</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">i</span>, <span class="ruby-identifier">glife</span>, <span class="ruby-identifier">mlife</span>])
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

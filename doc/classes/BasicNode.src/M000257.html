@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>new (BasicNode)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/node.rb, line 15</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+    <span class="ruby-ivar">@on</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@neighbors</span> = []
+    <span class="ruby-ivar">@edges</span> = <span class="ruby-constant">Set</span>[]
+    <span class="ruby-ivar">@id</span>
+    <span class="ruby-ivar">@next</span>
+    <span class="ruby-ivar">@now</span>
+    <span class="ruby-ivar">@onlist</span> = {}
+    <span class="ruby-ivar">@keyedweights</span> = {}
+    <span class="ruby-ivar">@weight</span> = <span class="ruby-identifier">rand</span>(<span class="ruby-identifier">$init_weight</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">$init_range</span>
+    <span class="ruby-identifier">update_id</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

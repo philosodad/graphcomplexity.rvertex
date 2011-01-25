@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>setup (TestLdGraph)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_pcdgraph.rb, line 9</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span>
+    <span class="ruby-ivar">@whs</span> = [<span class="ruby-value">30</span>, <span class="ruby-value">40</span>, <span class="ruby-value">40</span>, <span class="ruby-value">70</span>, <span class="ruby-value">10</span>, <span class="ruby-value">90</span>, <span class="ruby-value">50</span>, <span class="ruby-value">60</span>, <span class="ruby-value">20</span>]
+    <span class="ruby-ivar">@n</span> = []
+    (<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">8</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@n</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-constant">SetNode</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">k</span>)}
+    <span class="ruby-ivar">@n</span>.<span class="ruby-identifier">each_index</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@n</span>[<span class="ruby-identifier">k</span>].<span class="ruby-identifier">weight</span> = <span class="ruby-ivar">@whs</span>[<span class="ruby-identifier">k</span>]}
+    <span class="ruby-identifier">eds</span> = [[<span class="ruby-value">0</span>,<span class="ruby-value">1</span>],[<span class="ruby-value">0</span>,<span class="ruby-value">2</span>],[<span class="ruby-value">0</span>,<span class="ruby-value">3</span>],[<span class="ruby-value">1</span>,<span class="ruby-value">3</span>],[<span class="ruby-value">1</span>,<span class="ruby-value">6</span>],[<span class="ruby-value">2</span>,<span class="ruby-value">3</span>],[<span class="ruby-value">2</span>,<span class="ruby-value">5</span>],[<span class="ruby-value">3</span>,<span class="ruby-value">6</span>],[<span class="ruby-value">3</span>,<span class="ruby-value">4</span>],[<span class="ruby-value">4</span>,<span class="ruby-value">5</span>],[<span class="ruby-value">4</span>,<span class="ruby-value">7</span>],[<span class="ruby-value">4</span>,<span class="ruby-value">6</span>],[<span class="ruby-value">5</span>,<span class="ruby-value">7</span>],[<span class="ruby-value">5</span>,<span class="ruby-value">8</span>]]
+    <span class="ruby-ivar">@e</span> = <span class="ruby-constant">Set</span>[]
+    <span class="ruby-identifier">eds</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@e</span>.<span class="ruby-identifier">add</span>(<span class="ruby-constant">Set</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">k</span>))}
+    <span class="ruby-ivar">@setnet</span> = <span class="ruby-constant">SetGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@n</span>, <span class="ruby-ivar">@e</span>)
+    <span class="ruby-ivar">@net</span> = <span class="ruby-constant">PCDGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@setnet</span>)
+    <span class="ruby-ivar">@delta</span> = <span class="ruby-constant">PCDDeltaGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@setnet</span>)
+    <span class="ruby-ivar">@all</span> = <span class="ruby-constant">PCDAllGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@setnet</span>)
+    <span class="ruby-ivar">@sim</span> = <span class="ruby-constant">PCDSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@setnet</span>)
+    <span class="ruby-ivar">@allsim</span> = <span class="ruby-constant">PCDAllSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@setnet</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

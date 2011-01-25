@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>set_all_hills (Deeps_Deciders)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/actions_eep.rb, line 121</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_all_hills</span>
+<span class="ruby-comment cmt">#    puts 'setting all hills'</span>
+    <span class="ruby-ivar">@edges</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:hill</span>}.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">weight</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+        <span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>)
+        <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">charges</span> = []
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@poorest</span>.<span class="ruby-identifier">supply</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">poorest</span>.<span class="ruby-identifier">supply</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">unless</span> (<span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>) <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">charges</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">uv</span>}.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>.<span class="ruby-identifier">uv</span>))
+<span class="ruby-comment cmt">#        puts 'j added to charges'</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@poorest</span>.<span class="ruby-identifier">supply</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">poorest</span>.<span class="ruby-identifier">supply</span> <span class="ruby-keyword kw">then</span>
+        <span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">j</span> <span class="ruby-keyword kw">unless</span> (<span class="ruby-ivar">@charges</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>) <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span>.<span class="ruby-identifier">charges</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">uv</span>}.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>.<span class="ruby-identifier">uv</span>) <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">v</span> <span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">self</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

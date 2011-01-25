@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>build_covers (VertexCover)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/cover.rb, line 274</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build_covers</span>
+    <span class="ruby-identifier">alledges</span> = <span class="ruby-constant">Set</span>[]
+    <span class="ruby-ivar">@edges</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">alledges</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">k</span>)}
+    <span class="ruby-ivar">@neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">edges</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-identifier">alledges</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">j</span>)}}
+    <span class="ruby-identifier">nodes</span> = <span class="ruby-ivar">@neighbors</span>.<span class="ruby-identifier">to_set</span>.<span class="ruby-identifier">add</span>(<span class="ruby-keyword kw">self</span>)
+    <span class="ruby-ivar">@neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">j</span>)}}
+    <span class="ruby-identifier">nodes</span> = <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">to_a</span>
+    <span class="ruby-identifier">nodes</span> = <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">sort_by</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">id</span>}
+    <span class="ruby-identifier">alledges</span> = <span class="ruby-identifier">alledges</span>.<span class="ruby-identifier">to_a</span>
+    <span class="ruby-ivar">@matrix</span> = []
+    <span class="ruby-identifier">alledges</span>.<span class="ruby-identifier">each</span>{<span class="ruby-ivar">@matrix</span>.<span class="ruby-identifier">push</span>([])}
+    <span class="ruby-identifier">alledges</span>.<span class="ruby-identifier">each_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">alledges</span>[<span class="ruby-identifier">k</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">j</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword kw">then</span>
+          <span class="ruby-ivar">@matrix</span>[<span class="ruby-identifier">k</span>].<span class="ruby-identifier">push</span>(<span class="ruby-value">1</span>)
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-ivar">@matrix</span>[<span class="ruby-identifier">k</span>].<span class="ruby-identifier">push</span>(<span class="ruby-value">0</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rec_build_covers</span>(<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">c</span>,<span class="ruby-identifier">covers</span>, <span class="ruby-identifier">nodes</span>) 
+      <span class="ruby-identifier">cover</span> = <span class="ruby-identifier">c</span>.<span class="ruby-identifier">dup</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">==</span> <span class="ruby-ivar">@matrix</span>.<span class="ruby-identifier">length</span>
+        <span class="ruby-identifier">covers</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">cover</span>)
+<span class="ruby-comment cmt">#        puts &quot;adding a cover&quot;</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">covers</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">y</span> <span class="ruby-operator">==</span> <span class="ruby-ivar">@matrix</span>[<span class="ruby-identifier">x</span>].<span class="ruby-identifier">length</span>
+<span class="ruby-comment cmt">#        puts &quot;no more nodes to add in this row&quot;</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">covers</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@matrix</span>[<span class="ruby-identifier">x</span>][<span class="ruby-identifier">y</span>] <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+        <span class="ruby-identifier">rec_build_covers</span>(<span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">cover</span>, <span class="ruby-identifier">covers</span>, <span class="ruby-identifier">nodes</span>)
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@matrix</span>[<span class="ruby-identifier">x</span>][<span class="ruby-identifier">y</span>] <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+        <span class="ruby-identifier">cover</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">nodes</span>[<span class="ruby-identifier">y</span>].<span class="ruby-identifier">id</span>)
+<span class="ruby-comment cmt">#        puts &quot;increase x&quot;</span>
+        <span class="ruby-identifier">rec_build_covers</span>(<span class="ruby-identifier">x</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">cover</span>, <span class="ruby-identifier">covers</span>, <span class="ruby-identifier">nodes</span>)
+<span class="ruby-comment cmt">#        puts &quot;now increase y&quot;</span>
+        <span class="ruby-identifier">rec_build_covers</span>(<span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">+</span><span class="ruby-value">1</span>, <span class="ruby-identifier">c</span>, <span class="ruby-identifier">covers</span>, <span class="ruby-identifier">nodes</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">return</span> <span class="ruby-constant">LdGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">rec_build_covers</span>(<span class="ruby-value">0</span>,<span class="ruby-value">0</span>, <span class="ruby-constant">Set</span>[], <span class="ruby-constant">Set</span>[], <span class="ruby-identifier">nodes</span>), <span class="ruby-identifier">nodes</span>)
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

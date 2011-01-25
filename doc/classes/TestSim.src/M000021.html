@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_giant (TestSim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_sim.rb, line 57</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_giant</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">'testing giant'</span>
+    <span class="ruby-ivar">@giant</span> = <span class="ruby-constant">PCDAllSimulator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">RandomGraph</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">100</span>,<span class="ruby-value">1000</span>))
+    <span class="ruby-ivar">@giant</span>.<span class="ruby-identifier">set</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@giant</span>.<span class="ruby-identifier">sim</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@giant</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;giant not covered&quot;</span>
+    <span class="ruby-comment cmt">#find a random node that is on and turn it off</span>
+    <span class="ruby-identifier">on</span> = <span class="ruby-ivar">@giant</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">nodes</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span>}
+    <span class="ruby-identifier">g</span> = <span class="ruby-identifier">on</span>[<span class="ruby-identifier">rand</span>(<span class="ruby-identifier">on</span>.<span class="ruby-identifier">length</span>)]
+    <span class="ruby-identifier">g</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">end</span>}
+    <span class="ruby-identifier">g</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@giant</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;giant is still covered&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

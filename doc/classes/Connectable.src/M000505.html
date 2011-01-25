@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>connect! (Connectable)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/helpers_netgen.rb, line 14</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">connect!</span>
+    <span class="ruby-identifier">trees</span> = []
+    <span class="ruby-identifier">tree</span> = []
+    <span class="ruby-identifier">nebs</span> = []
+    <span class="ruby-identifier">nods</span> = []
+    <span class="ruby-ivar">@nodes</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">nods</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">k</span>)}
+    <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">nods</span>.<span class="ruby-identifier">empty?</span>
+      <span class="ruby-identifier">i</span> = <span class="ruby-identifier">nods</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-identifier">tree</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">i</span>)
+      <span class="ruby-identifier">nebs</span> = <span class="ruby-identifier">i</span>.<span class="ruby-identifier">neighbors</span>
+      <span class="ruby-identifier">x</span> = <span class="ruby-identifier">nebs</span>.<span class="ruby-identifier">length</span>
+<span class="ruby-comment cmt">#      if x == 0 then puts &quot;#{i.id} has no neighbors and this is the tree: #{tree.class}, #{tree.length}&quot; end</span>
+      <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">nebs</span>.<span class="ruby-identifier">empty?</span>
+        <span class="ruby-identifier">j</span> = <span class="ruby-identifier">nebs</span>.<span class="ruby-identifier">slice!</span>(<span class="ruby-identifier">rand</span>(<span class="ruby-identifier">x</span>))
+        <span class="ruby-identifier">tree</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">j</span>)
+        <span class="ruby-identifier">nebs</span> = <span class="ruby-identifier">nebs</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">j</span>.<span class="ruby-identifier">neighbors</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">tree</span>)
+        <span class="ruby-identifier">x</span> = <span class="ruby-identifier">nebs</span>.<span class="ruby-identifier">length</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">trees</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">tree</span>)
+      <span class="ruby-identifier">nods</span> = <span class="ruby-identifier">nods</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">tree</span>
+      <span class="ruby-identifier">nods</span>.<span class="ruby-identifier">compact!</span>
+      <span class="ruby-identifier">tree</span> = []
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">trees</span>.<span class="ruby-identifier">each_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">j</span> = <span class="ruby-identifier">i</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">trees</span>[<span class="ruby-identifier">j</span>] <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+        <span class="ruby-identifier">u</span> = <span class="ruby-identifier">trees</span>[<span class="ruby-identifier">i</span>][<span class="ruby-identifier">rand</span>(<span class="ruby-identifier">trees</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">length</span>)]
+        <span class="ruby-identifier">v</span> = <span class="ruby-identifier">trees</span>[<span class="ruby-identifier">j</span>][<span class="ruby-identifier">rand</span>(<span class="ruby-identifier">trees</span>[<span class="ruby-identifier">j</span>].<span class="ruby-identifier">length</span>)]
+        <span class="ruby-identifier">u</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">v</span>)
+        <span class="ruby-identifier">v</span>.<span class="ruby-identifier">neighbors</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">u</span>)
+        <span class="ruby-ivar">@edges</span>.<span class="ruby-identifier">add</span>(<span class="ruby-constant">Set</span>[<span class="ruby-identifier">u</span>.<span class="ruby-identifier">id</span>,<span class="ruby-identifier">v</span>.<span class="ruby-identifier">id</span>])
+<span class="ruby-comment cmt">#        puts &quot;I just added an edge from #{u.id} to #{v.id}&quot;</span>
+<span class="ruby-comment cmt">#        puts @nodes.include?(u)</span>
+<span class="ruby-comment cmt">#        puts @nodes.include?(v)</span>
+<span class="ruby-comment cmt">#        j += 1</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

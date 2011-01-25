@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_pg (TestSim)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test/test_sim.rb, line 79</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_pg</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;testing pg&quot;</span>
+    [<span class="ruby-ivar">@pg</span>, <span class="ruby-ivar">@eg</span>, <span class="ruby-ivar">@og</span>, <span class="ruby-ivar">@ug</span>, <span class="ruby-ivar">@dg</span>, <span class="ruby-ivar">@eg</span>, <span class="ruby-ivar">@ng</span>, <span class="ruby-ivar">@bg</span>,<span class="ruby-ivar">@lg</span>,<span class="ruby-ivar">@ag</span>, <span class="ruby-ivar">@qg</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">assert_equal</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">get_total_weight</span>, <span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">get_total_weight</span>
+    <span class="ruby-keyword kw">end</span>
+    [<span class="ruby-ivar">@ng</span>, <span class="ruby-ivar">@ag</span>, <span class="ruby-ivar">@og</span>, <span class="ruby-ivar">@ug</span>, <span class="ruby-ivar">@vg</span>, <span class="ruby-ivar">@bg</span>, <span class="ruby-ivar">@xg</span>, <span class="ruby-ivar">@zg</span>, <span class="ruby-ivar">@yg</span>, <span class="ruby-ivar">@qg</span>].<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set</span>}
+    [<span class="ruby-ivar">@ig</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set</span>
+      <span class="ruby-identifier">k</span>.<span class="ruby-identifier">set_covers</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@pg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">coverable?</span>
+
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@pg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;pg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@xg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;xg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@zg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;zg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@yg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;yg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@eg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;eg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@dg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;dg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@ng</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;ng &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@ag</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;ag &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@bg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;bg &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@qg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;qg &gt; 500&quot;</span>
+    <span class="ruby-comment cmt">#assert @ig.sim &lt; 500, &quot;ig &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@og</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;og &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@vg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">'vg &gt; 500'</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@ug</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">500</span>, <span class="ruby-value str">&quot;ug &gt; 500&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@ag</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;ag not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@eg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;eg not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@ug</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;ug not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@og</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;og not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@dg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;dg not covered&quot;</span>
+    <span class="ruby-identifier">assert</span> <span class="ruby-ivar">@qg</span>.<span class="ruby-identifier">rg</span>.<span class="ruby-identifier">covered?</span>, <span class="ruby-value str">&quot;qg not covered&quot;</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@lg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">20000</span> <span class="ruby-keyword kw">then</span>
+      <span class="ruby-identifier">f</span> = <span class="ruby-ivar">@lg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">f</span> = <span class="ruby-ivar">@lg</span>.<span class="ruby-identifier">get_total_weight</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@kg</span>.<span class="ruby-identifier">sim</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-value">20000</span> <span class="ruby-keyword kw">then</span>
+      <span class="ruby-identifier">g</span> = <span class="ruby-ivar">@kg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">g</span> = <span class="ruby-ivar">@kg</span>.<span class="ruby-identifier">get_total_weight</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">i</span> = <span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">j</span> = <span class="ruby-ivar">@bg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">b</span> = <span class="ruby-ivar">@pg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">a</span> = <span class="ruby-ivar">@dg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">c</span> = <span class="ruby-ivar">@eg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">d</span> = <span class="ruby-ivar">@ng</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">e</span> = <span class="ruby-ivar">@ag</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">h</span> = <span class="ruby-ivar">@ig</span>.<span class="ruby-identifier">get_total_weight</span>
+    <span class="ruby-identifier">k</span> = <span class="ruby-ivar">@og</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">l</span> = <span class="ruby-ivar">@ug</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">v</span> = <span class="ruby-ivar">@vg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">z</span> = <span class="ruby-ivar">@zg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">y</span> = <span class="ruby-ivar">@yg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">x</span> = <span class="ruby-ivar">@xg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">q</span> = <span class="ruby-ivar">@qg</span>.<span class="ruby-identifier">get_on_weight</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;\n#{@ng.id} Match Two:\t#{d}\t#{@dg.id} Match Red:\t#{a}\t#{@qg.id} Match Max: \t #{q}\n#{@pg.id} PCD Norm:\t#{b}\t#{@ag.id}\t#{@og.id} PCD All \t #{k}\t#{@ag.id} PCD Red\t#{e}\t#{@eg.id} PCD Delta\t#{c}\n#{@kg.id} Star Norm\t#{g}\t#{@lg.id} Star Red\t#{f}\nLDG Norm #{@ig.id}\t#{i}\t#{@bg.id} Deeps Red\t#{j}\n#{@xg.id}: MaxMax \t #{x}\t#{@yg.id} MinMin \t#{y}\t #{@zg.id} MinMax\t#{z}\n#{@vg.id}: Deeps \t #{v}\n#{@ug.id} Dumb Red\t#{l}\n Total\t#{h}&quot;</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
