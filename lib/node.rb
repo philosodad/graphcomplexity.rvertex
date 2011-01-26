@@ -1,3 +1,4 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','actions')
 require 'set'
 require 'cover'
 require 'ldgraph'
