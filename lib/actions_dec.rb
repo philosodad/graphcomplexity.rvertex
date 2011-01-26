@@ -69,9 +69,10 @@ module Dec_Deciders
 
   def choose_round_partner
     e = open_edges.sample
-    delta = open_edges.length
+    gamma = open_edges.length
+    delta = @neighbors.length
     @rp = @neighbors.select{|k| e.uv.include?(k.id)}.first
-    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out & @rp.legal_in)[[rand(delta), 10].max])
+    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out & @rp.legal_in)[rand(5)])
   end
 
   def reset_variables
@@ -123,11 +124,7 @@ module Dec_Deciders
           end
         end unless !@next_message
       end
-    a = []
-    b = []
-    @edges.each{|k| a.push(k.color[:in]); b.push(k.color[:out])}
-    c = [a.compact, b.compact]
-    @next_message = Message_Passer::Message.new(@id,nil,c)
+    @next_message = Message_Passer::Message.new(@id,nil,@edges)
   end
 
   def update_colors
@@ -137,14 +134,18 @@ module Dec_Deciders
     @colors = @colors - (@edges.collect{|k| k.color.values}.flatten)
     a = []
     b = []
-    @invites.each{|k| a.push k.data[0]; b.push k.data[1]}
-    @legal_out = (@legal_out - a.flatten) & @colors
-    @legal_in = (@legal_in - b.flatten) & @colors
+    @invites.each do |k| 
+      k.data.each do |j|
+        a.push j.color[:in]
+        b.push j.color[:out]
+      end
+    end
+    @legal_out = (@legal_out - a.flatten.compact) & @colors
+    @legal_in = (@legal_in - b.flatten.compact) & @colors
     if a.length > 0 and (a & d).any? and f == @legal_out.length
       raise StandardError, "#{a&d}, #{a&@legal_out}"
     end
-    @next_message = Message_Passer::Message.new(@id, nil, b.flatten)
-    
+    @next_message = Message_Passer::Message.new(@id, nil, b.flatten)  
   end
 
   def criteria_fulfilled?

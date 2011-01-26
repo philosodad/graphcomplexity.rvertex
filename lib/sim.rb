@@ -328,7 +328,7 @@ class DirectedEdgeColorSimulator < MatchSimulator
   end
 
   def get_the_metric
-    return "how many colors am I holding up?"
+    @rg.get_number_colors
   end
 end
 
