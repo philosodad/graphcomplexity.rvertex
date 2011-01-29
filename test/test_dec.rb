@@ -10,7 +10,7 @@ class TestEC < Test::Unit::TestCase
   def setup
     Globals.new()
     @a = BaseNode.new
-    @b = RandomGraph.new(50, 300)
+    @b = RandomGraph.new(50, 50*6)
   end
 
   def test_init
