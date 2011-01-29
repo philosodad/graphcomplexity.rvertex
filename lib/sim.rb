@@ -1,3 +1,4 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','lib')
 require 'netgen_pcd'
 require 'netgen_star'
 require 'netgen_dumb'
@@ -271,18 +272,18 @@ class MatchSimulator < RandomSimulator
     @id = @@id
     @@id += 1
   end
-=begin  def long_sim
-    t = 0
-    while @rg.coverable?
-      sim
-      t += @rg.reduce_by_min
-      @rg.nodes.each do |k|
-        k.reset
-      end
-    end
-    puts "#{@id} t: #{t}"
-    return t
-=end  end
+#begin  def long_sim
+#   t = 0
+#   while @rg.coverable?
+#     sim
+#     t += @rg.reduce_by_min
+#     @rg.nodes.each do |k|
+#       k.reset
+#     end
+#   end
+#   puts "#{@id} t: #{t}"
+#   return t
+#end  end
 
   def set
     @rg.nodes.each{|k| k.set_edges}
@@ -328,7 +329,7 @@ class DirectedEdgeColorSimulator < MatchSimulator
   end
 
   def get_the_metric
-    @rg.get_number_colors
+    [@rg.get_number_colors, @rg.get_delta]
   end
 end
 

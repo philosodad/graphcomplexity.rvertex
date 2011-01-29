@@ -22,4 +22,12 @@ class DirectedEdgeColorGraph < MatchGraph
     m.uniq!
     m.length
   end
+
+  def get_delta
+    m = 0
+    @nodes.each do |j|
+      m = [j.neighbors.length, m].max
+    end
+    m
+  end
 end
