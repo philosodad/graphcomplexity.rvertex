@@ -72,7 +72,7 @@ module Dec_Deciders
     gamma = open_edges.length
     delta = @neighbors.length
     @rp = @neighbors.select{|k| e.uv.include?(k.id)}.first
-    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out & @rp.legal_in)[rand(5)])
+    @next_message = Message_Passer::Message.new(@id, @rp.id, (@legal_out & @rp.legal_in)[rand([gamma, 5].max)])
   end
 
   def reset_variables
@@ -94,7 +94,7 @@ module Dec_Deciders
     elsif incoming.length == 0
       @next = :invite
     else
-      @next = [:invite, :listen, :listen].sample
+      @next = [:invite, :listen].sample
     end
   end
 
