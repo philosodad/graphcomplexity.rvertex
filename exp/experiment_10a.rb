@@ -42,7 +42,7 @@ class Experiment
   end
   
   def print_to_file
-    File.open("experiment10_av.tab", 'w') {|x|
+    File.open("experiment10-mod_av.tab", 'w') {|x|
       @average.each_index do |k|
         s = String.new
         @average[k].each_index do |i|
