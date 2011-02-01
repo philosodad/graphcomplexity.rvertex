@@ -1,18 +1,18 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'node_isdg'
+require 'node_isg'
 require 'set'
 
-class TestISDGNode < Test::Unit::TestCase
+class TestISGNode < Test::Unit::TestCase
 
   def setup
     Globals.new()
-    @node1 = ISDGRoot.new
+    @node1 = ISGNode.new(0,0) 
   end
 
   def testNode
-    assert_instance_of ISDGRoot, @node1
+    assert_instance_of ISGNode, @node1
   end
 
   def teardown
