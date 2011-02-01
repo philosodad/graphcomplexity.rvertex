@@ -17,7 +17,7 @@ class TestEC < Test::Unit::TestCase
     assert_nothing_raised do a = EdgeColorRootNode.new(@a) end
     a = EdgeColorRootNode.new(@a)
     assert a.class == EdgeColorRootNode, "then what is it?"
-    assert_equal a.colors.length, 2**12
+    assert_equal a.colors.length, 2**11
     assert a.invites.class == Hash
     assert_nothing_raised do b = EdgeColorGraph.new(@b) end
     b = EdgeColorGraph.new(@b)
