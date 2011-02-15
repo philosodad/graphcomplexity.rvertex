@@ -1,4 +1,4 @@
-require 'ldnode'
+require 'dep_node_ldg'
 require 'set'
 require 'helpers_dep_node.rb'
 

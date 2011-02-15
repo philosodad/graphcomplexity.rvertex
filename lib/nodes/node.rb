@@ -1,7 +1,7 @@
-$:.unshift File.join(File.dirname(__FILE__),'..','lib','actions')
+$:.unshift File.join(File.dirname(__FILE__),'..','actions')
 require 'set'
 require 'cover'
-require 'ldgraph'
+require 'dep_graph_ldg'
 require 'automata'
 require 'gmm'
 require 'weighted_edge'
