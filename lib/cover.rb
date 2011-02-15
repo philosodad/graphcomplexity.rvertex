@@ -1,8 +1,6 @@
-require 'rubygems'
-require 'ldgraph'
+require 'dep_graph_ldg'
 require 'dep_graph_pcd'
 require 'dep_graph_fcd'
-require 'inline'
 
 module PCD
   attr_reader :first_cover

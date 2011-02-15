@@ -1,4 +1,8 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','netgens')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','nodes')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','helpers')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','dep_graphs')
 
 require 'test/unit'
 require 'sim'
