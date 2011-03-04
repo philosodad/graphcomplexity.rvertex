@@ -172,6 +172,14 @@ class DeepsHyperSimulator < DeepsSimulator
   end
 end
 
+class DeepsHyperRunningSimulator < DeepsHyperSimulator
+  include Running_Sim
+end
+
+class DeepsHyperSteppingSimulator < DeepsHyperSimulator
+  include Stepping_Sim
+end
+
 class FCDRedSimulator < RandomSimulator
   include Sim_To_Done
   def initialize(g)

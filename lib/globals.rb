@@ -1,3 +1,8 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','nodes')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','actions')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','dep_graphs')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','helpers')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','netgens')
 class Globals
   def initialize *args
     if args.length == 0

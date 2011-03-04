@@ -3,7 +3,7 @@ module Neighborly
     kn = {}
     @nodes.each{|k| kn[k.id] = k}
     @edges.each do |s|
-      a = s.to_a
+      a = s.to_a.dup
       (a.length - 1).times do 
         b = a.shift
         a.each do |k|
@@ -94,9 +94,15 @@ module Targetable
       end
     end
     return dict
-  end  
-end
+  end 
 
+  def add_randomly nodes, t
+    a = []
+    t.times{a.push([])}
+    nodes.each{|k| a[rand(t)].push(k.id)}
+    a.select{|k| k.any?}
+  end
+end
 module Connectable
   def make_trees
     trees = []

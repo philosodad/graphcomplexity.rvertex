@@ -11,12 +11,12 @@ class DeepsRootGraph < PCDRootGraph
       if k.weight < 0
         k.weight = 0
       end
-=begin      if k.weight == 0
-        k.charges = []
-        k.poorest == nil
-        k.on = false
-        k.set_next :done
-=end      end
+#      if k.weight == 0
+#  k.charges = []
+#  k.poorest == nil
+#  k.on = false
+#  k.set_next :done
+#    end
     end
   end
 end

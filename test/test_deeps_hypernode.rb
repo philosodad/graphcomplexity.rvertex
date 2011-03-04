@@ -1,7 +1,6 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 
 require 'test/unit'
-require 'edge_eep'
 require 'globals'
 require 'node_eep_hyper'
 require 'netgen_tgt'
@@ -44,6 +43,7 @@ class TestHyperNode < Test::Unit::TestCase
   def test_hypernodes
     g = SetTargetGraph.new(@n, @t)
     g.nodes.each{|k| k.set_edges}
+    assert g.nodes.select{|k| k.edges.any?}.any?, "nodes have no edges"
     assert_equal @s1.edges.collect{|k| k.supply}.reduce(:+), 680, "s1 edges wrong supplys"
     @s4.weight = 30
     assert @s1.edges.collect{|k| k.supply}.reduce(:+) < 630, "s1 supply didn't change"

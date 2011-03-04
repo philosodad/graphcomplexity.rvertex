@@ -81,7 +81,10 @@ class SimpleGraph
   end
 
   def covered?
-    onlist = Set.new(@nodes.collect{|k| k.id if k.on == true})
+    onlist = @nodes.collect{|k| k.id if k.on == true and k.weight > 0}
+    if @edges.class == Set
+      onlist = Set.new(onlist)
+    end
     @edges.each{|k| return false if (k & onlist).empty?}
     return true
   end
