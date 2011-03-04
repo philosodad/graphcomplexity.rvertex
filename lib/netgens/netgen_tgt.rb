@@ -18,18 +18,16 @@ class TargetGraph < SimpleGraph
       end
       super()
       add_nodes(n)
-      add_edges t
-      set_neighbors
-      set_edges
-    end
-    if args.length == 1
+      @edges = add_randomly @nodes, t
+    elsif args.length == 1
       raise TypeError, "g must be kind of TargetGraph" unless args[0].kind_of?(TargetGraph)
       g = args[0]
       super()
       g.nodes.each{|k| add_single_node(k)}
       @edges = g.edges
     end
-      
+    set_neighbors
+    set_edges
   end
 
   def add_nodes n

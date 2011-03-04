@@ -36,6 +36,10 @@ module DeepsActs
       end
     when :done
       @next = :done
+    when :covertargets
+      find_neighbors
+      @on = false
+      @next = :done
     end
   end
 
@@ -43,6 +47,9 @@ module DeepsActs
     case @now
     when :boot, :poor, :hills, :sinks, :charge
       @now = @now
+    when :covertargets
+      @neighbors.each{|k| k.recieve_status(@id, @on)}
+      @neighbors.select{|k| @alert_list.include? k.id}.each{|k| k.on = true}
     else
       @neighbors.each{|k| k.recieve_status(@id, @on)}
     end
@@ -260,5 +267,16 @@ module Hyper_Deeps_Deciders
       end
     end
     return ret
+  end
+
+  def find_neighbors
+    @alert_list = []
+    @edges.each do |k|
+      if (@onlist & k.ids).empty?
+        unless (@alert_list & k.ids).any?
+          @alert_list.push(@neighbors.collect{|j| k.ids.include? j.id}.max.id)
+        end
+      end
+    end
   end
 end
