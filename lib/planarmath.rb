@@ -10,8 +10,8 @@ module PlanarMath
   def coord_within_distance(obj1, distance)
     theta = rand(90)
     r = rand(distance)+1
-    newx = obj1.x.send([:+,:-].sample, (Math.sin(theta).magnitude.*r.to_i))
-    newy = obj1.y.send([:+,:-].sample, (Math.cos(theta).magnitude.*r.to_i))
+    newx = obj1.x.send([:+,:-].sample, (Math.sin(theta).magnitude.*r))
+    newy = obj1.y.send([:+,:-].sample, (Math.cos(theta).magnitude.*r))
     return newx, newy
   end
 end

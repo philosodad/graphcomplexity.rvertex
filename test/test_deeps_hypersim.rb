@@ -14,7 +14,7 @@ class TestHyperSim < Test::Unit::TestCase
 
   def test_tg
     assert_equal @tg.nodes.length, 15
-    assert @tg.edges.collect{|k| k.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
+    assert @tg.edges.collect{|k| k.cover.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
   end
 
   def test_graph_setup
