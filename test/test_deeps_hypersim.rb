@@ -14,12 +14,14 @@ class TestHyperSim < Test::Unit::TestCase
 
   def test_tg
     assert_equal @tg.nodes.length, 15
+    p @tg.edges.select{|k| k.cover.empty?}
+    assert @tg.edges.select{|k| k.cover.empty?}.empty?, 'some target has no assigned nodes'
     assert @tg.edges.collect{|k| k.cover.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
   end
 
   def test_graph_setup
     g = DeepsHyperGraph.new(25,10)
-    assert g.connect?
+    assert g.connect?, "g not connected"
     assert g.coverable?
     assert_raise TypeError do DeepsHyperGraph.new(RandomGraph.new(45,45)) end
     assert_nothing_raised do DeepsHyperGraph.new(@tg) end
@@ -30,23 +32,23 @@ class TestHyperSim < Test::Unit::TestCase
     assert d.coverable?, "d cannot be covered"
     failtrack = false
     num = 0
-    until failtrack == true 
-      begin
-        u = DeepsHyperGraph.new(TargetGraph.new(3, 6))
-        u.nodes.each{|k| assert k.weight > 0, "weight of 0"}
-        u.edges.each{|k| p k}
-        u.edges.each{|k| assert !k.empty?, "empty edge"}
-        assert u.coverable?, "u cannot be covered"
-        failtrack = true
-      rescue ArgumentError => ex
-        puts "#{ex.class}:#{ex.message}"
-        failtrack = true
-      rescue StandardError => ex
-        num += 1
-        puts "#{num} - #{ex.class}:#{ex.message}"
-        failtrack = false
-      end
-    end
+    #until failtrack == true 
+    #  begin
+    #    u = DeepsHyperGraph.new(TargetGraph.new(3, 6))
+    #    u.nodes.each{|k| assert k.weight > 0, "weight of 0"}
+    #    u.edges.each{|k| p k}
+    #    u.edges.each{|k| assert !k.empty?, "empty edge"}
+    #    assert u.coverable?, "u cannot be covered"
+    #    failtrack = true
+    #  rescue ArgumentError => ex
+    #    puts "#{ex.class}:#{ex.message}"
+    #    failtrack = true
+    #  rescue StandardError => ex
+    #    num += 1
+    #    puts "#{num} - #{ex.class}:#{ex.message}"
+    #    failtrack = false
+    #  end
+    #end
     assert_raise ArgumentError do DeepsHyperGraph.new(TargetGraph.new(3,7)) end
   end
 
