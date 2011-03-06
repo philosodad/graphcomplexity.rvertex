@@ -155,7 +155,7 @@ module Targetable
 
   def build_connectable_graph n, t
     targets = add_connectable_targets t
-    nodes = targets.collect do |k|
+    nodes = targets.map do |k|
       x,y = coord_within_distance(k, $sensor_range)
       Target.new(x,y)
     end
@@ -163,6 +163,9 @@ module Targetable
     until nodes.length == n
       x, y = coord_within_distance(targets.sample, $sensor_range)
       nodes.push(Target.new(x,y))
+    end
+    nodes.each do |k|
+      raise RangeError, "target without node" unless targets.inject(false){|final, j| (planar_distance(j,k) <= $sensor_range) or final}
     end
     return nodes, targets
   end

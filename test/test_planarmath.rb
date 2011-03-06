@@ -28,9 +28,11 @@ class TestPlanarMath < Test::Unit::TestCase
   end
 
   def test_coordwithindistance
-    x,y = coord_within_distance(@n1, 50)
-    g = Point.new(x,y)
-    500.times{assert planar_distance(@n1,g)<=50, 'point out of distance'}
+    500.times do
+      x,y = coord_within_distance(@n1, 50)
+      g = Point.new(x,y)
+      assert planar_distance(@n1,g)<=50, 'point out of distance'
+    end
   end
 
   def teardown

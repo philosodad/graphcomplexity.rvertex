@@ -10,7 +10,7 @@ class DeepsHyperNode < DeepRootNode
     eds = Set[]
     @edges.each do |k|
       edge = []
-      k.each{|j| edge.push kn[j]}
+      k.cover.each{|j| edge.push kn[j]}
       eds.add(DeepsHyperEdge.new(edge))
     end
     @edges = eds

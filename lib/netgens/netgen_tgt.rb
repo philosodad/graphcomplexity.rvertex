@@ -46,8 +46,8 @@ class TargetGraph < SimpleGraph
     kn = {}
     @nodes.each{|k| kn[k.id] = k}
     @edges.each do |t|
-      (0..t.cover.length-1).each do |a|
-        (a+1..t.cover.length).each do |b|
+      (0...t.cover.length-1).each do |a|
+        (a+1...t.cover.length).each do |b|
           kn[t.cover[a]].neighbors.push(kn[t.cover[b]])
           kn[t.cover[b]].neighbors.push(kn[t.cover[a]])
           [kn[t.cover[a]],kn[t.cover[b]]].each do |c|
@@ -61,6 +61,7 @@ class TargetGraph < SimpleGraph
 
   def set_edges
     @edges.each do |k|
+      if k.cover.empty? then p "I AM A WALRUS" end
       @nodes.each do |j|
         if k.cover.include? j.id then
           j.edges.add(k)
@@ -84,9 +85,10 @@ class TargetGraph < SimpleGraph
     whys = add_from_to_by @nodes, targets, 'y'
     targets.each do |k|
       eds = (exis[k]&whys[k])
-      k.cover.+(eds.select{|j| planar_distance(j, k) <= $sensor_range}.collect{|k| k.id})
+      k.cover += (eds.select{|j| planar_distance(j, k) <= $sensor_range}.collect{|j| j.id})
+      k.cover.uniq!
+      if k.cover.empty? then raise StandardError, "this target has no nodes in range" end
     end
-    targets.each{|k| k.cover.uniq!}
     targets
   end
 
@@ -100,6 +102,37 @@ class TargetGraph < SimpleGraph
       edgeweights.push(w)
     end
     return edgeweights.min
+  end
+  
+  def coverable?
+    kn = {}
+    @nodes.each{|k| kn[k.id]=k}
+    @edges.each do |k|
+      if k.cover.inject(0){|sum,n| kn[n].weight} == 0 then
+        return false
+      end
+    end
+    true
+  end
+
+  def covered?
+    kn = {}
+    @nodes.each{|k| kn[k.id]=k}
+    @edges.each do |k|
+      if k.cover.inject(false){|final, n| kn[n].on or final} and
+        k.cover.inject(0){|sum,n| kn[n].weight} > 0 then
+        true
+      else
+        return false
+      end
+    end
+    true
+  end
+  def connect?
+    true
+  end
+  def connectable?
+    true
   end
 end
 
