@@ -72,37 +72,6 @@ module UnitDiskNeighborly
 
 end
 
-module Targetable
-  def add_from_to_by from, into, by
-    nto = into.sort_by{|k| k.send(by)}
-    fronto = (from + nto).sort_by{|k| k.send(by)}
-    dict = {}
-    nto.each{|k| dict[k] = []}
-    nto.each do |k|
-      pin = fronto.index(k)
-      up = pin+1
-      down = pin-1
-      while up < fronto.length and ((fronto[pin].send(by)) - (fronto[up].send(by))).abs <= $sensor_range
-        if fronto[up].kind_of?(BasicNode) then dict[k].push(fronto[up]) end
-        up += 1
-      end
-      while down >= 0 and ((fronto[pin].send(by)) - (fronto[down].send(by))).abs <= $sensor_range
-        if fronto[down].kind_of?(BasicNode)
-          dict[k].push(fronto[down])
-        end
-        down -= 1
-      end
-    end
-    return dict
-  end 
-
-  def add_randomly nodes, t
-    a = []
-    t.times{a.push([])}
-    nodes.each{|k| a[rand(t)].push(k.id)}
-    a.select{|k| k.any?}
-  end
-end
 module Connectable
   def make_trees
     trees = []
@@ -131,6 +100,7 @@ module Connectable
     return trees
   end
 
+  
   def connect?
     make_trees.length > 1
   end
@@ -158,4 +128,77 @@ module Connectable
     end
   end
 end
+
+module Targetable
+  def add_from_to_by from, into, by
+    nto = into.sort_by{|k| k.send(by)}
+    fronto = (from + nto).sort_by{|k| k.send(by)}
+    dict = {}
+    nto.each{|k| dict[k] = []}
+    nto.each do |k|
+      pin = fronto.index(k)
+      up = pin+1
+      down = pin-1
+      while up < fronto.length and ((fronto[pin].send(by)) - (fronto[up].send(by))).abs <= $sensor_range
+        if fronto[up].kind_of?(BasicNode) then dict[k].push(fronto[up]) end
+        up += 1
+      end
+      while down >= 0 and ((fronto[pin].send(by)) - (fronto[down].send(by))).abs <= $sensor_range
+        if fronto[down].kind_of?(BasicNode)
+          dict[k].push(fronto[down])
+        end
+        down -= 1
+      end
+    end
+    return dict
+  end 
+
+  def build_connectable_graph n, t
+    targets = add_connectable_targets t
+    nodes = targets.collect do |k|
+      x,y = coord_within_distance(k, $sensor_range)
+      Target.new(x,y)
+    end
+    until nodes.length == n
+      x, y = coord_within_distance(targets.sample, $sensor_range)
+      nodes.push(Target.new(x,y))
+    end
+    return nodes, targets
+  end
+
+  def add_connectable_targets t
+    a = [Target.new(rand($space),rand($space))]
+    until a.length == t
+      x, y = coord_within_distance(a.sample, $distance)
+      a.push(Target.new(x,y))
+    end
+    a
+  end
+
+  def add_connected_targets n, t
+    a = []
+    t.times do |k|
+      x,y = coord_within_distance(n.sample, $sensor_range)
+      a.push(Target.new(x,y))
+    end
+    a
+  end
+
+  def add_targets t
+    targets = []
+    t.times do
+      targets.push(Target.new(rand($space), rand($space)))
+    end
+    return targets
+  end
+
+  def add_randomly nodes, t
+    a = []
+    t.times{a.push([])}
+    nodes.each{|k| a[rand(t)].push(k.id)}
+    a.select{|k| k.any?}
+  end
+end
+
+
                      

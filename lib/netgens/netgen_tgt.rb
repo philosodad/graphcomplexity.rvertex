@@ -3,7 +3,6 @@ require 'netgen'
 class TargetGraph < SimpleGraph
   include PlanarMath
   include Targetable
-  include Neighborly
 
   def initialize *args
     if args.length == 2 
@@ -17,8 +16,9 @@ class TargetGraph < SimpleGraph
         raise ArgumentError, "#{ts} must be less than #{ns}!" unless ts <= (1..ns).inject(:*)
       end
       super()
-      add_nodes(n)
-      @edges = add_randomly @nodes, t
+      nodes, targets = build_connectable_graph(n,t)
+      add_nodes nodes
+      @edges = build_edges targets
     elsif args.length == 1
       raise TypeError, "g must be kind of TargetGraph" unless args[0].kind_of?(TargetGraph)
       g = args[0]
@@ -30,10 +30,8 @@ class TargetGraph < SimpleGraph
     set_edges
   end
 
-  def add_nodes n
-    n.times do
-      @nodes.push(get_node_type.new(rand($space), rand($space)))
-    end
+  def add_nodes nodes
+    nodes.each{|k| @nodes.push(get_node_type.new(k.x, k.y))}
   end
 
   def add_single_node n
@@ -44,26 +42,35 @@ class TargetGraph < SimpleGraph
     return Object.const_get('HyperNode')
   end
 
+  def set_neighbors
+    kn = {}
+    @nodes.each{|k| kn[k.id] = k}
+    @edges.each do |t|
+      (0..t.cover.length-1).each do |a|
+        (a+1..t.cover.length).each do |b|
+          kn[t.cover[a]].neighbors.push(kn[t.cover[b]])
+          kn[t.cover[b]].neighbors.push(kn[t.cover[a]])
+          [kn[t.cover[a]],kn[t.cover[b]]].each do |c|
+            c.neighbors.uniq!
+            c.neighbors.compact!
+          end
+        end
+      end
+    end
+  end
+
   def set_edges
     @edges.each do |k|
       @nodes.each do |j|
-        if k.include? j.id then
+        if k.cover.include? j.id then
           j.edges.add(k)
         end
       end
     end
   end
 
-  def add_targets t
-    targets = []
-    t.times do
-      targets.push(Target.new(rand($space), rand($space)))
-    end
-    return targets
-  end
-
   def add_edges t
-    @edges = build_edges t 
+    @edges = build_connectable_edges t 
     attempts = 0
     while @edges == nil or @edges.length < t
       raise StandardError, "Target requirement unfulfilled in #{$space**2} attempts" unless attempts < $space**2
@@ -72,17 +79,15 @@ class TargetGraph < SimpleGraph
     end
   end
   
-  def build_edges t
-    eggs = Set[]
-    targets = add_targets t
+  def build_edges targets
     exis = add_from_to_by @nodes, targets, 'x'
     whys = add_from_to_by @nodes, targets, 'y'
     targets.each do |k|
       eds = (exis[k]&whys[k])
-      eggs.add( eds.select{|j| planar_distance(j, k) <= $sensor_range}.collect{|k| k.id}.to_set)
+      k.cover.+(eds.select{|j| planar_distance(j, k) <= $sensor_range}.collect{|k| k.id})
     end
-    return eggs - Set[Set[]]
-    nil
+    targets.each{|k| k.cover.uniq!}
+    targets
   end
 end
 

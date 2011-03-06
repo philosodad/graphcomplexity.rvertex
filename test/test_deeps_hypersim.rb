@@ -14,11 +14,12 @@ class TestHyperSim < Test::Unit::TestCase
 
   def test_tg
     assert_equal @tg.nodes.length, 15
-    assert_equal @tg.edges.collect{|k| k.length}.reduce(:+), 15
+    assert @tg.edges.collect{|k| k.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
   end
 
   def test_graph_setup
     g = DeepsHyperGraph.new(25,10)
+    assert g.connect?
     assert g.coverable?
     assert_raise TypeError do DeepsHyperGraph.new(RandomGraph.new(45,45)) end
     assert_nothing_raised do DeepsHyperGraph.new(@tg) end
@@ -65,6 +66,7 @@ class TestHyperSim < Test::Unit::TestCase
     assert h.nodes.select{|k| k.edges.any?}.any?, 'this graph is edge free'
     h.nodes.each{|k| assert k.edges.any?, 'this node has no edges'}
     [s1, s2, s3].each{|k| k.set}
+    [s1, s2, s3].each{|k| assert k.rg.connect?, 'graph not connectable'}
     assert s1.rg.nodes.select{|k| k.edges.any?}.any?, 'no node has any edges'
     s1.rg.nodes.each{|k| assert k.edges.any?, 'this node has no edges'}
     p s1.sim
