@@ -1,4 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','actions')
+$:.unshift File.join(File.dirname(__FILE__),'..','netgens')
 require 'set'
 require 'cover'
 require 'dep_graph_ldg'
