@@ -89,6 +89,18 @@ class TargetGraph < SimpleGraph
     targets.each{|k| k.cover.uniq!}
     targets
   end
+
+  def get_lower_bound
+    edgeweights = []
+    keyednodes = {}
+    @nodes.each{|k| keyednodes[k.id] = k.weight}
+    @edges.each do |k|
+      w = 0
+      k.cover.each{|j| w += keyednodes[j]}
+      edgeweights.push(w)
+    end
+    return edgeweights.min
+  end
 end
 
 class SetTargetGraph < TargetGraph

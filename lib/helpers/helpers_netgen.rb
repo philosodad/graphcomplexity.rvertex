@@ -159,6 +159,7 @@ module Targetable
       x,y = coord_within_distance(k, $sensor_range)
       Target.new(x,y)
     end
+    if nodes.length != targets.length then raise ArgumentError, "nodes not properly setup" end
     until nodes.length == n
       x, y = coord_within_distance(targets.sample, $sensor_range)
       nodes.push(Target.new(x,y))
