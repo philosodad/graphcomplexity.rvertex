@@ -107,27 +107,14 @@ class TargetGraph < SimpleGraph
   def coverable?
     kn = {}
     @nodes.each{|k| kn[k.id]=k}
-    @edges.each do |k|
-      if k.cover.inject(0){|sum,n| kn[n].weight} == 0 then
-        return false
-      end
-    end
-    true
+    @edges.select{|k| k.cover.inject(0){|sum,n| kn[n].weight + sum} == 0}.empty? 
   end
 
   def covered?
-    kn = {}
-    @nodes.each{|k| kn[k.id]=k}
-    @edges.each do |k|
-      if k.cover.inject(false){|final, n| kn[n].on or final} and
-        k.cover.inject(0){|sum,n| kn[n].weight} > 0 then
-        true
-      else
-        return false
-      end
-    end
-    true
+    onlist = @nodes.select{|j| j.on and j.weight > 0}.collect{|k| k.id}
+    @edges.select{|k| (k.cover & onlist).empty?}.empty?
   end
+
   def connect?
     true
   end

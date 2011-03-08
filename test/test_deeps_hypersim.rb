@@ -14,7 +14,6 @@ class TestHyperSim < Test::Unit::TestCase
 
   def test_tg
     assert_equal @tg.nodes.length, 15
-    p @tg.edges.select{|k| k.cover.empty?}
     assert @tg.edges.select{|k| k.cover.empty?}.empty?, 'some target has no assigned nodes'
     assert @tg.edges.collect{|k| k.cover.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
   end
@@ -22,14 +21,15 @@ class TestHyperSim < Test::Unit::TestCase
   def test_graph_setup
     g = DeepsHyperGraph.new(25,10)
     assert g.connect?, "g not connected"
-    assert g.coverable?
+    g.nodes.each{|k| k.set_edges}
+    assert g.coverable?, "g not coverable"
     assert_raise TypeError do DeepsHyperGraph.new(RandomGraph.new(45,45)) end
     assert_nothing_raised do DeepsHyperGraph.new(@tg) end
     d = DeepsHyperGraph.new(@tg)
     assert d.nodes.collect{|k| k.id} - @tg.nodes.collect{|k| k.id} == [], "ids not the same"
     assert d.nodes.collect{|k| k.id} - g.nodes.collect{|k| k.id} == d.nodes.collect{|k| k.id}, "ids not disjoint"
     assert_not_equal d.nodes.collect{|k| k.id} - g.nodes.collect{|k| k.id}, [] #just making sure
-    assert d.coverable?, "d cannot be covered"
+    #assert d.coverable?, "d cannot be covered"
     failtrack = false
     num = 0
     #until failtrack == true 
@@ -62,7 +62,7 @@ class TestHyperSim < Test::Unit::TestCase
     assert @tg.nodes.select{|k| k.neighbors.any?}.any?, 'tg has no neighbors'
     assert @tg.nodes.select{|k| k.edges.any?}.any?, 'no tg node has an edge'
     @tg.nodes.each{|k| assert k.edges.any?, 'tg has an edge free node'}
-    assert s1.rg.coverable?, 's1 cannot be covered'
+    #assert s1.rg.coverable?, 's1 cannot be covered'
     h.nodes.each{|k| k.set_edges}
     assert h.nodes.select{|k| k.neighbors.any?}.any?, 'this graph has no neighbors'
     assert h.nodes.select{|k| k.edges.any?}.any?, 'this graph is edge free'
@@ -71,10 +71,11 @@ class TestHyperSim < Test::Unit::TestCase
     [s1, s2, s3].each{|k| assert k.rg.connect?, 'graph not connectable'}
     assert s1.rg.nodes.select{|k| k.edges.any?}.any?, 'no node has any edges'
     s1.rg.nodes.each{|k| assert k.edges.any?, 'this node has no edges'}
-    p s1.sim
-    p s2.long_sim
-    p s3.long_sim
-    [s2, s3].each{|k| assert !k.rg.coverable?, 'long sims coverable'}
+    s1.sim
+    assert s1.rg.covered?, "sim not covered"
+    s2.long_sim
+    s3.long_sim
+    [s3, s2].each{|k| assert !k.rg.coverable?, "long sims #{k} coverable"}
     [s2, s3].each{|k| assert !k.rg.covered?, 'long sims covered'}
   end
 end

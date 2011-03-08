@@ -37,8 +37,17 @@ module DeepsActs
     when :done
       @next = :done
     when :covertargets
-      find_neighbors
       @on = false
+      @alert_list = []
+      @next = :get_weights
+    when :get_weights
+      @next = :alert_neighbors
+    when :alert_neighbors
+      filter_alerts
+      @next = :done
+    when :send_weight
+      @next = :get_alert
+    when :get_alert
       @next = :done
     end
   end
@@ -48,21 +57,44 @@ module DeepsActs
     when :boot, :poor, :hills, :sinks, :charge
       @now = @now
     when :covertargets
-      @neighbors.each{|k| k.recieve_status(@id, @on)}
-      @neighbors.select{|k| @alert_list.include? k.id}.each{|k| k.on = true}
+      @neighbors.each{|k| k.alert} 
+    when :alert_neighbors
+      @alert_list.each{|k| k.recieve_status(true)}
+    when :send_weight
+      @neighbors.each{|k| k.recieve_status(self)}
     else
       @neighbors.each{|k| k.recieve_status(@id, @on)}
     end
   end
 
-  def recieve_status id, on
-    if on == true
-      @onlist.push(id)
-    elsif on == false
-      @offlist.push(id)
+  def recieve_status *args
+    case args.length
+    when 2
+      id = args[0]
+      on = args[1]
+      if on == true
+        @offlist.delete(id)
+        @onlist.push(id)
+      elsif on == false
+        @onlist.delete(id)
+        @offlist.push(id)
+      end
+      @onlist.uniq!
+      @offlist.uniq!
+    when 1
+      case @now
+      when :get_weights
+         @alert_list.push(args[0])
+      when :get_alert
+        @on = args[0]
+      end
     end
-    @onlist.uniq!
-    @offlist.uniq!
+  end
+
+  def alert
+    if @weight > 0
+      @next = :send_weight
+    end
   end
 end
 
@@ -150,7 +182,7 @@ module Deeps_Deciders
       @poorest = @edges.min
       @poorest.type = :sink
     rescue => ex
-      p '#{ex.class}: cannot find the poorest edge'
+      p "#{ex.class}: cannot find the poorest edge"
     end
   end
 
@@ -269,14 +301,13 @@ module Hyper_Deeps_Deciders
     return ret
   end
 
-  def find_neighbors
-    @alert_list = []
-    @edges.each do |k|
-      if (@onlist & k.ids).empty?
-        unless (@alert_list & k.ids).any?
-          @alert_list.push(@neighbors.collect{|j| k.ids.include? j.id}.max.id)
-        end
+  def filter_alerts
+    alerts = []
+    @edges.select{|k| (k.ids & @onlist).empty?}.each do |k|
+      if (k.ids & alerts.collect{|k| k.id}).empty? then
+        alerts.push(@alert_list.select{|j| k.ids.include?(j.id)}.max)
       end
     end
+    @alert_list = alerts.compact
   end
 end

@@ -1,4 +1,5 @@
 class Target
+  include Comparable
   @@id = 0
   attr_reader :x, :y, :id
   attr_accessor :cover

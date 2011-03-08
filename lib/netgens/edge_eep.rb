@@ -63,7 +63,7 @@ class DeepsHyperEdge
       return -1
     elsif hash > other.hash
       return 1
-    elsif hash < hash
+    elsif hash < other.hash
       return -1
     end
   end

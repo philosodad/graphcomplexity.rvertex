@@ -8,7 +8,10 @@ class DeepsHyperGraph < TargetGraph
   end
 
   def reset
-    reduce_by_min
-    @nodes.select{|k| k.on}.select{|k| k.weight == 0}.each{|k| k.set_next(:covertargets)}
+    @nodes.select{|k| k.on}.select{|k| k.weight == 0}.each{|k| k.set_next(:covertargets); k.set_now(:covertargets)}
+  end
+
+  def coverable?
+    @nodes.select{|k| k.edges.select{|j| j.supply == 0}.any?}.empty?
   end
 end

@@ -41,7 +41,7 @@ module Running_Sim
     while @rg.coverable? do
       i = sim
       if i[1] > 500 or i[2] > 0 then f += 1 end
-      if not @rg.covered?
+      unless @rg.covered?
         f += 1 if f == 0
         puts "#{self.rg.class} simmed but not covered!"
         break

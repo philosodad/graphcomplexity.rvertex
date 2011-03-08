@@ -1,3 +1,6 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','nodes')
+$:.unshift File.join(File.dirname(__FILE__),'..','helpers')
+$:.unshift File.join(File.dirname(__FILE__),'..')
 #netgen.rb
 #Builds networks
 require 'node'
@@ -53,8 +56,9 @@ class SimpleGraph
 
   def reduce_by_min
     nodes = @nodes.select{|k| k.weight > 0 and k.on}
+    if nodes.empty? then raise StandardError, "reduction for uncovered graph" unless self.covered? end
     min = nodes.min_by{|k| k.weight}.weight
-    nodes.each{|k| k.weight = k.weight - min unless k.weight == 0}
+    nodes.each{|k| k.weight = [k.weight - min, 0].max}
     return min
   end
 
