@@ -1,4 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__),'..','lib')
+$:.unshift File.join(File.dirname(__FILE__),'..','lib','netgens')
 require 'netgen_pcd'
 require 'netgen_star'
 require 'netgen_dumb'

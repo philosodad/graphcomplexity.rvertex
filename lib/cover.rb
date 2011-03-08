@@ -1,3 +1,6 @@
+$:.unshift File.join(File.dirname(__FILE__),'..','lib')
+$:.unshift File.join(File.dirname(__FILE__),'dep_graphs')
+
 require 'dep_graph_ldg'
 require 'dep_graph_pcd'
 require 'dep_graph_fcd'
