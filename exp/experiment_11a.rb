@@ -9,7 +9,7 @@ class Experiment
   end
   
   def experiment x
-    [20].each do |y|
+    [10].each do |y|
       [4].each do |z|
         [1000, 5].each do |w|
           pcd_run_wate = 0

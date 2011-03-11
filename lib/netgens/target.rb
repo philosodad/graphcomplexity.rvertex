@@ -14,4 +14,9 @@ class Target
   def zero_out
     @@id = 0
   end
+
+  def move
+    @x = x + [3,-3].sample
+    @y = y + [3,-3].sample
+  end
 end
