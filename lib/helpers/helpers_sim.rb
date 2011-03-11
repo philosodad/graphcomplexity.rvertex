@@ -40,10 +40,13 @@ module Running_Sim
     f = 0
     while @rg.coverable? do
       i = sim
-      if i[1] > 500 or i[2] > 0 then f += 1 end
-      unless @rg.covered?
+      if i[1] == 0 then
+        puts "#{self.class} overrun, covered: #{self.rg.covered}"
+        f+=1
+        break
+      elsif !@rg.covered? 
         f += 1 if f == 0
-        puts "#{self.rg.class} simmed but not covered!"
+        puts "#{self.class} simmed correctly but not covered!"
         break
       end
       s = s + "#{i}, "
@@ -66,14 +69,18 @@ module Stepping_Sim
     f = 0
     @counter = 0
     while @rg.coverable? do
-      i = sim
-      @rg.nodes.each{|k| if k.now != :done then puts '#{k.id} not done' end}
-      @rg.coverable? ? @counter += 1 : raise
-      if i[1] > 500 or i[2] > 0 or !@rg.covered? then f += 1 end
-      if @rg.covered? == false then
-        puts "#{self.rg.class} simmed but not covered!"
+      i = sim (@rg.nodes.length * @rg.edges.length)
+      if i[1] == 0 then
+        puts "#{self.class} overrun, covered: #{self.rg.covered?}"
+        f+=1
+        break
+      elsif !@rg.covered? 
+        f += 1 if f == 0
+        puts "#{self.class} simmed correctly but not covered!"
         break
       end
+      @rg.nodes.each{|k| if k.now != :done then puts "#{k.id} not done" end}
+      @rg.coverable? ? @counter += 1 : raise
       s = s + "#{i}, "      
       if @counter == step then
         @counter = 0

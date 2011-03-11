@@ -121,6 +121,12 @@ class TargetGraph < SimpleGraph
   def connectable?
     true
   end
+
+  def print_out
+    puts "nodes: #{@nodes.collect{|k| [k.id, k.x, k.y, k.weight, k.edges.collect{|j| j.ids}]}}\n
+      edges: #{@edges.collect{|k| [k.x, k.y, k.cover]}}
+      on: #{nodes.select{|k| k.on}.collect{|k| k.id}}"
+  end
 end
 
 class SetTargetGraph < TargetGraph

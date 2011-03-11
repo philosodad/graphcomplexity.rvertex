@@ -13,12 +13,14 @@ class TestHyperSim < Test::Unit::TestCase
   end
 
   def test_tg
+    puts "test tg\n+++++\n"
     assert_equal @tg.nodes.length, 15
     assert @tg.edges.select{|k| k.cover.empty?}.empty?, 'some target has no assigned nodes'
     assert @tg.edges.collect{|k| k.cover.length}.reduce(:+) >= 15, 'some nodes not assigned to targets'
   end
 
   def test_graph_setup
+    puts "test setup\n+++++\n"
     g = DeepsHyperGraph.new(25,10)
     assert g.connect?, "g not connected"
     g.nodes.each{|k| k.set_edges}
@@ -53,6 +55,7 @@ class TestHyperSim < Test::Unit::TestCase
   end
 
   def test_hypersim
+    puts "test hypersim\n+++++\n"
     g = DeepsHyperGraph.new(@tg)
     s1 = DeepsHyperSimulator.new(g)
     s2 = DeepsHyperRunningSimulator.new(g)
@@ -78,4 +81,39 @@ class TestHyperSim < Test::Unit::TestCase
     [s3, s2].each{|k| assert !k.rg.coverable?, "long sims #{k} coverable"}
     [s2, s3].each{|k| assert !k.rg.covered?, 'long sims covered'}
   end
+
+  def test_failure_run
+    puts "test run_fail\n+++++\n"
+    f = false
+    count = 0
+    until f or count == 50
+      s1 = nil
+      s1 = DeepsHyperRunningSimulator.new(DeepsHyperGraph.new(TargetGraph.new(15,5)))
+      s1.set
+      s1.long_sim
+      f = true if s1.rg.coverable?
+      count +=1
+    end
+    s1.rg.print_out if f
+    assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
+    assert !f, "printed a coverable graph"
+  end
+
+  def test_failure_step
+    puts "test run_step\n+++++\n"
+    f = false
+    count = 0
+    until f or count == 50
+      s1 = nil
+      s1 = DeepsHyperSteppingSimulator.new(DeepsHyperGraph.new(TargetGraph.new(15,5)))
+      s1.set
+      s1.long_sim
+      f = true if s1.rg.coverable?
+      count +=1
+    end
+    s1.rg.print_out if f
+    assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
+    assert !f, "printed a coverable graph"
+  end
+
 end

@@ -157,16 +157,22 @@ module Targetable
     targets = add_connectable_targets t
     nodes = targets.map do |k|
       x,y = coord_within_distance(k, $sensor_range)
+      redo if targets.collect{|k| [k.x, k.y]}.include?([x,y]) 
       Target.new(x,y)
     end
     if nodes.length != targets.length then raise ArgumentError, "nodes not properly setup" end
     until nodes.length == n
       x, y = coord_within_distance(targets.sample, $sensor_range)
+      if targets.collect{|k| [k.x, k.y]}.include?([x,y]) or nodes.collect{|k| [k.x, k.y]}.include?([x,y]) then
+        puts "i must redo this block"
+        redo
+      end
       nodes.push(Target.new(x,y))
     end
     nodes.each do |k|
       raise RangeError, "target without node" unless targets.inject(false){|final, j| (planar_distance(j,k) <= $sensor_range) or final}
     end
+
     return nodes, targets
   end
 
