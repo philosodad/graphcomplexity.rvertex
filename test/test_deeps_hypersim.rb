@@ -8,6 +8,7 @@ require 'sim'
 
 class TestHyperSim < Test::Unit::TestCase
   def setup
+    puts "setup\n++++++\n"
     Globals.new 15,15,2,22, 40
     @tg = TargetGraph.new 15, 5
   end
@@ -95,6 +96,9 @@ class TestHyperSim < Test::Unit::TestCase
       count +=1
     end
     s1.rg.print_out if f
+    if f then
+      s1.rg.nodes.each{|k| assert k.charges_covered?, "#{k.id} charge not covered."}
+    end
     assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
     assert !f, "printed a coverable graph"
   end
@@ -112,8 +116,16 @@ class TestHyperSim < Test::Unit::TestCase
       count +=1
     end
     s1.rg.print_out if f
+    if f then
+      s1.rg.nodes.each{|k| assert k.charges_covered?, "#{k.id} charge not covered."}
+    end
     assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
     assert !f, "printed a coverable graph"
   end
 
+  def teardown
+    @tg.nodes.each{|k| k = nil}
+    @tg.edges.each{|k| k = nil}
+    @tg = nil
+  end
 end

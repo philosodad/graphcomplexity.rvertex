@@ -30,7 +30,7 @@ class TestDeeps < Test::Unit::TestCase
       k.edges.select{|e| e.uv.include?(843)}
       assert k.edges.length > 0, 'this node has no edges'
       k.edges.each do |j|
-        assert j.supply > 0, "this edge hGas no supply!"
+        assert j.supply > 0, "this edge has no supply!"
         assert j.class == DeepsEdge, 'That aint a DeepsEdge'
         assert j.uv.class == Set, 'That aint a set'
         assert j.uv.length == 2, 'That set is two long'

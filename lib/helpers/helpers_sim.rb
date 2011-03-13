@@ -41,7 +41,7 @@ module Running_Sim
     while @rg.coverable? do
       i = sim
       if i[1] == 0 then
-        puts "#{self.class} overrun, covered: #{self.rg.covered}"
+        puts "#{self.class} overrun, covered: #{self.rg.covered?}"
         f+=1
         break
       elsif !@rg.covered? 

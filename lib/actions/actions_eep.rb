@@ -282,23 +282,11 @@ module Hyper_Deeps_Deciders
   end
 
   def sole_survivor?
-    @edges.each do |j|
-      if (j.ids.to_a - offlist) == [id] then return true end
-    end
-    false
+    @edges.select{|k| (k.nodes - [self]).select{|j| !j.off?}.empty?}.any?
   end
   
   def charges_covered?
-    ret = false
-    @charges.each do |k|
-      ret = false
-      if (k.nodes - [self]).select{|k| k.on}.length > 0
-        ret = true
-      else 
-        return false
-      end
-    end
-    return ret
+    @charges.select{|k| (k.nodes - [self]).select{|j| j.on}.empty?}.empty?
   end
 
   def filter_alerts

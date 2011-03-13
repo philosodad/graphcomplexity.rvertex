@@ -3,6 +3,7 @@ require 'netgen'
 class TargetGraph < SimpleGraph
   include PlanarMath
   include Targetable
+  include Neighborly
 
   def initialize *args
     if args.length == 2 
@@ -123,7 +124,7 @@ class TargetGraph < SimpleGraph
   end
 
   def print_out
-    puts "nodes: #{@nodes.collect{|k| [k.id, k.x, k.y, k.weight, k.edges.collect{|j| j.ids}]}}\n
+    puts "nodes: #{@nodes.collect{|k| [k.id, k.x, k.y, k.weight]}}\n
       edges: #{@edges.collect{|k| [k.x, k.y, k.cover]}}
       on: #{nodes.select{|k| k.on}.collect{|k| k.id}}"
   end
