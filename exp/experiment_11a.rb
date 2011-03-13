@@ -4,14 +4,14 @@ require 'globals'
 class Experiment
 
   def initialize
-    @average = [["nodes", "links", "cost", "pcd_step", "pcd_run", "deeps_step", "deeps_run"]] 
+    @average = [["nodes", "links", "cost", "deeps_step", "deeps_run"]] 
     Globals.new()
   end
   
   def experiment x
-    [10].each do |y|
-      [4].each do |z|
-        [1000, 5].each do |w|
+    [10,20,40,80].each do |y|
+      [4,8].each do |z|
+        [1000, 5,4,2,1].each do |w|
           pcd_run_wate = 0
           pcd_run_fail = 0
           dep_run_wate = 0
@@ -44,14 +44,14 @@ class Experiment
           nodes = y
           links = z*2
           cost = 100/w
-          @average.push([nodes, links, cost, pcd_step_wate,pcd_run_wate, dep_step_wate,dep_run_wate])
+          @average.push([nodes, links, cost, dep_step_wate,dep_run_wate])
         end
       end
     end
   end
   
   def print_to_file
-    File.open("experiment9d_av.tab", 'w') {|x|
+    File.open("experiment11a_av.tab", 'w') {|x|
       @average.each_index do |k|
         s = String.new
         @average[k].each_index do |i|
