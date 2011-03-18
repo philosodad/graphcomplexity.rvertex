@@ -16,7 +16,7 @@ module Boat_Acts
       @next = :update
     when :update
       update_criteria
-      @next = :anchor ? anchor? :float
+      @next = anchor? ? :anchor : :float
     when :anchor
       @next = :sit
     when :float

@@ -3,7 +3,6 @@ require 'netgen'
 class TargetGraph < SimpleGraph
   include PlanarMath
   include Targetable
-  include Neighborly
 
   def initialize *args
     if args.length == 2 

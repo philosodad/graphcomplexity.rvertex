@@ -286,7 +286,7 @@ module Hyper_Deeps_Deciders
   end
   
   def charges_covered?
-    @charges.select{|k| (k.nodes - [self]).select{|j| j.on}.empty?}.empty?
+    @charges.select{|k| (k.nodes - [self]).select{|j| j.on}.empty?}.empty? or @on == true
   end
 
   def filter_alerts
