@@ -81,6 +81,9 @@ class TestHyperSim < Test::Unit::TestCase
     s3.long_sim
     [s3, s2].each{|k| assert !k.rg.coverable?, "long sims #{k} coverable"}
     [s2, s3].each{|k| assert !k.rg.covered?, 'long sims covered'}
+    s2.rg.nodes.each{|k| assert Set.new(k.charges).subset?(k.edges)}
+    s2.rg.nodes.each{|k| assert Set.new(k.charges + k.neighbors.collect{|j| j.charges}).subset?(k.edges + Set.new(k.neighbors.collect{|j| j.edges}))}
+    s2.rg.nodes.each{|k| assert k.edges.subset?(Set[k.neighbors.collect{|j| j.charges} + k.charges]), "s2-orphaned edge: #{(k.edges - [k.neighbors.collect{|j| j.charges + k.charges}]).length}, #{k.edges.collect{|j| j.type}}, #{k.charges.length}, #{k.neighbors.collect{|j| j.charges}.length}"}
   end
 
   def test_failure_run
@@ -97,7 +100,7 @@ class TestHyperSim < Test::Unit::TestCase
     end
     s1.rg.print_out if f
     if f then
-      s1.rg.nodes.each{|k| assert k.charges_covered?, "#{k.id} charge not covered."}
+      s1.rg.nodes.each{|k| assert k.charges_covered?, "run: all_done: #{s1.all_done}, #{k.id}, #{k.on == nil ? 'nil' : k.on}, #{k.now}, #{k.next}, charge not covered."}
     end
     assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
     assert !f, "printed a coverable graph"
@@ -117,7 +120,8 @@ class TestHyperSim < Test::Unit::TestCase
     end
     s1.rg.print_out if f
     if f then
-      s1.rg.nodes.each{|k| assert k.charges_covered?, "#{k.id} charge not covered."}
+      s1.rg.nodes.each{|k| assert k.charges_covered?, "step: all_done: #{s1.all_done}, #{k.id}, #{k.on == nil ? 'nil' : k.on}, #{k.now}, #{k.next}, charge not covered."}
+      s1.rg.nodes.each{|k| assert (k.edges - [k.neighbors.collect{|j| j.charges} + k.charges]).empty?, "orphaned edge"}
     end
     assert_equal s1.rg.coverable?, f, "printed an uncoverable graph"
     assert !f, "printed a coverable graph"
