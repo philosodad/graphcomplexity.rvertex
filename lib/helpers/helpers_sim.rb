@@ -84,15 +84,10 @@ module Stepping_Sim
       s = s + "#{i}, "      
       if @counter == step then
         @counter = 0
-        @rg.nodes.each{|k| k.weight -= 1}
+        @rg.nodes.each{|k| k.weight -= 1 unless k.weight == 0}
       end
-      @rg.nodes.each do |k| 
-        if k.on == true
-          k.weight -= 1
-        end
-      end
+      @rg.nodes.select{|k| k.on and k.weight != 0}.each{|k| k.weight -= 1}
       t += 1
-      @rg.nodes.each{|k| if k.weight < 0 then k.weight = 0 end}
       @rg = @rg.class.new(@rg)
       set
     end
