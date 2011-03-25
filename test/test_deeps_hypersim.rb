@@ -111,7 +111,6 @@ class TestHyperSim < Test::Unit::TestCase
     f = false
     count = 0
     until f or count == 50
-      s1 = nil
       s1 = DeepsHyperSteppingSimulator.new(DeepsHyperGraph.new(TargetGraph.new(15,5)))
       s1.set
       s1.long_sim

@@ -140,7 +140,9 @@ module Targetable
       up = pin+1
       down = pin-1
       while up < fronto.length and ((fronto[pin].send(by)) - (fronto[up].send(by))).abs <= $sensor_range
-        if fronto[up].kind_of?(BasicNode) then dict[k].push(fronto[up]) end
+        if fronto[up].kind_of?(BasicNode) then 
+          dict[k].push(fronto[up]) 
+        end
         up += 1
       end
       while down >= 0 and ((fronto[pin].send(by)) - (fronto[down].send(by))).abs <= $sensor_range
