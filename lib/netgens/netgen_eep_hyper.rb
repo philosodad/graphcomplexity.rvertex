@@ -10,6 +10,13 @@ class DeepsHyperGraph < TargetGraph
     @nodes.select{|k| k.on}.select{|k| k.weight == 0}.each{|k| k.set_next(:covertargets); k.set_now(:covertargets)}
   end
 
+  def reset_step
+    @nodes.each do |k|
+      k.set_next(:boot)
+      k.edges.each{|j| j.type = nil}
+    end
+  end
+
   def coverable?
     @nodes.select{|k| k.edges.select{|j| j.supply == 0}.any?}.empty?
   end

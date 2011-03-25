@@ -1,4 +1,5 @@
 require 'globals'
+#require 'benchmark'
 
 module Sim_To_Done
   def sim *args
@@ -15,7 +16,7 @@ module Sim_To_Done
     w = get_the_metric
     if f == 1 then g = 0 end
     $stdout.flush
-    puts "S_T_DONE! #{@id} g: #{g}"
+    #puts "S_T_DONE! #{@id} g: #{g}"
     return w, g, f 
   end
 
@@ -84,17 +85,17 @@ module Stepping_Sim
       s = s + "#{i}, "      
       if @counter == step then
         @counter = 0
-        @rg.nodes.each{|k| k.weight -= 1}
+        @rg.nodes.each{|k| k.weight -= 1 if k.weight > 0 }
       end
       @rg.nodes.each do |k| 
         if k.on == true
-          k.weight -= 1
+          k.weight -= 1 if k.weight > 0
         end
       end
       t += 1
-      @rg.nodes.each{|k| if k.weight < 0 then k.weight = 0 end}
       @rg = @rg.class.new(@rg)
       set
+      #@rg.reset_step
     end
 #    puts "#{@id} t: #{t}"
     s = s + "#{t}"
