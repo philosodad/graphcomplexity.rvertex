@@ -257,13 +257,7 @@ module Hyper_Deeps_Deciders
 
   def set_all_sinks
     if @weight > 0 then
-      nebs = @poorest.nodes - [self]
-      nebs.each do |k|
-        if k.poorest == @poorest and k > self
-          return false
-        end
-      end
-      @charges.push(@poorest)
+      (@poorest.nodes - [self]).select{|k| k.poorest == @poorest and k > self}.any? ? return : @charges.push(@poorest)
     end
   end
 
@@ -286,7 +280,7 @@ module Hyper_Deeps_Deciders
   end
   
   def charges_covered?
-    @charges.select{|k| (k.nodes - [self]).select{|j| j.on}.empty?}.empty? or @on == true
+    @on == true or @charges.select{|k| (k.nodes - [self]).select{|j| j.on}.empty?}.empty? 
   end
 
   def filter_alerts
