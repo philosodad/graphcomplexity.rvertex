@@ -9,8 +9,8 @@ class Experiment
   end
   
   def experiment x
-    [10,20,40,80].each do |y|
-      [4,8].each do |z|
+    [10,20,40].each do |y|
+      [2,4,8].each do |z|
         [1000, 5,4,2,1].each do |w|
           pcd_run_wate = 0
           pcd_run_fail = 0
